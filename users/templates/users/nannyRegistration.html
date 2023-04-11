@@ -1,0 +1,74 @@
+{% extends 'jobapp/base.html' %}
+{% block content %}
+{%load static%}
+
+
+
+         <script src="https://cdn.jsdelivr.net/npm/vue"></script> 
+
+
+        <div class="app">
+
+        <div class="signup" v-if="!profileshow">
+
+        <h1>Sign up</h1>
+
+        <form name="reg">
+
+            <label>User login</label><br />
+
+            <input id="login" type="login" v-model="login" 
+
+            placeholder="login"><br />
+
+            <label>User password</label><br />
+
+            <input id="password" type="password" v-model="password"
+
+            placeholder="password"><br/>
+
+            <label>Email</label><br/>
+
+            <input id="email" type="email"  v-model="email"
+
+            placeholder="email"><br />
+
+            <label>First Name</label><br />
+
+            <input id="fname" type="text"  v-model="fname"
+
+            placeholder="First Name"><br />
+
+            <label>Second Name</label><br />
+
+            <input id="sname" type="text" v-model="sname"
+
+            placeholder="Second Name"> <br />
+
+            <label>Age</label><br>
+
+            <input type="number" v-model="age"><br>
+
+            <label>Gender</label><br>
+
+            <select v-model="gender">
+
+               <option value="men">Men</option>
+
+               <option value="women">Women</option>
+
+            </select><br>
+
+            <input type="submit" @click="validate()">
+
+        </form>
+
+        </div>
+        </div>
+        
+<style>
+  
+</style>
+  {%endblock%}
+  
+  <!----------Designed By Pradeep Singh Tomar------------>

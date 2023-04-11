@@ -1,0 +1,35 @@
+{%extends 'products/base.html'%}
+{%block content%}
+
+<div class="container">
+<form class="payment-form center" action="" method="POST" enctype= multipart/form-data>
+  {%csrf_token%}
+
+    <h2 class="center">Mpesa</h2>
+
+    <div class="wrap-payment center">
+<div class="form-group center">
+  <label for="formGroupExampleInput">Enter your Safaricon Number Ksh. {{order.get_cart_totals}}</label>
+  <input type="number" class="form-control" id="formGroupExampleInput" placeholder="0740......" id='phone'  name='phone'>
+</div>
+<button type="submit" class="btn btn-lg btn-block btn-success text-uppercas continue-shopping" value="PAY NOW">PAY NOW</button>
+    </div>
+   
+</form>
+</div>
+<style>
+  .container{
+    min-height: 600px;
+  }
+  .wrap-payment{
+  max-width: 600px;
+margin-left: auto;
+margin-right: auto;
+  }
+  .payment-form{
+    color: rgb(9, 201, 73);
+  }
+</style>
+
+{%endblock content%}
+

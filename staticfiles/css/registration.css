@@ -1,0 +1,160 @@
+body {
+
+  background-color:rgb(255, 255, 255);
+
+  font-family: 'Handlee', cursive;
+
+}
+
+Label, input,tr{
+
+  padding:5px 5px 5px 10px;
+
+}
+
+H1,label,h3,h2,h4,p{
+
+  color:#000000;
+
+}
+
+input,select{
+
+  Background-color:rgb(233, 248, 234);
+
+  font-style:italic;
+
+  Color:#f0f;
+
+  Border:none;
+
+  border-bottom:1px solid #f0f;
+
+  outline:none;
+
+  width:200px;
+
+  animation:rotate 5s ease-in-out 0.5s alternate;
+
+}
+
+table{
+
+  width:450px;
+
+  margin:0 5%;
+
+  
+
+}
+
+p,h4{
+
+  margin:5px;
+
+  padding:5px;
+
+}
+
+tr{
+
+  color:rgb(0, 0, 0);
+
+  padding:5px 5px;
+
+  animation:rotate 5s ease-in-out 0.5s alternate;
+
+}
+
+td{
+
+  vertical-align:top;
+
+}
+
+H1,Form{
+
+  text-align:center;
+
+}
+
+input:focus{
+
+  border-bottom:4px solid #f00;
+
+  font-size:20px;
+
+  transition-delay:0.5s;
+
+  transition:.4 ease-out;
+
+}
+
+input[type="submit"]{
+
+  Background-color:#f0f;
+
+  Border:none;
+
+  color:#fff;
+
+  margin-top:20px;
+
+  
+
+}
+
+.public{
+
+  border:3px dotted #990;
+
+  margin:10px;
+
+}
+
+img{
+
+  border-radius:30% 50% 30% 50%;
+
+  Border:2px solid #c0f;
+
+  box-shadow:1px 1px 3em #c0f;
+
+}
+
+@keyframes rotate {    
+
+  20% { 
+
+      transform: rotateY(30deg); 
+
+      letter-spacing:15px;
+
+  }
+
+  40% {
+
+      transform: rotateY(60deg); 
+
+      letter-spacing:10px;
+
+  }
+
+  60% { 
+
+      transform: rotateY(90deg); 
+
+      letter-spacing:5px;
+
+  }
+
+  80% { 
+
+      transform: rotateY(180deg);
+
+      letter-spacing:2px;
+
+  }
+
+}
+
