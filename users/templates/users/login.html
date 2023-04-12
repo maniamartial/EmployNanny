@@ -1,46 +1,59 @@
 {% extends 'jobapp/base.html' %}
 {% block content %}
-{%load static%}
+{%load static %}
+    <section class="signup " style="background-image: url('/static/images/Rock.jfif')">
+        <div class="center">
+            <!--------------------------------------------------------------------------Login form-->
+            <form method="POST" action="">
+                {%csrf_token%}
+            <table class="login-table">
+         
+                   
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            <input type="text" placeholder="Username" name='username'>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            <input placeholder="Password" type="password" name="password">
+                        </div>
+                    </td>
+                </tr>
+               
+                <tr>
+                    <td colspan="3">
+                      <div class="remember-forgotten">
+                             <span><input type="checkbox">Remember me  <a class="forgotten" href="">Forgotten password</a></span>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="remember-forgotten alert alert-success" role="alert">
+                           {%for message in messages%}
+                           <p>{{message}}</p>
+                           {%endfor%}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            <input class="loginbutton" type="submit" value="Login" style="background-color: lightblue;">
+                        </div>
+                        <p>Already have an account? <a href="{% url 'nannyRegister'%}">Sign in</a></p>
+                    </td>
+                </tr>
 
-         <script src="https://cdn.jsdelivr.net/npm/vue"></script> 
+            </table>
+            </form>
+<!------------------------------------------login form-->
 
 
-        <div class="app">
+    </section>
 
-        <div class="signup" v-if="!profileshow">
-
-        <h1>Sign In</h1>
-
-        <form name="reg">
-
-            <label>User Email</label><br />
-
-            <input id="login" type="email" v-model="login" 
-
-            placeholder="login"><br />
-
-            <label>User password</label><br />
-
-            <input id="password" type="password" v-model="password"
-
-            placeholder="password"><br/>
-
-            
-
-           
-
-
-
-            <input type="submit" @click="validate()">
-
-        </form>
-
-        </div>
-        </div>
-        
-<style>
-  
-</style>
-  {%endblock%}
-  
-  <!----------Designed By Pradeep Singh Tomar------------>
+  {% endblock content%}
