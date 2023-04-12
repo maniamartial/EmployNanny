@@ -1,0 +1,121 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+{%load static%}
+<section class="signup" style="background-image: url('/static/images/Rock.jfif')">
+    <div class="center">
+       
+      <style>
+        .alert{
+          color: rgb(126, 5, 5);
+        }
+      </style>
+        <form method="POST" action="">
+            {%csrf_token%}
+            <table>
+                <tr>
+                    <td style="width: 33.33%;">
+                        <div class="dash"></div>
+                    </td>
+                    <td style="padding: 0 6px;">
+                        <h1 style="color: rgb(110, 132, 248)">Employer Registration</h1>
+                    </td>
+                    <td style="width: 33.33%;">
+                        <div class="dash"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <p>Create your account. It's free and only takes a minute.</p>
+                    </td>
+                </tr>
+              
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            {{form.username}}
+                            {% if form.errors %} <p>{{form.username.errors}}</p> {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            {{form.email}}
+                            {% if form.errors %} <p role="alert">{{form.email.errors}}</p> {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                         {{form.password1}}
+                        {% if form.errors %} <p  role="alert">{{form.password1.errors}}</p> {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            {{form.password2}}
+                           
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div>
+                            {{form.phone}}
+                            {% if form.errors %} <p role="alert">{{form.phone.errors}}</p> {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                          
+                        <tr>
+                    <td colspan="3">
+                        <div class="terms">
+                            <input id="checkid2" class="check1" type="checkbox" value="test"> <label for="checkid2" class="check2">I accept the <a
+                                    href="https://www.google.com/">Terms of Use</a> & <a
+                                    href="https://www.google.com/">Privacy Policy.</a></label>
+                        </div>
+                    </td>
+                </tr>
+    
+                <tr>
+                    <td colspan="3">
+                        <div style="background-color: lightblue;">
+                            <input style="background-color: lightblue;" type="submit" value="Register Now" >
+                        </div>
+                        <p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    
+<script>
+   
+       var form_fields = document.getElementsByTagName('input');
+       
+        form_fields[1].placeholder = 'Username...';
+        form_fields[2].placeholder = 'Email...';
+        form_fields[3].placeholder = 'Password...';
+        form_fields[4].placeholder = 'Confirm Password...';
+         form_fields[5].placeholder = 'Phone(Optional)...';
+
+        for (var field in form_fields) {
+            form_fields[field].className += 'form-control'
+        }
+        
+      
+</script>
+
+<style>
+    form table{
+    background-color: red;
+    padding-top: 20%;
+    }
+</style>
+</section>
+{% endblock content%}

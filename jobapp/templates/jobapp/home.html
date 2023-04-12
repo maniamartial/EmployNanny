@@ -1,5 +1,5 @@
 {% extends 'jobapp/base.html' %} {% block content %} {%load static%}
-
+<style></style>
 <div
   id="slider-home"
   class="carousel slide"
@@ -14,7 +14,10 @@
   </ul>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="Los Angeles" />
+      <video autoplay muted loop>
+        <source src="{% static 'videos/video3.mp4' %}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
@@ -22,7 +25,11 @@
       </div>
     </div>
     <div class="carousel-item">
-      <img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="Chicago" />
+      <video autoplay muted loop>
+        <source src="{% static 'videos/video1.mp4' %}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <!--<img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="Chicago" />-->
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
@@ -30,7 +37,10 @@
       </div>
     </div>
     <div class="carousel-item">
-      <img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="New York" />
+      <video autoplay muted loop>
+        <source src="{% static 'videos/video2.mp4' %}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
@@ -38,7 +48,10 @@
       </div>
     </div>
     <div class="carousel-item">
-      <img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="New York" />
+      <video autoplay muted loop>
+        <source src="{% static 'videos/video4.mp4' %}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
