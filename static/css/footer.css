@@ -1,9 +1,9 @@
 ul {
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 .footer-section {
-  background: #151414;
+  background: rgb(128, 167, 128);
   position: relative;
 }
 .footer-cta {
@@ -45,12 +45,12 @@ ul {
   margin-bottom: 30px;
 }
 .footer-logo img {
-    max-width: 200px;
+  max-width: 200px;
 }
 .footer-text p {
   margin-bottom: 14px;
   font-size: 14px;
-      color: #7e7e7e;
+  color: #7e7e7e;
   line-height: 28px;
 }
 .footer-social-icon span {
@@ -58,7 +58,7 @@ ul {
   display: block;
   font-size: 20px;
   font-weight: 700;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin-bottom: 20px;
 }
 .footer-social-icon a {
@@ -73,14 +73,14 @@ ul {
   line-height: 38px;
   border-radius: 50%;
 }
-.facebook-bg{
-  background: #3B5998;
+.facebook-bg {
+  background: #3b5998;
 }
-.twitter-bg{
-  background: #55ACEE;
+.twitter-bg {
+  background: #55acee;
 }
-.google-bg{
-  background: #DD4B39;
+.google-bg {
+  background: #dd4b39;
 }
 .footer-widget-heading h3 {
   color: #fff;
@@ -104,7 +104,7 @@ ul {
   width: 50%;
   margin-bottom: 12px;
 }
-.footer-widget ul li a:hover{
+.footer-widget ul li a:hover {
   color: #ff5e14;
 }
 .footer-widget ul li a {
@@ -118,24 +118,24 @@ ul {
 .subscribe-form input {
   width: 100%;
   padding: 14px 28px;
-  background: #2E2E2E;
-  border: 1px solid #2E2E2E;
+  background: #2e2e2e;
+  border: 1px solid #2e2e2e;
   color: #fff;
 }
 .subscribe-form button {
-    position: absolute;
-    right: 0;
-    background: #ff5e14;
-    padding: 13px 20px;
-    border: 1px solid #ff5e14;
-    top: 0;
+  position: absolute;
+  right: 0;
+  background: #ff5e14;
+  padding: 13px 20px;
+  border: 1px solid #ff5e14;
+  top: 0;
 }
 .subscribe-form button i {
   color: #fff;
   font-size: 22px;
   transform: rotate(-6deg);
 }
-.copyright-area{
+.copyright-area {
   background: #202020;
   padding: 25px 0;
 }
@@ -144,14 +144,14 @@ ul {
   font-size: 14px;
   color: #878787;
 }
-.copyright-text p a{
+.copyright-text p a {
   color: #ff5e14;
 }
 .footer-menu li {
   display: inline-block;
   margin-left: 20px;
 }
-.footer-menu li:hover a{
+.footer-menu li:hover a {
   color: #ff5e14;
 }
 .footer-menu li a {

@@ -9,6 +9,8 @@ from django.shortcuts import redirect, render
 from .import form
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .models import NannyDetails
+
 
 # Create your views here.
 '''
@@ -74,18 +76,27 @@ def userlogin(request):
 def profile(request):
     return render(request, "users/profile.html")
 
-#nannydetails to be filled before job application
-def nannyDetails(request):
-    form=nannyDetailsForm()
-    if request.method=="POST":
-        form=nannyDetailsForm(request.POST)
+#nanny filling details form
+@login_required
+def nannyVerificationDetails(request):
+    try:
+        nanny = NannyDetails.objects.get(user=request.user)
+        created = False
+    except NannyDetails.DoesNotExist:
+        nanny = NannyDetails(user=request.user)
+        created = True
+    form = nannyDetailsForm(instance=nanny)
+    if request.method == "POST":
+        form = nannyDetailsForm(request.POST, request.FILES, instance=nanny)
         if form.is_valid():
-            user=form.save()
-            first_name=form.cleaned_data('first_name')
-            last_name=form.cleaned_data('last_name')
-            name=first_name+' '+last_name
-            messages.success(name+ ", your details updated successfully")
-            return redirect('profile')
-    context={'form':form}
-    return render(request, "users/nannyDetailsForm")
+            nanny = form.save()
+            messages.success(request, "Your details have been updated successfully.")
+            return redirect('home')
+        else:
+            print(form.errors)
+
+    context = {'form': form}
+    return render(request, "users/nannyDetails.html", context)
+
+
 
