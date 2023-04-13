@@ -1,0 +1,43 @@
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 800px;
+}
+
+.nanny_details {
+  background-color: rgb(237, 247, 236);
+  width: 100%;
+  display: block;
+  justify-content: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 45%;
+}
+
+.form-group:last-child {
+  margin-right: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-group.full-width {
+  width: 100%;
+  margin-right: 0;
+}
+
+label {
+  margin-bottom: 5px;
+}
+.nanny_details_h2 {
+  color: rgb(110, 132, 248);
+  margin: 0 auto;
+  text-align: center;
+}

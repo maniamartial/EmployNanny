@@ -14,10 +14,10 @@ a:active {
   outline: none;
 }
 body {
-  background: rgb(128, 167, 128);
+  background-color: rgb(237, 247, 236);
 }
 header {
-  background-color: transparent;
+  background: rgb(128, 167, 128);
 }
 
 ul {

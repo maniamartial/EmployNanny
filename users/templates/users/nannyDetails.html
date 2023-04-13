@@ -1,0 +1,86 @@
+{% extends 'jobapp/base.html' %} {% block content %} {% load static %}
+
+<div class="nanny_details">
+  <h2 class="nanny_details_h2" style="text-align: center">
+    Nanny Details Form
+  </h2>
+  <div class="container my-4 nanny_details">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+          {{ form.first_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+          {{ form.last_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.phone.id_for_label }}">Phone:</label>
+          {{ form.phone }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.id_number.id_for_label }}">ID Number:</label>
+          {{ form.id_number }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.city.id_for_label }}">City:</label>
+          {{ form.city }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.address.id_for_label }}">Address:</label>
+          {{ form.address }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.level_of_education.id_for_label }}"
+            >Level of Education:</label
+          >
+          {{ form.level_of_education }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.recommendation_letter.id_for_label }}"
+            >Recommendation Letter:</label
+          >
+          {{ form.recommendation_letter }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.nationality.id_for_label }}">Nationality:</label>
+          {{ form.nationality }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.availability.id_for_label }}"
+            >Availability:</label
+          >
+          {{ form.availability }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.language.id_for_label }}">Language:</label>
+          {{ form.language }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.years_of_experience.id_for_label }}"
+            >Years of Experience:</label
+          >
+          {{ form.years_of_experience }}
+        </div>
+        <div class="form-group full-width">
+          <label for="{{ form.description.id_for_label }}">Description:</label>
+          {{ form.description }}
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="btn submit_btn"
+        style="
+          background-color: rgb(110, 132, 248);
+          width: 200px;
+          margin-bottom: 50px;
+        "
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
