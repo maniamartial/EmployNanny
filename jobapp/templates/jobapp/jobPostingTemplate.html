@@ -1,0 +1,80 @@
+{% extends 'jobapp/base.html' %} {% block content %}
+
+<div class="container my-4">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <h2 class="text-center mb-4 nanny_details_h2">Post a Job</h2>
+      <form method="POST" enctype="multipart/form-data" class="pl-4">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-lg-6">
+            <label for="{{ form.category.id_for_label }}">Category:</label>
+            {{ form.category }}
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="{{ form.city.id_for_label }}">City:</label>
+            {{ form.city }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-lg-6">
+            <label for="{{ form.addresss.id_for_label }}">Address:</label>
+            {{ form.addresss }}
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="{{ form.salary.id_for_label }}">Salary:</label>
+            {{ form.salary }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-lg-6">
+            <label for="{{ form.language.id_for_label }}">Language:</label>
+            {{ form.language }}
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="{{ form.nanny_age.id_for_label }}">Age Group:</label>
+            {{ form.nanny_age }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-lg-6">
+            <label for="{{ form.hours_per_day.id_for_label }}"
+              >Hours per Day:</label
+            >
+            {{ form.hours_per_day }}
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+            {{ form.start_date }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-lg-6">
+            <label for="{{ form.years_of_experience.id_for_label }}"
+              >Years of Experience:</label
+            >
+            {{ form.years_of_experience }}
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="{{ form.duration.id_for_label }}"
+              >Contract Duration:</label
+            >
+            {{ form.duration }}
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label for="{{ form.job_description.id_for_label }}"
+            >Job Description:</label
+          >
+          {{ form.job_description }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-4">
+          Post Job
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
