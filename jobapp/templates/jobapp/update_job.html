@@ -1,0 +1,77 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+
+<style>
+.wide-container {
+  width: 90%;
+  max-width: 1200px; /* Optional: Set a maximum width to prevent the container from becoming too wide on large screens */
+  margin: 0 auto; /* Optional: Center the container horizontally */
+}
+form input {
+  width: 100%;
+  max-width: 400px;
+}
+</style>
+<div class="container mt-4 width-container">
+    <h2 class="text-center">Update Job Post</h2>
+    <hr>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="category">Job Category:</label>
+            {{ form.category }}
+          </div>
+          <div class="form-group">
+            <label for="city">City:</label>
+            {{ form.city }}
+          </div>
+          <div class="form-group">
+            <label for="address">Address:</label>
+            {{ form.addresss }}
+          </div>
+          <div class="form-group">
+            <label for="salary">Salary:</label>
+            {{ form.salary }}
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="language">Language:</label>
+            {{ form.language }}
+          </div>
+          <div class="form-group">
+            <label for="nanny_age">Nanny Age:</label>
+            {{ form.nanny_age }}
+          </div>
+          <div class="form-group">
+            <label for="hours_per_day">Hours per Day:</label>
+            {{ form.hours_per_day }}
+          </div>
+          <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            {{ form.start_date }}
+          </div>
+          <div class="form-group">
+            <label for="years_of_experience">Years of Experience:</label>
+            {{ form.years_of_experience }}
+          </div>
+          <div class="form-group">
+            <label for="duration">Duration:</label>
+            {{ form.duration }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="job_description">Job Description:</label>
+        {{ form.job_description }}
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -6,7 +6,6 @@ from django.forms import fields
 from .models import NannyDetails
 from datetime import datetime
 
-
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
