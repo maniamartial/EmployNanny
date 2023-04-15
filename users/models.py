@@ -1,17 +1,17 @@
-
-
 from django.contrib.auth.models import User
 from django.db import models
+from PIL import Image
 
 AVAILABILITY_CHOICES = (
     ('yes', 'Yes'),
     ('no', 'No'),
 )
-HIGHEST_LEVEL_EDUCATION=(
+HIGHEST_LEVEL_EDUCATION = (
     ('College', 'college'),
     ('High School', 'high school'),
     ('Primary School', 'primary school')
 )
+
 
 class NannyDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -21,15 +21,30 @@ class NannyDetails(models.Model):
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
     id_number = models.IntegerField(default=0)
-    level_of_education = models.CharField(max_length=100, choices=HIGHEST_LEVEL_EDUCATION)
-    recommendation_letter = models.FileField(upload_to='recommendations/', null=True)
+    level_of_education = models.CharField(
+        max_length=100, choices=HIGHEST_LEVEL_EDUCATION)
+    recommendation_letter = models.FileField(
+        upload_to='recommendations/', null=True)
+
     nationality = models.CharField(max_length=100)
-    availability = models.CharField(max_length=100, choices=AVAILABILITY_CHOICES)
+    availability = models.CharField(
+        max_length=100, choices=AVAILABILITY_CHOICES)
     language = models.CharField(max_length=200)
     date_joined = models.DateTimeField(auto_now_add=True)
     years_of_experience = models.IntegerField(default=0)
     description = models.TextField(blank=True)
+    image = models.ImageField(default='default.jpg',
+                              upload_to='nanny_profile_pics')
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
