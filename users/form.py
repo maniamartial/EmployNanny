@@ -6,27 +6,31 @@ from django.forms import fields
 from .models import NannyDetails
 from datetime import datetime
 
+
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+
 class loginForm(UserCreationForm):
     class Meta:
-        model=User
-        fields=['email', 'password1']
- 
+        model = User
+        fields = ['email', 'password1']
+
+
 class nannyDetailsForm(forms.ModelForm):
     phone = forms.IntegerField(required=True)
     id_number = forms.IntegerField(required=True)
- 
+    image = forms.ImageField(required=False, label='Upload a profile picture')
+
     class Meta:
         model = NannyDetails
-        fields="__all__"
-        exclude = ('user','date_joined')
+        fields = "__all__"
+        exclude = ('user', 'date_joined')
 
 
-    #override date joined
+    # override date joined
 '''def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['date_joined'].initial = datetime.now()'''
@@ -36,4 +40,3 @@ class ProfileForm(Profile):
     class Meta:
         model=Profile
         '''
-

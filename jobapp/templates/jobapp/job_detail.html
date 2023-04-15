@@ -1,0 +1,36 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="text-center">{{ job.category }}</h2>
+    <hr>
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-group mb-4">
+          <li class="list-group-item">City: {{ job.city }}</li>
+          <li class="list-group-item">Address: {{ job.address }}</li>
+          <li class="list-group-item">Salary: {{ job.salary }}</li>
+          <li class="list-group-item">Duration: {{ job.duration }}</li>
+          <li class="list-group-item">Start Date: {{ job.start_date }}</li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ job.category }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Posted by <span class="employer">{{ job.employer.username }}</span></h6>
+            <div class="card-body">
+              <a href="#" class="card-link btn btn-primary">Apply</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Job Description</h5>
+        <p>{{ job.job_description }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "jobapp/base.html" %}
+
+{% block content %}
+{% load static %}
+{% load myfilters %}
+
+<style>
+.profile-image{
+    width:70%;
+    height:70%;
+    margin-left:10%;
+    margin-right:auto;
+}
+
+
+</style>
+<div class="row mt-4">
+ <div class="col-md-4 d-flex align-items-center">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title nanny_details_h2">{{ nanny.first_name }} {{ nanny.last_name }}</h5>
+      <img src="{{ nanny.image.url }}" class="img-fluid rounded-circle profile-image" alt="{{ nanny.first_name }}'s Profile Picture">
+      <p class="card-text">{{ nanny.description }}</p>
+    </div>
+  </div>
+</div>
+
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Personal Information</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item">Phone: {{ nanny.phone }}</li>
+              <li class="list-group-item">City: {{ nanny.city }}</li>
+              <li class="list-group-item">Address: {{ nanny.address }}</li>
+              <li class="list-group-item">ID Number: {{ nanny.id_number }}</li>
+              <li class="list-group-item">Level of Education: {{ nanny.level_of_education }}</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item">Nationality: {{ nanny.nationality }}</li>
+              <li class="list-group-item">Availability: {{ nanny.availability }}</li>
+              <li class="list-group-item">Language: {{ nanny.language }}</li>
+              <li class="list-group-item">Years of Experience: {{ nanny.years_of_experience }}</li>
+              <li class="list-group-item">
+                Recommendation Letter:
+                {% if nanny.recommendation_letter %}
+                <a href="{{ nanny.recommendation_letter.url }}" class="btn btn-sm btn-primary">View Document</a>
+                {% else %}
+                No document uploaded
+                {% endif %}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

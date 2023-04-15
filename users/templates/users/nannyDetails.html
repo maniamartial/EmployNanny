@@ -1,4 +1,6 @@
-{% extends 'jobapp/base.html' %} {% block content %} {% load static %}
+{% extends 'jobapp/base.html' %}
+{% block content %}
+{% load static %}
 
 <div class="nanny_details">
   <h2 class="nanny_details_h2" style="text-align: center">
@@ -33,15 +35,11 @@
           {{ form.address }}
         </div>
         <div class="form-group">
-          <label for="{{ form.level_of_education.id_for_label }}"
-            >Level of Education:</label
-          >
+          <label for="{{ form.level_of_education.id_for_label }}">Level of Education:</label>
           {{ form.level_of_education }}
         </div>
         <div class="form-group">
-          <label for="{{ form.recommendation_letter.id_for_label }}"
-            >Recommendation Letter:</label
-          >
+          <label for="{{ form.recommendation_letter.id_for_label }}">Recommendation Letter:</label>
           {{ form.recommendation_letter }}
         </div>
         <div class="form-group">
@@ -49,9 +47,7 @@
           {{ form.nationality }}
         </div>
         <div class="form-group">
-          <label for="{{ form.availability.id_for_label }}"
-            >Availability:</label
-          >
+          <label for="{{ form.availability.id_for_label }}">Availability:</label>
           {{ form.availability }}
         </div>
         <div class="form-group">
@@ -59,25 +55,19 @@
           {{ form.language }}
         </div>
         <div class="form-group">
-          <label for="{{ form.years_of_experience.id_for_label }}"
-            >Years of Experience:</label
-          >
+          <label for="{{ form.years_of_experience.id_for_label }}">Years of Experience:</label>
           {{ form.years_of_experience }}
         </div>
         <div class="form-group full-width">
           <label for="{{ form.description.id_for_label }}">Description:</label>
           {{ form.description }}
         </div>
+        <div class="form-group">
+          <label for="{{ form.image.id_for_label }}">Image:</label>
+          {{ form.image }}
+        </div>
       </div>
-      <button
-        type="submit"
-        class="btn submit_btn"
-        style="
-          background-color: rgb(110, 132, 248);
-          width: 200px;
-          margin-bottom: 50px;
-        "
-      >
+      <button type="submit" class="btn submit_btn" style="background-color: rgb(110, 132, 248); width: 200px; margin-bottom: 50px;">
         Submit
       </button>
     </form>

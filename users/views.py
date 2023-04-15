@@ -27,7 +27,9 @@ from .models import NannyDetails
     context = {'form': form}
     return render(request, "users/regist.html", context)'''
 
-#nanny registration page
+# nanny registration page
+
+
 def nannyRegister(request):
     form = CreateUserForm()
     if request.method == "POST":
@@ -42,7 +44,9 @@ def nannyRegister(request):
     context = {'form': form}
     return render(request, "users/nannyRegistration.html", context)
 
-#employers registration functionality
+# employers registration functionality
+
+
 def employRegister(request):
     form = CreateUserForm()
     if request.method == "POST":
@@ -58,7 +62,7 @@ def employRegister(request):
     return render(request, "users/employerRegistration.html", context)
 
 
-#nanny & employer login functionality
+# nanny & employer login functionality
 def userlogin(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -72,11 +76,15 @@ def userlogin(request):
     context = {}
     return render(request, "users/login.html", context)
 
-#nanny or employer profile
+# nanny or employer profile
+
+
 def profile(request):
     return render(request, "users/profile.html")
 
-#nanny filling details form
+# nanny filling details form
+
+
 @login_required
 def nannyVerificationDetails(request):
     try:
@@ -90,7 +98,8 @@ def nannyVerificationDetails(request):
         form = nannyDetailsForm(request.POST, request.FILES, instance=nanny)
         if form.is_valid():
             nanny = form.save()
-            messages.success(request, "Your details have been updated successfully.")
+            messages.success(
+                request, "Your details have been updated successfully.")
             return redirect('home')
         else:
             print(form.errors)
@@ -99,4 +108,10 @@ def nannyVerificationDetails(request):
     return render(request, "users/nannyDetails.html", context)
 
 
-
+@login_required
+def nanny_profile(request):
+    nanny = NannyDetails.objects.get(user=request.user)
+    context = {
+        'nanny': nanny
+    }
+    return render(request, 'users/nannyProfile.html', context)
