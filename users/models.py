@@ -48,3 +48,27 @@ class NannyDetails(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+
+class EmployerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone = models.IntegerField(default=0)
+    id_number = models.IntegerField(default=0)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(default='default.jpg',
+                              upload_to='employer_profile_pics')
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)

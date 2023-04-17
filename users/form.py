@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import fields
-from .models import NannyDetails
+from .models import NannyDetails, EmployerProfile
 from datetime import datetime
+
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -29,13 +30,12 @@ class nannyDetailsForm(forms.ModelForm):
         exclude = ('user', 'date_joined')
 
 
-    # override date joined
-'''def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['date_joined'].initial = datetime.now()'''
+class EmployerProfileForm(forms.ModelForm):
+    phone = forms.IntegerField(required=True)
+    id_number = forms.IntegerField(required=True)
+    image = forms.ImageField(required=False, label='Upload a profile picture')
 
-'''
-class ProfileForm(Profile):
     class Meta:
-        model=Profile
-        '''
+        model = EmployerProfile
+        fields = "__all__"
+        exclude = ('user', 'date_joined')

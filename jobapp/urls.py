@@ -15,4 +15,8 @@ urlpatterns = [
     # employer delete the job
 
     path('jobs/<int:pk>/delete/', views.delete_job, name='delete_job'),
+    path("nannies", views.show_all_nannies, name="nannies"),
+
+    # contract
+    path('contract/<int:job_id>/', views.create_contract, name='contract'),
 ]

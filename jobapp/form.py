@@ -1,5 +1,5 @@
 from django import forms
-from .models import jobModel
+from .models import jobModel, ContractModel
 
 
 class jobPostingForm(forms.ModelForm):
@@ -26,3 +26,12 @@ class JobForm(jobPostingForm):
             raise forms.ValidationError(
                 "Only the creator can edit/delete this job.")
         return cleaned_data
+
+
+class ContractForm(forms.ModelForm):
+    end_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = ContractModel
+        fields = ["end_date", "status"]

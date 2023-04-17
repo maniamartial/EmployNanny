@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from users.models import NannyDetails
 # Create your models here.
+from decimal import Decimal
+from django.db.models import Q
+
 
 CATEGORIES = (
     ('Full-time Nanny', 'full-time nanny'),
@@ -50,3 +54,44 @@ class jobModel(models.Model):
 
     def __str__(self):
         return self.category
+
+
+CONTRACT_STATUS = (
+    ('pending', 'Pending'),
+    ('active', 'Active'),
+    ('completed', 'Completed'),
+    ('terminated', 'Terminated'),
+)
+
+
+class ContractModel(models.Model):
+    job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
+    nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE, limit_choices_to={
+                              'user__groups__name': 'nanny'})
+    employer = models.ForeignKey(User, on_delete=models.CASCADE,  limit_choices_to={
+                                 'groups__name': 'employer'})
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+    duration = models.CharField(max_length=100, choices=CONTRACT_DURATION)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    status = models.CharField(
+        max_length=100, choices=CONTRACT_STATUS, default=CONTRACT_STATUS[0][0])
+    '''company_commission = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)'''
+
+    def save(self, *args, **kwargs):
+        # calculate contract amount as 90% of job salary
+        job_salary = Decimal(self.job.salary)
+        self.amount = round(job_salary * Decimal('0.9'), 2)
+
+        # calculate company commission as 10% of job salary
+        self.company_commission = round(job_salary * Decimal('0.1'), 2)
+
+        # calculate contract duration based on job duration
+        job_duration = self.job.duration
+        if job_duration == 'Full-Time':
+            self.duration = '1 Year'
+        elif job_duration == 'Part-Time':
+            self.duration = '6 Months'
+
+        super().save(*args, **kwargs)

@@ -12,6 +12,9 @@
     margin-right:auto;
 }
 
+.btn-margin {
+  margin-right: 10px;
+}
 
 </style>
 <div class="row mt-4">
@@ -21,10 +24,13 @@
       <h5 class="card-title nanny_details_h2">{{ nanny.first_name }} {{ nanny.last_name }}</h5>
       <img src="{{ nanny.image.url }}" class="img-fluid rounded-circle profile-image" alt="{{ nanny.first_name }}'s Profile Picture">
       <p class="card-text">{{ nanny.description }}</p>
+      <div class="d-flex justify-content-between align-items-end">
+        <a href="#" class="btn btn-primary btn-margin">Message</a>
+        <a href="#" class="btn btn-success btn-margin">Hire</a>
+      </div>
     </div>
   </div>
 </div>
-
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">

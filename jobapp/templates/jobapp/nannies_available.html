@@ -1,0 +1,51 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+
+<style>
+  .nanny {
+    font-size: 1.2rem;
+    font-family: Arial, sans-serif;
+    text-transform: capitalize;
+  }
+  .nanny-image {
+  height: 300px;
+  object-fit: cover;
+}
+</style>
+
+<h2 class="text-center">All Nannies</h2>
+<div class="container" style="max-width: 90%">
+  <div class="row justify-content-center mb-4 px-6">
+    {% for nanny in nannies %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <img class="card-img-top img-fluid nanny-image" src="{{ nanny.image.url }}" alt="Profile picture">
+          <div class="card-body">
+            <h5 class="card-title"><a href="{% url 'nanny_profile' nanny.id %}">{{ nanny.first_name }} {{ nanny.last_name }}</a></h5>
+
+            <h6 class="card-subtitle mb-2 text-muted">{{ nanny.nationality }}</h6>
+            <p class="card-text">{{ nanny.description|truncatechars:200 }}</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Phone: {{ nanny.phone }}</li>
+              <li class="list-group-item">City: {{ nanny.city }}</li>
+              <li class="list-group-item">ID Number: {{ nanny.id_number }}</li>
+              <li class="list-group-item">Level of Education: {{ nanny.get_level_of_education_display }}</li>
+              <li class="list-group-item">Recommendation Letter: {% if nanny.recommendation_letter %}<a href="{{ nanny.recommendation_letter.url }}">Download</a>{% else %}N/A{% endif %}</li>
+              <li class="list-group-item">Language: {{ nanny.language }}</li>
+            </ul>
+            <div class="card-body d-flex justify-content-between align-items-end">
+              <a href="#" class="card-link float-left">Contact</a>
+              <a href="#" class="card-link ml-auto">Hire</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if forloop.counter|divisibleby:3 %}
+        </div><div class="row justify-content-center">
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

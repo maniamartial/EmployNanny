@@ -1,24 +1,96 @@
-.carousl-item video {
+.carousel-item {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 600px;
+}
+
+.carousel-item video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.5;
+  object-fit: cover;
 }
-.carousel-item {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: 56.25%;
-}
+
 @media (max-width: 800px) {
-  .carousl-item video {
-    width: 100%;
-    height: 100%;
-  }
   .carousel-item {
     height: 350px;
     padding-bottom: 56.25%;
+  }
+
+  .carousel-item video {
+    width: 100%;
+    height: 100%;
+  }
+   .carousel-caption h3{
+    font: 14px;
+    margin-top: 30%;
+    padding-top: 50px;
+   }
+}
+
+img {
+  width: 100%;
+}
+
+div#slider-home .carousel-item::before {
+  background: #0000005c;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#slider-home h3 {
+  text-transform: capitalize;
+  font-size: 50px;
+}
+
+#slider-home p {
+  font-size: 23px;
+}
+
+#slider-home .btn {
+  background: rgb(142, 151, 192);
+  color: #fff;
+  padding: 12px 30px !important;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  margin-bottom: 15%;
+}
+
+#slider-home .btn:hover {
+  background: #ffffff;
+  color: rgb(110, 132, 248);
+}
+
+.logo3 {
+  height: 50%;
+  width: 50%;
+}
+
+@media (max-width: 800px) {
+  .logo3 {
+    position: absolute;
+    height: auto;
+    width: 20%;
+    max-height: 70%;
+    top: 0;
+    left: 0;
+  }
+#slider-home h3 {
+  text-transform: capitalize;
+  font-size: 30px;
+}
+  header {
+    height: 150px;
+  }
+
+  video {
+    height: 600px;
   }
 }
