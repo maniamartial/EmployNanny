@@ -1,5 +1,10 @@
+from .models import NannyDetails
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect
+from .models import EmployerProfile
 from django.shortcuts import render
-from .form import CreateUserForm, nannyDetailsForm
+from .form import CreateUserForm, nannyDetailsForm, EmployerProfileForm
 from django.contrib.auth.models import Group
 #from users.decorators import unauthenticated_user
 from django.contrib.auth import authenticate, login
@@ -9,7 +14,7 @@ from django.shortcuts import redirect, render
 from .import form
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import NannyDetails
+from .models import NannyDetails, EmployerProfile
 
 
 # Create your views here.
@@ -108,10 +113,64 @@ def nannyVerificationDetails(request):
     return render(request, "users/nannyDetails.html", context)
 
 
-@login_required
+'''@login_required
 def nanny_profile(request):
     nanny = NannyDetails.objects.get(user=request.user)
     context = {
         'nanny': nanny
     }
+    return render(request, 'users/nannyProfile.html', context)'''
+
+
+'''def nanny_profile(request, nanny_id):
+    nanny = NannyDetails.objects.get(id=nanny_id)
+    context = {
+        "nanny": nanny
+    }
+    return render(request, 'users/nannyProfile.html', context)'''
+# rest of the code
+
+
+def nanny_profile(request, nanny_id):
+    try:
+        nanny = NannyDetails.objects.get(id=nanny_id)
+    except ObjectDoesNotExist:
+        return render(request, 'users/user_not_found.html')
+    context = {
+        "nanny": nanny
+    }
     return render(request, 'users/nannyProfile.html', context)
+
+
+def employer_profile(request, employer_id):
+    employer = EmployerProfile.objects.get(id=employer_id)
+    context = {
+        "employer": employer
+    }
+    return render(request, 'users/employer_profile.html', context)
+
+# employer can view his/her profile
+
+
+@login_required
+def update_employer_profile(request):
+    try:
+        profile = EmployerProfile.objects.get(user=request.user)
+    except EmployerProfile.DoesNotExist:
+        profile = None
+
+    if request.method == 'POST':
+        form = EmployerProfileForm(
+            request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('employer_profile')
+        else:
+            print(form.errors)
+    else:
+        form = EmployerProfileForm(instance=profile)
+
+    context = {'form': form}
+    return render(request, 'users/update_employer_profile.html', context)

@@ -1,11 +1,10 @@
 {% extends 'jobapp/base.html' %} {% block content %} {%load static%}
-<style></style>
-<div
-  id="slider-home"
-  class="carousel slide"
-  data-ride="carousel"
-  data-pause="false"
->
+<style>
+  .carousel-height{
+    max-height:600px;
+  }
+</style>
+<div id="slider-home" class="carousel slide carousel-height" data-ride="carousel" data-interval="false">
   <ul class="carousel-indicators">
     <li data-target="#slider-home" data-slide-to="0" class="active"></li>
     <li data-target="#slider-home" data-slide-to="1"></li>
@@ -13,19 +12,9 @@
     <li data-target="#slider-home" data-slide-to="3"></li>
   </ul>
   <div class="carousel-inner">
-    <div class="carousel-item active">
-      <video autoplay muted loop>
-        <source src="{% static 'videos/video3.mp4' %}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <div class="carousel-caption">
-        <h3>discover a new you!</h3>
-        <p>Transform your look today with our special offers!</p>
-        <a class="btn" href="#">Make an appointment</a>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <video autoplay muted loop>
+
+    <div class="carousel-item active video-player">
+      <video autoplay muted loop onended="nextSlide()">
         <source src="{% static 'videos/video1.mp4' %}" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
@@ -33,29 +22,49 @@
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        <a class="btn" href="#">Make an appointment</a>
+        <a class="btn btn-primary" href="#">Make an appointment</a>
+        <a class="btn btn-secondary" href="#">Jobs Available</a>
       </div>
     </div>
-    <div class="carousel-item">
-      <video autoplay muted loop>
+
+    <div class="carousel-item video-player">
+      <video autoplay muted loop onended="nextSlide()">
+        <source src="{% static 'videos/video3.mp4' %}" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div class="carousel-caption">
+        <h3>discover a new you!</h3>
+        <p>Transform your look today with our special offers!</p>
+        <a class="btn btn-primary" href="#">Make an appointment</a>
+        <a class="btn btn-secondary" href="#">Jobs Available</a>
+      </div>
+    </div>
+    
+
+
+
+    <div class="carousel-item video-player">
+      <video autoplay muted loop onended="nextSlide()">
         <source src="{% static 'videos/video2.mp4' %}" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <div class="carousel-caption">
+       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        <a class="btn" href="#">Make an appointment</a>
+        <a class="btn btn-primary" href="#">Make an appointment</a>
+        <a class="btn btn-secondary" href="#">Jobs Available</a>
       </div>
     </div>
     <div class="carousel-item">
-      <video autoplay muted loop>
+      <video autoplay muted loop onended="nextSlide()">
         <source src="{% static 'videos/video4.mp4' %}" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <div class="carousel-caption">
+       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        <a class="btn" href="#">Make an appointment</a>
+        <a class="btn btn-primary" href="#">Make an appointment</a>
+        <a class="btn btn-secondary" href="#">Jobs Available</a>
       </div>
     </div>
   </div>
@@ -67,4 +76,10 @@
   </a>
 </div>
 
-{%endblock%}
+<script>
+  function nextSlide() {
+    $('#slider-home').carousel('next'); // move to next slide
+}
+</script>
+
+{% endblock %}

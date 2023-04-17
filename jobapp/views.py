@@ -1,9 +1,11 @@
+from .models import jobModel, ContractModel
+from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import jobModel
-from .form import jobPostingForm, JobForm
+from .form import jobPostingForm, JobForm, ContractForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from users.models import NannyDetails
 
 # Create your views here.
 
@@ -27,6 +29,15 @@ def jobPosting(request):
     context = {'form': form}
     return render(request, 'jobapp/jobPostingTemplate.html', context)
 
+# employer contract form
+
+
+def employer_contract_form(request):
+    form = ContractForm()
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+
 
 def job_listings(request):
     jobs = jobModel.objects.all().order_by('-date_posted')
@@ -34,12 +45,22 @@ def job_listings(request):
     return render(request, 'jobapp/joblistings.html', context)
 
 
+def show_all_nannies(request):
+    nannies = NannyDetails.objects.all().order_by("-date_joined")
+
+    context = {"nannies": nannies}
+    print(context)
+    return render(request, "jobapp/nannies_available.html", context)
 # single job
+
+
 def job_detail(request, job_id):
     job = get_object_or_404(jobModel, pk=job_id)
     return render(request, 'jobapp/job_detail.html', {'job': job})
 
 # employer to update the job
+
+# employer wh created the job can also delete the job
 
 
 @login_required
@@ -57,6 +78,7 @@ def edit_job(request, job_id):
     return render(request, 'jobapp/update_job.html', {'form': form, 'job': job})
 
 
+# employer who created the job, can also delete it
 @login_required
 def delete_job(request, pk):
     job = get_object_or_404(jobModel, pk=pk)
@@ -71,3 +93,29 @@ def delete_job(request, pk):
     }
 
     return render(request, 'jobapp/update_job.html', context)
+
+
+# will return to the page later
+# employer contract form
+def create_contract(request, job_id):
+    job = get_object_or_404(jobModel, pk=job_id)
+    if request.method == 'POST':
+        form = ContractForm(request.POST)
+        if form.is_valid():
+            contract = form.save(commit=False)
+            contract.job = job
+            contract.employer = request.user
+            contract.nanny = job.nanny_set.first()
+            contract.save()
+            return redirect('contracts:contract_detail', contract.pk)
+    else:
+        initial_data = {
+            'duration': job.duration,
+            'amount': round(float(job.salary) * 0.9, 2)
+        }
+        form = ContractForm(initial=initial_data)
+    context = {
+        'job': job,
+        'form': form
+    }
+    return render(request, 'jobapp/create_contract.html', context)

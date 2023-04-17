@@ -20,7 +20,11 @@ body {
 header {
   background: rgb(128, 167, 128);
 }
+    .head_container {
+      width: 90%;
+      margin: 0 auto;
 
+    }
 ul {
   margin: 0;
   padding: 0;
@@ -473,60 +477,5 @@ nav#cssmenu ul {
   #cssmenu > ul > li.has-sub > ul > li.active > a,
   #cssmenu > ul ul > li.has-sub > ul > li.active > a {
     border-top: none;
-  }
-}
-
-img {
-  width: 100%;
-}
-div#slider-home .carousel-item::before {
-  background: #0000005c;
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-#slider-home h3 {
-  text-transform: capitalize;
-  font-size: 50px;
-}
-
-#slider-home p {
-  font-size: 23px;
-}
-
-#slider-home .btn {
-  background: rgb(142, 151, 192);
-  color: #fff;
-  padding: 12px 30px !important;
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 10px;
-  margin-bottom: 30px;
-}
-#slider-home .btn:hover {
-  background: #ffffff;
-  color: rgb(110, 132, 248);
-}
-.logo3 {
-  height: 50%;
-  width: 50%;
-}
-
-@media (max-width: 800px) {
-  .logo3 {
-    position: absolute;
-    height: auto;
-    width: 20%;
-    max-height: 70%;
-    top: 0;
-    left: 0;
-  }
-  header {
-    height: 150px;
-  }
-  video {
-    height: 600px;
   }
 }

@@ -1,6 +1,7 @@
-{%load static%}
+{% load static %}
+
+
 <header>
-  <style></style>
   <div class="header-top">
     <div class="container">
       <div class="row">
@@ -9,78 +10,57 @@
         </div>
         <div class="col-md-7 col-sm-12 left_info">
           <ul>
-            <li><i class="fa fa-mobile-alt"></i><a href="#">+2547890822</a></li>
+            <li><i class="fa fa-mobile-alt"></i><a href="0740743521">+2547890822</a></li>
             <li>
-              <i class="fa fa-envelope" aria-hidden="true"></i
-              ><a href="#">employnanny.com</a>
+              <i class="fa fa-envelope" aria-hidden="true"></i>
+              <a href="home">employnanny.com</a>
             </li>
           </ul>
         </div>
       </div>
     </div>
   </div>
-  <style>
-    
-  </style>
+
   <div class="header-main">
-    <div class="container">
+    <div class="head_container">
       <nav id="cssmenu">
         <div class="logo">
-          <a href="{%url 'home'%}"
-            ><img class="logo3" src="{% static 'images/logo.png' %}" alt="P" />
+          <a href="{% url 'home' %}">
+            <img class="logo3" src="{% static 'images/logo.png' %}" alt="P" />
           </a>
         </div>
         <div id="head-mobile"></div>
         <div class="button"></div>
         <ul>
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="{% url 'home' %}">Home</a></li>
           <li>
             <a href="#">Services</a>
             <ul style="background-color: rgb(110, 132, 248)">
               <li style="background-color: rgb(110, 132, 248)">
-                <a href="#">Post Job</a>
+                <a href="{% url 'jobPosting' %}">Post Job</a>
               </li>
               <li style="background-color: rgb(110, 132, 248)">
-                <a href="#">Job listings</a>
+                <a href="{% url 'job_listing' %}">Job listings</a>
               </li>
-
-              <li><a href="#">Services 3</a></li>
-              <li><a href="#">Services 4</a></li>
             </ul>
           </li>
           <li><a href="#">About</a></li>
-
           <li>
             <a href="#">Account</a>
             <ul>
               <li>
-                <a href="#" style="background-color: rgb(110, 132, 248)"
-                  >Register</a
-                >
+                <a href="" style="background-color: rgb(110, 132, 248)">Register</a>
                 <ul>
                   <li>
-                    <a
-                      href="{%url 'nannyRegister'%}"
-                      style="background-color: rgb(110, 132, 248)"
-                      >nanny</a
-                    >
+                    <a href="{% url 'nannyRegister' %}" style="background-color: rgb(110, 132, 248)">nanny</a>
                   </li>
                   <li>
-                    <a
-                      href="{%url 'employerRegister'%}"
-                      style="background-color: rgb(110, 132, 248)"
-                      >Employer</a
-                    >
+                    <a href="{% url 'employerRegister' %}" style="background-color: rgb(110, 132, 248)">Employer</a>
                   </li>
                 </ul>
               </li>
-
               <li>
-                <a
-                  href="{%url 'login'%}"
-                  style="background-color: rgb(110, 132, 248)"
-                  >Login</a
-                >
+                <a href="{% url 'login' %}" style="background-color: rgb(110, 132, 248)">Login</a>
               </li>
             </ul>
           </li>

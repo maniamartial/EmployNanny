@@ -1,0 +1,55 @@
+{% extends "jobapp/base.html" %}
+
+{% block content %}
+{% load static %}
+
+<style>
+.profile-image{
+    width:70%;
+    height:70%;
+    margin-left:10%;
+    margin-right:auto;
+}
+
+.btn-margin {
+  margin-right: 10px;
+}
+
+.employer_profile_container{
+    min-height:500px;
+}
+
+</style>
+<div class="container employer_profile_container">
+<div class="row mt-4">
+ <div class="col-md-4 d-flex align-items-center">
+  <div class="card">
+    <div class="card-body text-center">
+      <h5 class="card-title">{{ employer.first_name }} {{ employer.last_name }}</h5>
+      <img src="{{ employer.image.url }}" class="img-fluid rounded-circle profile-image" alt="{{ employer.first_name }}'s Profile Picture">
+      <div class="d-flex justify-content-between align-items-end">
+        <a href="#" class="btn btn-primary btn-margin">Message</a>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Personal Information</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item">Phone: {{ employer.phone }}</li>
+              <li class="list-group-item">ID Number: {{ employer.id_number }}</li>
+              <li class="list-group-item">Date Joined: {{ employer.date_joined|date:"n/j/Y" }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock content %}

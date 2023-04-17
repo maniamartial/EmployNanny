@@ -1,0 +1,20 @@
+{% extends "jobapp/base.html" %}
+
+{% block content %}
+
+{%load static%}
+
+  <div class="container mt-5">
+    <h1 class="text-center">Oops! We couldn't find what you were looking for.</h1>
+    <p class="text-center">The profile you are looking for does not exist.</p>
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <img src="{% static 'images\user_not_found.gif' %}" class="img-fluid" alt="404 Error Image">
+      </div>
+    </div>
+    <div class="text-center mt-5">
+      <a href="{% url 'nannyDetails' %}" class="btn btn-primary mb-5">Back to Home</a>
+    </div>
+  </div>
+
+{% endblock content %}
