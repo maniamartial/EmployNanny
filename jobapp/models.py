@@ -65,6 +65,10 @@ CONTRACT_STATUS = (
 
 
 class ContractModel(models.Model):
+    pass
+
+
+'''class ContractModel(models.Model):
     job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
     nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE, limit_choices_to={
                               'user__groups__name': 'nanny'})
@@ -76,8 +80,8 @@ class ContractModel(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(
         max_length=100, choices=CONTRACT_STATUS, default=CONTRACT_STATUS[0][0])
-    '''company_commission = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0)'''
+    company_commission = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
 
     def save(self, *args, **kwargs):
         # calculate contract amount as 90% of job salary
@@ -94,4 +98,15 @@ class ContractModel(models.Model):
         elif job_duration == 'Part-Time':
             self.duration = '6 Months'
 
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs)'''
+
+
+class JobApplication(models.Model):
+    job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
+    nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=20, choices=CONTRACT_STATUS, default='pending')
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.nanny.user.username} applied for {self.job.category}"

@@ -18,5 +18,13 @@ urlpatterns = [
     path("nannies", views.show_all_nannies, name="nannies"),
 
     # contract
-    path('contract/<int:job_id>/', views.create_contract, name='contract'),
+    # path('contract/<int:job_id>/', views.create_contract, name='contract'),
+
+    # nanny tracking teh jobs aplication status
+    path("job_application_status", views.application_status,
+         name="job_application_status"),
+
+    # nanny applying for job
+    path('apply/<int:job_id>/', views.apply_for_job, name='apply_for_job'),
+
 ]
