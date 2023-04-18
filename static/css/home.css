@@ -50,10 +50,11 @@ div#slider-home .carousel-item::before {
 
 #slider-home p {
   font-size: 23px;
+  color: white;
 }
 
 #slider-home .btn {
-  background: rgb(142, 151, 192);
+background-color: #0275d8;
   color: #fff;
   padding: 12px 30px !important;
   font-size: 18px;
@@ -65,8 +66,7 @@ div#slider-home .carousel-item::before {
 
 #slider-home .btn:hover {
   background: #ffffff;
-  color: rgb(110, 132, 248);
-}
+color: #0275d8;}
 
 .logo3 {
   height: 50%;

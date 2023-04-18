@@ -1,0 +1,65 @@
+{% extends 'jobapp/base.html' %} 
+{% block content %} 
+{% load static %}
+<style>
+.status-height{
+    min-height:550px;
+}
+
+.applicant-row {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.applicant-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.applicant-info p {
+    margin: 0;
+    margin-right: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.action-buttons button {
+    margin-right: 10px;
+}
+
+</style>
+<div class="container status-height">
+    <h1>Job Applications for {{ job.category }}</h1>
+    {% if job_applications %}
+    <ul>
+        {% for application in job_applications %}
+        <li class="applicant-row">
+            <div class="applicant-info">
+                <p>
+                    <strong>Applicant name:</strong> <a href="{% url 'nanny_profile' nanny_id=application.nanny.id %}">{{ application.nanny.first_name }} {{ application.nanny.last_name }}</a><br>
+                    <strong>Location:</strong> {{ application.nanny.city }}<br>
+                    <strong>Status:</strong> {{ application.status }}<br>
+                    <strong>Job ID:</strong> {{ job.id }}<br>
+                </p>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-primary"><a href="{% url 'nanny_profile' nanny_id=application.nanny.id %}" style="color:white">View Profile</a></button>
+                    <button type="button" class="btn btn-success">Message</button>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No job applications found.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
+
+

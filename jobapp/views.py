@@ -1,6 +1,6 @@
+from .models import jobModel, JobApplication
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
-from .models import JobApplication
 from django.shortcuts import render, redirect
 from .models import jobModel, ContractModel
 from django.shortcuts import render, get_object_or_404, redirect
@@ -150,3 +150,20 @@ def application_status(request):
     context = {"job_applications": job_applications}
 
     return render(request, 'jobapp/application_status.html', context)
+
+
+# employer able to view applicants
+def job_applications(request, job_id):
+    job = jobModel.objects.get(id=job_id)
+    job_applications = JobApplication.objects.filter(job=job)
+   # print(job_applications.nanny)
+    context = {'job': job, 'job_applications': job_applications}
+    return render(request, 'jobapp/job_applications.html', context)
+
+
+def about_us(request):
+    return render(request, "jobapp/about_us.html")
+
+
+def help(request):
+    return render(request, "jobapp/help.html")

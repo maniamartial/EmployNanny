@@ -1,0 +1,99 @@
+{% extends 'jobapp/base.html' %} 
+
+{% block content %} 
+{% load static %}
+<style>
+.about-container {
+    margin-top: 50px;
+}
+
+.about-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.about-content {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+
+.contact-container {
+    margin-top: 50px;
+}
+
+.contact-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.contact-info {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.map-container {
+    margin-top: 50px;
+    height: 500px;
+    width:100%;
+    
+}
+
+.map {
+    height: 100%;
+    width: 100%;
+}
+p{
+    text-align:justify;
+    color:black
+
+}
+
+
+</style>
+
+<div class="head_container">
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <h1 class="about-header">About Us</h1>
+            <p class="about-content">
+            The Nanny application and employer platform is designed to 
+            connect reliable and experienced nannies with families seeking childcare services, 
+            with the aim of ensuring transparency, fairness, and equity for both parties. The platform offers a simple and user-friendly interface
+             for parents to search and browse through profiles of carefully screened and vetted nannies, who have the option to undergo '
+             background checks before being hired. The platform also offers fair and competitive compensation packages for nannies, 
+             and resources to help them improve their skills and enhance their professional development. In addition, the platform has robust safety features to ensure the
+              safety of both nannies and employers, and support services are available to help parents and nannies navigate any issues that may arise during the hiring process. Overall, the Nanny platform aims to streamline the process 
+            of finding and hiring the right nanny for a family, while also creating a safe and supportive environment for nannies and employers.    
+            </p>
+        </div>
+
+        <div class="col-md-6">
+            <div class="contact-container">
+                <h1 class="contact-header">Contact Us</h1>
+                <div class="contact-info">
+                    <p><strong>Email:</strong> info@example.com</p>
+                    <p><strong>Phone:</strong> +1 (555) 555-5555</p>
+                    <p><strong>Address:</strong> 123 Main Street, Nairobi, Kenya</p>
+                </div>
+            </div>
+        </div>
+
+                <div class="map-container ">
+                    
+                            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3998.267035982028!2d36.90383221433624!3d-1.1989453991238456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f158e02fb1883%3A0x3fc32fd0fc788e36!2sKenyatta%20University%2C%20Nairobi!5e0!3m2!1sen!2ske!4v1650315995305!5m2!1sen!2ske" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                       
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
