@@ -28,10 +28,10 @@ class JobForm(jobPostingForm):
         return cleaned_data
 
 
-class ContractForm(forms.ModelForm):
+'''class ContractForm(forms.ModelForm):
     end_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
 
     class Meta:
         model = ContractModel
-        fields = ["end_date", "status"]
+        #fields = ["end_date", "status"]'''

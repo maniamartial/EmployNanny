@@ -1,8 +1,12 @@
+from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render
+from .models import JobApplication
+from django.shortcuts import render, redirect
 from .models import jobModel, ContractModel
 from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import jobModel
-from .form import jobPostingForm, JobForm, ContractForm
+from .form import jobPostingForm, JobForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import NannyDetails
@@ -30,13 +34,6 @@ def jobPosting(request):
     return render(request, 'jobapp/jobPostingTemplate.html', context)
 
 # employer contract form
-
-
-def employer_contract_form(request):
-    form = ContractForm()
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
 
 
 def job_listings(request):
@@ -97,7 +94,7 @@ def delete_job(request, pk):
 
 # will return to the page later
 # employer contract form
-def create_contract(request, job_id):
+'''def create_contract(request, job_id):
     job = get_object_or_404(jobModel, pk=job_id)
     if request.method == 'POST':
         form = ContractForm(request.POST)
@@ -118,4 +115,38 @@ def create_contract(request, job_id):
         'job': job,
         'form': form
     }
-    return render(request, 'jobapp/create_contract.html', context)
+    return render(request, 'jobapp/create_contract.html', context)'''
+
+
+# nanny making an applcations
+
+
+def apply_for_job(request, job_id):
+    job = get_object_or_404(jobModel, id=job_id)
+    nanny_details = request.user.nannydetails
+
+    if nanny_details is None:
+        # Redirect to a page that explains that the user needs to have a NannyDetails object
+        return redirect('nannyDetails')
+
+    # Check if the nanny has already applied for the job
+    if JobApplication.objects.filter(job=job, nanny=nanny_details).exists():
+        messages.warning(request, 'You have already applied for this job.')
+        return redirect('job_listing')
+
+    # Create a new JobApplication object
+    job_application = JobApplication(job=job, nanny=nanny_details)
+    job_application.save()
+
+    messages.success(
+        request, 'Your job application has been submitted successfully.')
+    return redirect('job_application_status')
+
+
+# nanny page to track the status of teh job applied for
+def application_status(request):
+    nanny = request.user.nannydetails
+    job_applications = JobApplication.objects.filter(nanny=nanny)
+    context = {"job_applications": job_applications}
+
+    return render(request, 'jobapp/application_status.html', context)
