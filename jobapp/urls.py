@@ -27,4 +27,11 @@ urlpatterns = [
     # nanny applying for job
     path('apply/<int:job_id>/', views.apply_for_job, name='apply_for_job'),
 
+    # view applications made on a job
+    path('jobs/<int:job_id>/applications/',
+         views.job_applications, name='job_applications'),
+
+    # about page
+    path("about_us", views.about_us, name="about_us")
+
 ]

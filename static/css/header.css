@@ -4,7 +4,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: rgb(110, 132, 248);
+color: #0275d8;
  
 }
 a,
@@ -160,7 +160,7 @@ nav#cssmenu ul {
 #cssmenu ul li.active:hover,
 #cssmenu ul li.active,
 #cssmenu ul li.has-sub.active:hover {
-  background: rgb(110, 132, 248);
+background-color: #0275d8;
   -webkit-transition: background 0.3s ease;
   -ms-transition: background 0.3s ease;
   transition: background 0.3s ease;
