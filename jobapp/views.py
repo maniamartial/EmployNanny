@@ -120,7 +120,7 @@ def delete_job(request, pk):
 
 # nanny making an applcations
 
-
+@login_required
 def apply_for_job(request, job_id):
     job = get_object_or_404(jobModel, id=job_id)
     nanny_details = request.user.nannydetails
@@ -144,6 +144,7 @@ def apply_for_job(request, job_id):
 
 
 # nanny page to track the status of teh job applied for
+@login_required
 def application_status(request):
     nanny = request.user.nannydetails
     job_applications = JobApplication.objects.filter(nanny=nanny)
@@ -153,6 +154,7 @@ def application_status(request):
 
 
 # employer able to view applicants
+@login_required
 def job_applications(request, job_id):
     job = jobModel.objects.get(id=job_id)
     job_applications = JobApplication.objects.filter(job=job)
