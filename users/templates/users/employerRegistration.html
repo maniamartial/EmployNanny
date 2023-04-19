@@ -47,22 +47,28 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="3">
-                        <div>
-                         {{form.password1}}
-                        {% if form.errors %} <p  role="alert">{{form.password1.errors}}</p> {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <div>
-                            {{form.password2}}
-                           
-                        </div>
-                    </td>
-                </tr>
+                                <tr>
+    <td colspan="3">
+        <div>
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+                <p class="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </td>
+</tr>
+<tr>
+    <td colspan="3">
+        <div>
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+                <p class="alert">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </td>
+</tr>
                 <tr>
                     <td colspan="3">
                         <div>
