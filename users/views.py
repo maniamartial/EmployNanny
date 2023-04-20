@@ -1,3 +1,5 @@
+from django.shortcuts import redirect
+from django.contrib.auth import logout
 from .models import NannyDetails
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
@@ -174,3 +176,11 @@ def update_employer_profile(request):
 
     context = {'form': form}
     return render(request, 'users/update_employer_profile.html', context)
+
+
+# logout
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')

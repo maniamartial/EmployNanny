@@ -22,6 +22,7 @@
 .applicant-info p {
     margin: 0;
     margin-right: 20px;
+    color:black;
 }
 
 .action-buttons {
@@ -50,7 +51,12 @@
                 <div class="action-buttons">
                     <button type="button" class="btn btn-primary"><a href="{% url 'nanny_profile' nanny_id=application.nanny.id %}" style="color:white">View Profile</a></button>
                     <button type="button" class="btn btn-success">Message</button>
-                </div>
+<a href="{% url 'create_contract' application_id=application.id %}">
+  <button type="button" class="btn btn-success">Hire</button>
+</a>
+
+
+         </div>
             </div>
         </li>
         {% endfor %}

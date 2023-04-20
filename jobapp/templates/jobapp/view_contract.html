@@ -1,0 +1,16 @@
+
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<h1>Contract Details</h1>
+
+<p><strong>Job:</strong> {{ contract.job }}</p>
+<p><strong>Nanny:</strong> {{ contract.nanny }}</p>
+<p><strong>Employer:</strong> {{ contract.employer }}</p>
+<p><strong>Start Date:</strong> {{ contract.start_date }}</p>
+<p><strong>End Date:</strong> {{ contract.end_date }}</p>
+<p><strong>Hourly Rate:</strong> {{ contract.hourly_rate }}</p>
+
+<p><strong>Status:</strong> {{ status }}</p>
+{% endblock content%}
+

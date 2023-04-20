@@ -32,6 +32,21 @@ urlpatterns = [
          views.job_applications, name='job_applications'),
 
     # about page
-    path("about_us", views.about_us, name="about_us")
+    path("about_us", views.about_us, name="about_us"),
+
+    # creating contract
+    path('contracts/create/<int:application_id>/',
+         views.create_contract_and_start_duration, name='create_contract'),
+
+
+
+    # path for accepting contract by nanny
+    path('accept-contract/<int:contract_id>/',
+         views.accept_contract, name='accept_contract'),
+
+    # viewing coontract
+    path('contracts/<int:contract_id>/',
+         views.view_contract, name='view_contract'),
+
 
 ]
