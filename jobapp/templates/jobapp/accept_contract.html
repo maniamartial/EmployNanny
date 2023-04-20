@@ -1,0 +1,14 @@
+
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<h1>Contract Details</h1>
+<p>Job: {{ contract.job }}</p>
+<p>Nanny: {{ contract.nanny }}</p>
+<p>Employer: {{ contract.employer }}</p>
+<p>Start Date: {{ contract.start_date }}</p>
+<p>Duration: {{ contract.job.duration }} days</p><form method="post">
+  {% csrf_token %}
+  <input type="submit" value="Accept">
+</form>
+{% endblock %}

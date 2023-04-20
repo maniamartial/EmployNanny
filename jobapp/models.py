@@ -4,6 +4,8 @@ from users.models import NannyDetails
 # Create your models here.
 from decimal import Decimal
 from django.db.models import Q
+from datetime import timedelta
+from django.utils import timezone
 
 
 CATEGORIES = (
@@ -65,18 +67,16 @@ CONTRACT_STATUS = (
 
 
 class ContractModel(models.Model):
-    pass
-
-
-'''class ContractModel(models.Model):
-    job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
+    job = models.ForeignKey(jobModel, on_delete=models.CASCADE, default=1)
     nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE, limit_choices_to={
-                              'user__groups__name': 'nanny'})
+                              'user__groups__name': 'nanny'}, default=1)
     employer = models.ForeignKey(User, on_delete=models.CASCADE,  limit_choices_to={
-                                 'groups__name': 'employer'})
-    start_date = models.DateField(auto_now_add=True)
-    end_date = models.DateField()
-    duration = models.CharField(max_length=100, choices=CONTRACT_DURATION)
+                                 'groups__name': 'employer'}, default=1)
+    start_date = models.DateField(
+        auto_now_add=True,  blank=True, null=True)
+    end_date = models.DateField(default=timezone.now() + timedelta(days=30))
+    duration = models.CharField(
+        max_length=100, choices=CONTRACT_DURATION, default="pending")
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(
         max_length=100, choices=CONTRACT_STATUS, default=CONTRACT_STATUS[0][0])
@@ -98,7 +98,7 @@ class ContractModel(models.Model):
         elif job_duration == 'Part-Time':
             self.duration = '6 Months'
 
-        super().save(*args, **kwargs)'''
+        super().save(*args, **kwargs)
 
 
 class JobApplication(models.Model):

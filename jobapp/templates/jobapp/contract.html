@@ -1,0 +1,18 @@
+{% extends "jobapp/base.html" %}
+
+{% block content %}
+  <h1>Contract Details</h1>
+  <ul>
+    <li><strong>Employer:</strong> {{ contract.employer }}</li>
+    <li><strong>Nanny:</strong> {{ contract.nanny }}</li>
+    <li><strong>Salary:</strong> {{ contract.job.salary }}</li>
+  </ul>
+  <h2>Status: {{ status }}</h2>
+  {% if status == "Pending" %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="accept" class="btn btn-success">Accept</button>
+      <button type="submit" name="reject" class="btn btn-danger">Reject</button>
+    </form>
+  {% endif %}
+{% endblock %}

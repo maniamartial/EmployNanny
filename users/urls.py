@@ -15,8 +15,10 @@ urlpatterns = [
          name="update_employer_profile"),
 
     path('employer_profile/<int:employer_id>/', views.employer_profile,
-         name="employer_profile")
+         name="employer_profile"),
 
+    # logout
+    path('logout/', views.logout_view, name='logout'),
 
 
 ]
