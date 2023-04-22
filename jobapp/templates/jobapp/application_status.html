@@ -17,23 +17,30 @@
           <th>City</th>
           <th>Address</th>
           <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for job_application in job_applications %}
           <tr>
-    <td><a href="{% url 'job_detail' job_id=job_application.job.id %}">{{ job_application.job.category }}</a></td>
+            <td><a href="{% url 'job_detail' job_id=job_application.job.id %}">{{ job_application.job.category }}</a></td>
             <td>{{ job_application.job.employer.username }}</td>
             <td>{{ job_application.job.city }}</td>
             <td>{{ job_application.job.addresss }}</td>
             <td>{{ job_application.status }}</td>
+            <td>
+              {% if job_application.contract %}
+                {% if job_application.status == 'active' %}
+                  <a href="{% url 'accept_contract' contract_id=job_application.contract.id %}" class="btn btn-success">Accept Contract</a>
+                {% endif %}
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   {% else %}
     <p>You haven't applied for any jobs yet.</p>
-
   {% endif %}
 </div>
-{% endblock content%}
+{% endblock content %}

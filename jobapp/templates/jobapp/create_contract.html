@@ -10,43 +10,47 @@
           <tbody>
             <tr>
               <td><strong>Job Category:</strong></td>
-              <td>{{ job.category }}</td>
+              <td>{{ contract.job.category }}</td>
             </tr>
             <tr>
               <td><strong>City:</strong></td>
-              <td>{{ job.city }}</td>
+              <td>{{ contract.job.city }}</td>
             </tr>
             <tr>
               <td><strong>Address:</strong></td>
-              <td>{{ job.address }}</td>
+              <td>{{ contract.job.addresss }}</td>
             </tr>
             <tr>
               <td><strong>Salary:</strong></td>
-              <td>{{ job.salary }}</td>
+              <td>{{ contract.amount }}</td>
+            </tr>
+            <tr>
+              <td><strong>Company Commission:</strong></td>
+              <td>{{ contract.company_commission }}</td>
             </tr>
             <tr>
               <td><strong>Language:</strong></td>
-              <td>{{ job.language }}</td>
+              <td>{{ contract.job.language }}</td>
             </tr>
             <tr>
               <td><strong>Nanny Age Group:</strong></td>
-              <td>{{ job.nanny_age }}</td>
+              <td>{{ contract.job.nanny_age }}</td>
             </tr>
             <tr>
               <td><strong>Hours Per Day:</strong></td>
-              <td>{{ job.hours_per_day }}</td>
+              <td>{{ contract.job.hours_per_day }}</td>
             </tr>
             <tr>
               <td><strong>Start Date:</strong></td>
-              <td>{{ job.start_date }}</td>
+              <td>{{ contract.job.start_date }}</td>
             </tr>
             <tr>
               <td><strong>Years of Experience:</strong></td>
-              <td>{{ job.years_of_experience }}</td>
+              <td>{{ contract.job.years_of_experience }}</td>
             </tr>
             <tr>
               <td><strong>Contract Duration:</strong></td>
-              <td>{{ job.duration }}</td>
+              <td>{{ contract.job.duration }}</td>
             </tr>
           </tbody>
         </table>
@@ -56,6 +60,8 @@
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="btn btn-success">Save Changes</button>
+              <button type="button" class="btn btn-primary">{{ contract.status }}</button>
+
         </form>
       </div>
     </div>
