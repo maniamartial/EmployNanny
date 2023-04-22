@@ -49,4 +49,11 @@ urlpatterns = [
          views.view_contract, name='view_contract'),
 
 
+    # employer to view all contracts
+    path('contracts/all/', views.view_all_contracts, name='view_all_contracts'),
+
+    path('contracts/all/', views.view_all_contracts_nanny,
+         name='view_all_contracts_nanny'),
+
+
 ]

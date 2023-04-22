@@ -315,3 +315,22 @@ def view_contract(request, contract_id):
 
     # Render the template with the contract details and status
     return render(request, "jobapp/view_contract.html", {"contract": contract, "status": status})
+
+
+# employer to view all the contracts that exists
+@login_required
+def view_all_contracts(request):
+    # Get all contracts
+    contracts = ContractModel.objects.filter(employer=request.user)
+
+    # Render the template with the contract list
+    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts})
+
+
+@login_required
+def view_all_contracts_nanny(request):
+    # Get all contracts
+    contracts = ContractModel.objects.filter(nanny=request.user)
+
+    # Render the template with the contract list
+    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts})

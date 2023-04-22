@@ -1,6 +1,11 @@
 {% load static %}
 
+<style>
+.username{
+  text-transform: capitalize;
+}
 
+</style>
 <header>
   <div class="header-top">
     <div class="container">
@@ -34,45 +39,58 @@
         <ul>
           <li class="active"><a href="{% url 'home' %}">Home</a></li>
           <li>
-            <a href="#">Services</a>
-            <ul style="background-color: rgb(110, 132, 248)">
-              <li style="background-color: rgb(110, 132, 248)">
-                <a href="{% url 'jobPosting' %}">Post Job</a>
-              </li>
-              <li style="background-color: rgb(110, 132, 248)">
-                <a href="{% url 'job_listing' %}">Job listings</a>
-              </li>
-            </ul>
-          </li>
+  <a href="#">Services</a>
+  <ul style="background-color: rgb(110, 132, 248)">
+      <li style="background-color: rgb(110, 132, 248)">
+        <a href="{% url 'jobPosting' %}">Post Job</a>
+      </li>
+      
+    <li style="background-color: rgb(110, 132, 248)">
+      <a href="{% url 'job_listing' %}">Job listings</a>
+    </li>
+  </ul>
+</li>
           <li><a href="{%url 'about_us'%}">About</a></li>
-          <li>
-            <a href="#">Account</a>
+           <li>
+            <a href="#" class="username">
+              {% if user.is_authenticated %}
+                {{ user.username }}
+              {% else %}
+                Account
+              {% endif %}
+            </a>
             <ul>
-              <li>
-                <a href="" style="background-color: rgb(110, 132, 248)">Register</a>
-                <ul>
-                  <li>
-                    <a href="{% url 'nannyRegister' %}" style="background-color: rgb(110, 132, 248)">nanny</a>
-                  </li>
-                  <li>
-                    <a href="{% url 'employerRegister' %}" style="background-color: rgb(110, 132, 248)">Employer</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="{% url 'login' %}" style="background-color: rgb(110, 132, 248)">Login</a>
-              </li>
-               <li>
-                <a href="{% url 'logout' %}" style="background-color: rgb(110, 132, 248)">Logout</a>
-              </li>
-               <li>
-                <a href="{% url 'job_application_status' %}" style="background-color: rgb(110, 132, 248)">Application Status</a>
-              </li>
+              {% if user.is_authenticated %}
+                <!-- show user-specific links here -->
+                <li>
+                  <a href="{% url 'logout' %}" style="background-color: rgb(110, 132, 248)">Logout</a>
+                </li>
+                <li>
+                  <a href="{% url 'job_application_status' %}" style="background-color: rgb(110, 132, 248)">Application Status</a>
+                </li>
+              {% else %}
+                <!-- show login and register links here -->
+                <li>
+                  <a href="#" style="background-color: rgb(110, 132, 248)">Register</a>
+<ul>
+ <li>
+                  <a href="{% url 'nannyRegister' %}" style="background-color: rgb(110, 132, 248)">nanny</a>
+                </li>
+                <li>
+                  <a href="{% url 'employerRegister' %}" style="background-color: rgb(110, 132, 248)">Employer</a>
+                </li>
+</ul>
+                 
+                <li>
+                  <a href="{% url 'login' %}" style="background-color: rgb(110, 132, 248)">Login</a>
+                </li>
+              {% endif %}
             </ul>
           </li>
-          <li><a href="#">Contracts</a></li>
+<li><a href="{% url 'view_all_contracts' %}">Contracts</a></li>
         </ul>
       </nav>
     </div>
   </div>
 </header>
+
