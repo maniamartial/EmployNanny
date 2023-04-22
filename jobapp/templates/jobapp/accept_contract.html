@@ -1,14 +1,49 @@
-
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
-<h1>Contract Details</h1>
-<p>Job: {{ contract.job }}</p>
-<p>Nanny: {{ contract.nanny }}</p>
-<p>Employer: {{ contract.employer }}</p>
-<p>Start Date: {{ contract.start_date }}</p>
-<p>Duration: {{ contract.job.duration }} days</p><form method="post">
-  {% csrf_token %}
-  <input type="submit" value="Accept">
-</form>
+<style>
+p{
+  color:black;
+}
+</style>
+<div class="container status-height">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h1 class="text-center mb-4">Contract Details</h1>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Job</h5>
+          <p class="card-text">{{ contract.job }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <h5 class="card-title">Nanny</h5>
+            <p class="card-text">{{ contract.nanny }}</p>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">Employer</h5>
+            <p class="card-text">{{ contract.employer }}</p>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">Start Date</h5>
+            <p class="card-text">{{ contract.start_date }}</p>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">Duration</h5>
+            <p class="card-text">{{ contract.job.duration }} days</p>
+          </li>
+        </ul>
+     <div class="card-body">
+  <form method="post">
+    {% csrf_token %}
+    <div class="btn-group" role="group">
+      <button type="submit" name="accept" class="btn btn-success mr-2">Accept</button>
+      <button type="submit" name="reject" class="btn btn-danger ml-auto">Reject</button>
+    </div>
+  </form>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

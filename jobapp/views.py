@@ -151,11 +151,21 @@ def apply_for_job(request, job_id):
 
 
 # nanny page to track the status of teh job applied for
-@login_required
 def application_status(request):
     nanny = request.user.nannydetails
     job_applications = JobApplication.objects.filter(nanny=nanny)
     context = {"job_applications": job_applications}
+
+    for job_application in job_applications:
+        contract = None
+        try:
+            contract = ContractModel.objects.get(
+                job=job_application.job, nanny=nanny)
+        except ContractModel.DoesNotExist:
+            pass
+
+        job_application.contract = contract
+        context["contract"] = contract
 
     return render(request, 'jobapp/application_status.html', context)
 
@@ -178,35 +188,7 @@ def help(request):
     return render(request, "jobapp/help.html")
 
 
-# nanny accepting_rejecting the contract
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-
-    if request.method == 'POST':
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            contract.status = 'accepted'
-            contract.save()
-            # TODO: Add code to notify the employer of the nanny's acceptance
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'rejected'
-            contract.save()
-            # TODO: Add code to notify the employer of the nanny's rejection
-
-        # Redirect to the contract details page
-        return redirect('contract-details', contract_id=contract_id)
-
-    context = {
-        'contract': contract,
-    }
-
-    return render(request, 'jobapp/accept_contract.html', context)
-
-
 # tracker timer
-
-
 '''def start_contract_duration_timer(contract_id: int, end_date: timezone.datetime):
     # define a function that will be executed when the timer is done
     def timer_done():
@@ -217,6 +199,7 @@ def accept_contract(request, contract_id):
     # schedule the function to run at the end of the timer
     async_task('time.sleep', (end_date - timezone.now()).total_seconds())
     async_task(timer_done)'''
+
 
 #
 
@@ -229,23 +212,66 @@ def create_contract_and_start_duration(request, application_id):
     nanny = application.nanny
     employer = application.job.employer
 
-    # Create the contract
-    contract = ContractModel.objects.create(
-        job=application.job, nanny=nanny, employer=employer)
+    # Check if the contract has already been created
+    try:
+        contract = ContractModel.objects.get(
+            job=application.job, nanny=nanny, employer=employer)
+        message = "Contract has already been created."
+    except ContractModel.DoesNotExist:
+        # Create the contract
+        contract = ContractModel.objects.create(
+            job=application.job, nanny=nanny, employer=employer)
 
-    # Start the duration timer
-    contract.start_date = timezone.now()
-    contract.save()
+        # Start the duration timer
+        contract.start_date = timezone.now()
+        contract.save()
 
-    # Set the timer to end the contract
-    duration = application.job.duration
-    #end_date = contract.start_date + timedelta(days=duration)
-    end_date = timezone.now()
-    #timer_id = start_contract_duration_timer(contract.id, end_date)
-    #contract.timer_id = timer_id
-    contract.save()
+        # Set the timer to end the contract
+        duration = application.job.duration
+        # end_date = contract.start_date + timedelta(days=duration)
+        # timer_id = start_contract_duration_timer(contract.id, end_date)
+        end_date = timezone.now()
+        contract.timer_id = end_date
+        contract.save()
 
-    return redirect('home')
+        application.status = 'active'
+        application.save()
+
+        message = "Contract has been created successfully."
+
+    context = {
+        'message': message,
+        'application': application,
+        'contract': contract
+    }
+
+    return render(request, 'jobapp/create_contract.html', context)
+
+
+# nanny accepting_rejecting the contract
+def accept_contract(request, contract_id):
+    contract = get_object_or_404(ContractModel, id=contract_id)
+
+    if request.method == 'POST':
+        if 'accept' in request.POST:
+            # Handle contract acceptance
+            contract.status = 'active'
+            contract.save()
+            # TODO: Add code to notify the employer of the nanny's acceptance
+        elif 'reject' in request.POST:
+            # Handle contract rejection
+            contract.status = 'terminated'
+            contract.save()
+            # TODO: Add code to notify the employer of the nanny's rejection
+
+        # Redirect to the contract details page
+        return redirect('view_contract', contract_id=contract_id)
+
+    context = {
+        'contract': contract,
+    }
+
+    return render(request, 'jobapp/accept_contract.html', context)
 
 
     # Set the timer to end the contract
@@ -254,7 +280,7 @@ def create_contract_and_start_duration(request, application_id):
 
 
 # contractor to view the state of contract
-def view_contract(request, contract_id):
+'''def view_contract(request, contract_id):
     # Get the contract object
     contract = get_object_or_404(ContractModel, id=contract_id)
 
@@ -268,3 +294,24 @@ def view_contract(request, contract_id):
 
     # Render the template with the contract details and status
     return render(request, "view_contract.html", {"contract": contract, "status": status})
+'''
+
+
+def view_contract(request, contract_id):
+    # Get the contract object
+    contract = get_object_or_404(ContractModel, id=contract_id)
+
+    # Determine the status of the contract
+    if contract.status == 'active':
+        status = "Active"
+    elif contract.status == 'terminated':
+        status = "Terminated"
+    elif contract.accepted_by_nanny:
+        status = "Accepted"
+    elif contract.rejected_by_nanny:
+        status = "Rejected"
+    else:
+        status = "Pending"
+
+    # Render the template with the contract details and status
+    return render(request, "jobapp/view_contract.html", {"contract": contract, "status": status})
