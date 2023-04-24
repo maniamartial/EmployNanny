@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import Payment
@@ -59,6 +60,10 @@ def showform(request):
             if response.status_code == 200 and response.json().get('ResponseCode') == '0':
                 payment.status = "success"
                 payment.save()
+
+                # Add a success message
+                messages.success(request, "Payment was successful!")
+
                 return redirect('payment_complete')
             else:
                 payment.status = "failure"
@@ -66,30 +71,6 @@ def showform(request):
 
     context = {'form': form}
     return render(request, 'payments/mpesa_details.html', context)
-
-
-def mpesa_callback(request):
-    if request.method == 'POST':
-        # Get the transaction details from the request body
-        transaction = json.loads(request.body)
-
-        # Get the transaction status and transaction ID
-        result_code = int(transaction['Body']['stkCallback']['ResultCode'])
-        transaction_id = transaction['Body']['stkCallback']['CheckoutRequestID']
-
-        # Get the payment object for this transaction
-        payment = Payment.objects.get(transaction_id=transaction_id)
-
-        if result_code == 0:
-            # Transaction successful
-            payment.status = 'success'
-            payment.save()
-        else:
-            # Transaction failed
-            payment.status = 'failure'
-            payment.save()
-
-    return HttpResponse(status=200)
 
 
 # The last page
