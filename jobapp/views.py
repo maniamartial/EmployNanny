@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from .models import ContractModel
 from django.shortcuts import render, get_object_or_404
-from django_q.tasks import async_task
+#from django_q.tasks import async_task
 from datetime import timedelta
 from django.utils import timezone
 from .models import jobModel, JobApplication

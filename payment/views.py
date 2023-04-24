@@ -1,3 +1,6 @@
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from .models import Payment
 import math
 from datetime import datetime
 from .form import PaymentForm
@@ -38,7 +41,7 @@ def showform(request):
             access_token = MpesaAccessToken.validated_mpesa_access_token
             api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
             headers = {"Authorization": "Bearer %s" % access_token}
-            request = {
+            payload = {
                 "BusinessShortCode": LipanaMpesaPpassword.Business_short_code,
                 "Password": LipanaMpesaPpassword.decode_password,
                 "Timestamp": LipanaMpesaPpassword.lipa_time,
@@ -52,17 +55,51 @@ def showform(request):
                 "TransactionDesc": "Payment for services"
             }
 
-            response = requests.post(api_url, json=request, headers=headers)
-            print(response)
-            return redirect('home')
+            response = requests.post(api_url, json=payload, headers=headers)
+            if response.status_code == 200 and response.json().get('ResponseCode') == '0':
+                payment.status = "success"
+                payment.save()
+                return redirect('payment_complete')
+            else:
+                payment.status = "failure"
+                payment.save()
 
     context = {'form': form}
     return render(request, 'payments/mpesa_details.html', context)
 
 
+def mpesa_callback(request):
+    if request.method == 'POST':
+        # Get the transaction details from the request body
+        transaction = json.loads(request.body)
+
+        # Get the transaction status and transaction ID
+        result_code = int(transaction['Body']['stkCallback']['ResultCode'])
+        transaction_id = transaction['Body']['stkCallback']['CheckoutRequestID']
+
+        # Get the payment object for this transaction
+        payment = Payment.objects.get(transaction_id=transaction_id)
+
+        if result_code == 0:
+            # Transaction successful
+            payment.status = 'success'
+            payment.save()
+        else:
+            # Transaction failed
+            payment.status = 'failure'
+            payment.save()
+
+    return HttpResponse(status=200)
+
+
 # The last page
+# Comfirming payments
+def payment_complete(request):
+    if request.user.is_authenticated:
+        employer = request.user
+        payments = Payment.objects.filter(user=employer)
+        context = {'payments': payments}
 
-
-def thankspayment(request):
-
-    return render(request, 'payments/thanks.html', context)
+        return render(request, 'payments/mpesa_payment_complete.html', context)
+    else:
+        return redirect('login')

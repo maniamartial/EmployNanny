@@ -4,5 +4,5 @@ urlpatterns = [
     path('mpesa', views.getAccessToken, name='mpesa'),
     #path('lipa', views.lipa_na_mpesa_online, name='lipa'),
     path('pay', views.showform, name='pay'),
-    # path('paymentcomplete', views.thankspayment, name='paymentcomplete'),
+    path('payment_complete', views.payment_complete, name='payment_complete'),
 ]

@@ -19,13 +19,15 @@
   border-bottom: 2px solid #ccc;
   border-radius: 0;
 }
+h1{
+  color:white;
+}
   </style>
 
-</style>
-  <div class="container mt-5 bg-success">
+  <div class="container mt-5">
     <div class="card text-black">
-      <div class="card-header text-center">
-        <h1>Make Payment</h1>
+      <div class="card-header text-center bg-success ">
+        <h1>Make Payment : Mpesa</h1>
       </div>
       <div class="card-body text-center">
         <form method="post" class="d-flex flex-column align-items-center">
@@ -42,9 +44,10 @@
             <label for="{{ form.description.id_for_label }}">Description</label>
             {{ form.description }}
           </div>
-          <button type="submit" class="btn btn-success">Submit</button>
+          <button type="submit" class="btn btn-success btn-block">Submit</button>
         </form>
       </div>
     </div>
   </div>
 {% endblock %}
+
