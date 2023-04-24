@@ -1,5 +1,5 @@
 {% load static %}
-
+{%load jobapp_tags%}
 <style>
 .username{
   text-transform: capitalize;
@@ -41,6 +41,13 @@
           <li>
   <a href="#">Services</a>
   <ul style="background-color: rgb(110, 132, 248)">
+
+  {% if user.is_authenticated %}
+  {% if user|has_group:"employer" %}
+    <li><a href="{% url 'jobPosting' %}">Post Jobsss</a></li>
+  {% endif %}
+{% endif %}
+
       <li style="background-color: rgb(110, 132, 248)">
         <a href="{% url 'jobPosting' %}">Post Job</a>
       </li>
