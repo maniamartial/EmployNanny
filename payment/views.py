@@ -84,3 +84,8 @@ def payment_complete(request):
         return render(request, 'payments/mpesa_payment_complete.html', context)
     else:
         return redirect('login')
+
+
+#Paypal payment implementation
+def paypal_payment(request):
+    return render(request, "payments/paypal_payments.html")
