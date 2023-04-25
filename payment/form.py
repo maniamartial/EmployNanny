@@ -15,3 +15,9 @@ class PaymentForm(forms.ModelForm):
                 raise ValidationError(
                     "Phone number must be at least 10 digits")
             return phone_number
+
+
+class PaypalPaymentForm(forms.ModelForm):
+    class Meta:
+        model = Payment
+        fields = ('amount', 'description')
