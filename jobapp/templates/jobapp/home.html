@@ -1,4 +1,5 @@
 {% extends 'jobapp/base.html' %} {% block content %} {%load static%}
+{%load jobapp_tags%}
 <style>
   .carousel-height{
     max-height:600px;
@@ -24,9 +25,18 @@
       <!--<img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="Chicago" />-->
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
-        <p>Transform your look today with our special offers!</p>
-        <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-secondary" href="#">Jobs Available</a>
+     <p>Transform your look today with our special offers!</p>
+{% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
+
+{% elif request.user|has_group:"nanny" %}
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
+{% else %}
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+{% endif %}
       </div>
     </div>
 
@@ -38,8 +48,17 @@
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-secondary" href="#">Jobs Available</a>
+        {% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+        <a class="btn btn-primary" href="{% url 'jobPosting'%}">Post Job</a>
+
+{% elif request.user|has_group:"nanny" %}
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+<a class="btn btn-secondary" href="#">My Applications</a>
+{% else %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+{% endif %}
       </div>
     </div>
     
@@ -54,10 +73,21 @@
        <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-secondary" href="#">Jobs Available</a>
+        {% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+        <a class="btn btn-primary" href="#">Post Job</a>
+
+{% elif request.user|has_group:"nanny" %}
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+<a class="btn btn-secondary" href="#">My Applications</a>
+{% else %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+{% endif %}
       </div>
     </div>
+
+
     <div class="carousel-item">
       <video autoplay muted loop onended="nextSlide()">
         <source src="{% static 'videos/video4.mp4' %}" type="video/mp4" />
@@ -66,10 +96,21 @@
        <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-     <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-secondary" href="#">Jobs Available</a>
+    {% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+        <a class="btn btn-primary" href="#">Post Job</a>
+
+{% elif request.user|has_group:"nanny" %}
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+<a class="btn btn-secondary" href="#">My Applications</a>
+{% else %}
+    <a class="btn btn-primary" href="#">View Nannies</a>
+<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
+{% endif %}
       </div>
     </div>
+
+
   </div>
   <a class="carousel-control-prev" href="#slider-home" data-slide="prev">
     <span class="carousel-control-prev-icon"></span>

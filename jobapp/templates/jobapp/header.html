@@ -1,5 +1,7 @@
 {% load static %}
 {%load jobapp_tags%}
+
+
 <style>
 .username{
   text-transform: capitalize;
@@ -10,9 +12,11 @@
   <div class="header-top">
     <div class="container">
       <div class="row">
+       
         <div class="col-md-5 col-sm-12 right_info">
           <p><i class="fa fa-map-marker"></i> Kenyatta road 400-00100</p>
         </div>
+        
         <div class="col-md-7 col-sm-12 left_info">
           <ul>
             <li><i class="fa fa-mobile-alt"></i><a href="0740743521">+2547890822</a></li>
@@ -42,16 +46,11 @@
   <a href="#">Services</a>
   <ul style="background-color: rgb(110, 132, 248)">
 
-  {% if user.is_authenticated %}
-  {% if user|has_group:"employer" %}
-    <li><a href="{% url 'jobPosting' %}">Post Jobsss</a></li>
-  {% endif %}
-{% endif %}
-
+    {% if request.user|has_group:'employer'%}
       <li style="background-color: rgb(110, 132, 248)">
         <a href="{% url 'jobPosting' %}">Post Job</a>
       </li>
-      
+      {% endif %}
     <li style="background-color: rgb(110, 132, 248)">
       <a href="{% url 'job_listing' %}">Job listings</a>
     </li>
@@ -69,11 +68,22 @@
             <ul>
               {% if user.is_authenticated %}
                 <!-- show user-specific links here -->
+           {% if request.user|has_group:'nanny'%}
                 <li>
-                  <a href="{% url 'logout' %}" style="background-color: rgb(110, 132, 248)">Logout</a>
+                  <a href="{% url 'job_application_status' %}" style="background-color: rgb(110, 132, 248)">Applications Status</a>
                 </li>
+                           {% elif request.user|has_group:'employer'%}
+
+<li>
+  <a href="#" style="background-color: rgb(110, 132, 248)">Job Applicants</a>
+</li>
+{% endif %}
+
                 <li>
-                  <a href="{% url 'job_application_status' %}" style="background-color: rgb(110, 132, 248)">Application Status</a>
+                  <a href="{% url 'nannyDetails' %}" style="background-color: rgb(110, 132, 248)">My Profile</a>
+                </li>
+                     <li>
+                  <a href="{% url 'logout' %}" style="background-color: rgb(110, 132, 248)">Logout</a>
                 </li>
               {% else %}
                 <!-- show login and register links here -->

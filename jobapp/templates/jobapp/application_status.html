@@ -29,9 +29,17 @@
             <td>{{ job_application.job.addresss }}</td>
             <td>{{ job_application.status }}</td>
             <td>
+              
               {% if job_application.contract %}
-                {% if job_application.status == 'active' %}
+{% if job_application.status in 'terminated,canceled,rejected' %}
+
+              <a href="{% url 'delete_job_application' job_application_id=job_application.id %}" class="btn btn-danger">Delete</a>
+
+                {% elif job_application.status == 'active' %}
                   <a href="{% url 'accept_contract' contract_id=job_application.contract.id %}" class="btn btn-success">Accept Contract</a>
+                                  {% elif job_application.status == 'accepted' %}
+                  <a href="{% url 'view_contract' contract_id=job_application.contract.id %}" class="btn btn-primary">View Contract</a>
+
                 {% endif %}
               {% endif %}
             </td>

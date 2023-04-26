@@ -56,4 +56,8 @@ urlpatterns = [
          name='view_all_contracts_nanny'),
 
 
+    # nanny deleting job
+    path('job_application/<int:job_application_id>/delete/',
+         views.delete_job_application, name='delete_job_application'),
+
 ]

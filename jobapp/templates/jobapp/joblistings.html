@@ -1,4 +1,4 @@
-{% extends 'jobapp/base.html' %} {% block content %}
+{% extends 'jobapp/base.html' %} {% block content %}{% load jobapp_tags%}
 
 <style>
   .employer {
@@ -6,16 +6,19 @@
     font-family: Arial, sans-serif;
     text-transform: capitalize;
   }
+  p{
+    color:black;
+  }
 </style>
 <h2 class="text-center">All Job Listings</h2>
 {% if messages %}
-<div class="alert alert-warning">
+<div class="alert alert-success">
   {% for message in messages %} {{ message }} {% endfor %}
 </div>
 {% endif %}
 <div class="container" style="max-width: 90%">
   <div class="row justify-content-center mb-4 px-6">
-    {% for job in jobs %}
+    {% for job in page_obj %}
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
@@ -44,11 +47,13 @@
               class="card-link float-left"
               >View >></a
             >
+            {% if request.user|has_group:'nanny'%}
             <a
               href="{% url 'apply_for_job' job_id=job.pk %}"
               class="card-link ml-auto"
               >Apply</a
             >
+            {% endif %}
           </div>
           {% if request.user == job.employer %}
           <div
@@ -81,4 +86,24 @@
   </div>
   <div class="row justify-content-center">{% endif %} {% endfor %}</div>
 </div>
+
+{% if page_obj.has_other_pages %}
+  <div class="pagination justify-content-center">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1" class="btn btn-outline-primary">&laquo; First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary">&lsaquo; Prev</a>
+      {% endif %}
+
+      <span class="current-page">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary">Next &rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-primary">Last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+{% endif %}
 {% endblock %}

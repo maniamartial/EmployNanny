@@ -8,16 +8,21 @@
     font-family: Arial, sans-serif;
     text-transform: capitalize;
   }
-  .nanny-image {
-  height: 300px;
+.nanny-image {
   object-fit: cover;
+  width:70%;
+  height:40%;
+  border-radius: 50%;
+  margin-left:auto;
+  margin-right:auto;
 }
+
 </style>
 
 <h2 class="text-center">All Nannies</h2>
 <div class="container" style="max-width: 90%">
   <div class="row justify-content-center mb-4 px-6">
-    {% for nanny in nannies %}
+    {% for nanny in page_obj %}
       <div class="col-md-4 mb-4">
         <div class="card h-100">
           <img class="card-img-top img-fluid nanny-image" src="{{ nanny.image.url }}" alt="Profile picture">
@@ -47,5 +52,27 @@
     {% endfor %}
   </div>
 </div>
+
+{% if page_obj.has_other_pages %}
+  <div class="pagination justify-content-center">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="?page=1" class="btn btn-outline-primary">&laquo; First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary">&lsaquo; Prev</a>
+      {% endif %}
+
+      <span class="current-page">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary">Next &rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-primary">Last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+{% endif %}
+
+
 
 {% endblock %}

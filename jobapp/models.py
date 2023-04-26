@@ -65,6 +65,17 @@ CONTRACT_STATUS = (
     ('terminated', 'Terminated'),
 )
 
+JOB_STATUS = (
+    ('pending', 'Pending'),
+    ('active', 'Active'),
+    ('canceled', 'Canceled'),
+    ('accepted', 'Accepted'),
+    ('completed', 'Completed'),
+    ('terminated', 'Terminated'),
+    ('rejected', 'Rejected'),
+    ('expired', 'Expired')
+)
+
 
 class ContractModel(models.Model):
     job = models.ForeignKey(jobModel, on_delete=models.CASCADE, default=1)
@@ -105,7 +116,7 @@ class JobApplication(models.Model):
     job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
     nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
     status = models.CharField(
-        max_length=20, choices=CONTRACT_STATUS, default='pending')
+        max_length=20, choices=JOB_STATUS, default='pending')
     notes = models.TextField(blank=True)
 
     def __str__(self):
