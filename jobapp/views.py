@@ -43,8 +43,22 @@ def jobPosting(request):
 # employer contract form
 
 
+'''def job_listings(request):
+    jobs = jobModel.objects.all().order_by('-date_posted')
+    context = {'jobs': jobs}
+    return render(request, 'jobapp/joblistings.html', context)'''
+
+from django.db.models import Sum
+from payment.models import Payment
 def job_listings(request):
     jobs = jobModel.objects.all().order_by('-date_posted')
+    for job in jobs:
+        employer = job.employer
+        total_payments = Payment.objects.filter(user=employer).aggregate(Sum('amount'))['amount__sum'] or 0
+        if total_payments >= int(job.salary):
+            job.payment_status = 'verified'
+        else:
+            job.payment_status = 'unverified'
     context = {'jobs': jobs}
     return render(request, 'jobapp/joblistings.html', context)
 
