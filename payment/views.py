@@ -12,7 +12,7 @@ from requests.auth import HTTPBasicAuth
 import datetime
 import json
 from . mpesa_Credentials import MpesaAccessToken, LipanaMpesaPpassword
-
+from django.contrib.auth.decorators import login_required
 
 def getAccessToken(request):
     consumer_key = 'XjWEg9z1ihL9zoXO1JRaCOhfIJAgB8cu'
@@ -24,7 +24,7 @@ def getAccessToken(request):
     validated_mpesa_access_token = mpesa_access_token['access_token']
     return HttpResponse(validated_mpesa_access_token)
 
-
+@login_required
 def showform(request):
     if request.user.is_authenticated:
         employer = request.user
@@ -75,17 +75,23 @@ def showform(request):
 
 # The last page
 # Comfirming payments
+from django.db.models import Sum
+
+@login_required
 def payment_complete(request):
     if request.user.is_authenticated:
         employer = request.user
         payments = Payment.objects.filter(user=employer)
-        context = {'payments': payments}
-
+        total_amount = payments.aggregate(Sum('amount'))['amount__sum'] or 0
+        print(total_amount)
+        context = {'payments': payments, 'total_amount': total_amount}
         return render(request, 'payments/mpesa_payment_complete.html', context)
     else:
         return redirect('login')
 
 
+
 #Paypal payment implementation
+@login_required
 def paypal_payment(request):
     return render(request, "payments/paypal_payments.html")
