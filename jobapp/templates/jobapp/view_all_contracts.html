@@ -21,7 +21,9 @@
             <td>{{ contract.job }}</td>
             <td>{{ contract.nanny }}</td>
             <td>{{ contract.employer }}</td>
-            <td>{{ contract.get_status_display }}</td>
+            <td {% if contract.status == 'Terminated' %}class="text-danger"{% elif contract.status == 'Active' %}class="text-primary"{% endif %}>
+              {{ contract.get_status_display }}
+            </td>
             <td>
               <a href="{% url 'view_contract' contract.id %}" class="btn btn-primary">View Details</a>
             </td>

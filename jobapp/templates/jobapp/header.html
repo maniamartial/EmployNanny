@@ -43,17 +43,26 @@
         <ul>
           <li class="active"><a href="{% url 'home' %}">Home</a></li>
           <li>
-  <a href="#">Services</a>
-  <ul style="background-color: rgb(110, 132, 248)">
+  <a href="#">Jobs</a>
+  <ul style="background-color: #0275d8">
 
     {% if request.user|has_group:'employer'%}
-      <li style="background-color: rgb(110, 132, 248)">
+      <li style="background-color: #0275d8">
         <a href="{% url 'jobPosting' %}">Post Job</a>
       </li>
       {% endif %}
-    <li style="background-color: rgb(110, 132, 248)">
-      <a href="{% url 'job_listing' %}">Job listings</a>
+
+{% if request.user|has_group:'employer' %}
+<li style="background-color: #0275d8">
+      <a href="{% url 'job_listing' %}">My Jobs</a>
     </li>
+    {% else %}
+    <li style="background-color: #0275d8">
+      <a href="{% url 'job_listing' %}">Jobs Available</a>
+    </li>
+    {% endif %}
+
+
   </ul>
 </li>
           <li><a href="{%url 'about_us'%}">About</a></li>
@@ -70,44 +79,49 @@
                 <!-- show user-specific links here -->
            {% if request.user|has_group:'nanny'%}
                 <li>
-                  <a href="{% url 'job_application_status' %}" style="background-color: rgb(110, 132, 248)">Applications Status</a>
+                  <a href="{% url 'job_application_status' %}" style="background-color: #0275d8">Applications Status</a>
                 </li>
-                           {% elif request.user|has_group:'employer'%}
-
-<li>
-  <a href="#" style="background-color: rgb(110, 132, 248)">Job Applicants</a>
-</li>
+             
 {% endif %}
 
+{% if request.user|has_group:'nanny'%}
                 <li>
-                  <a href="{% url 'nannyDetails' %}" style="background-color: rgb(110, 132, 248)">My Profile</a>
+                  <a href="{% url 'nannyDetails' %}" style="background-color: #0275d8">My Profile</a>
                 </li>
+                {% endif %}
                      <li>
-                  <a href="{% url 'logout' %}" style="background-color: rgb(110, 132, 248)">Logout</a>
+                  <a href="{% url 'logout' %}" style="background-color: #0275d8">Logout</a>
                 </li>
               {% else %}
                 <!-- show login and register links here -->
                 <li>
-                  <a href="#" style="background-color: rgb(110, 132, 248)">Register</a>
+                  <a href="#" style="background-color:#0275d8">Register</a>
 <ul>
  <li>
-                  <a href="{% url 'nannyRegister' %}" style="background-color: rgb(110, 132, 248)">nanny</a>
+                  <a href="{% url 'nannyRegister' %}" style="background-color: #0275d8">nanny</a>
                 </li>
                 <li>
-                  <a href="{% url 'employerRegister' %}" style="background-color: rgb(110, 132, 248)">Employer</a>
+                  <a href="{% url 'employerRegister' %}" style="background-color: #0275d8">Employer</a>
                 </li>
 </ul>
                  
                 <li>
-                  <a href="{% url 'login' %}" style="background-color: rgb(110, 132, 248)">Login</a>
+                  <a href="{% url 'login' %}" style="background-color: #0275d8">Login</a>
                 </li>
               {% endif %}
             </ul>
           </li>
+          {% if request.user|has_group:'employer' %}
 <li><a href="{% url 'view_all_contracts' %}">Contracts</a></li>
+          {% elif request.user|has_group:'nanny' %}
+<li><a href="{% url 'view_all_contracts_nanny' %}">Contracts</a></li>
+{% else %}
+<li><a href="{% url 'view_all_contracts' %}">Contracts</a></li>
+{% endif %}
         </ul>
       </nav>
     </div>
   </div>
 </header>
+
 

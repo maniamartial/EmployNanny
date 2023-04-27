@@ -1,18 +1,17 @@
+from django.shortcuts import get_object_or_404, redirect
+from jobapp.models import JobApplication
 from django.core.paginator import Paginator
 from .models import JobApplication, ContractModel
 from django.http import HttpResponse, HttpResponseForbidden
 from .models import ContractModel
-from django.shortcuts import render, get_object_or_404
 #from django_q.tasks import async_task
 from datetime import timedelta
 from django.utils import timezone
 from .models import jobModel, JobApplication
-from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import jobModel, ContractModel
 from django.shortcuts import render, get_object_or_404, redirect
-from django.shortcuts import render, redirect, get_object_or_404
 from .models import jobModel
 from .form import jobPostingForm, JobForm
 from django.contrib.auth.decorators import login_required
@@ -22,7 +21,6 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from payment.models import Payment
 from django.contrib.auth.decorators import user_passes_test
-from .decorators import is_nanny, is_employer
 
 # Create your views here.
 
@@ -46,34 +44,13 @@ def jobPosting(request):
     context = {'form': form}
     return render(request, 'jobapp/jobPostingTemplate.html', context)
 
-# employer contract form
-
-
-'''def job_listings(request):
-    jobs = jobModel.objects.all().order_by('-date_posted')
-    context = {'jobs': jobs}
-    return render(request, 'jobapp/joblistings.html', context)'''
-
-
-'''def job_listings(request):
-    jobs = jobModel.objects.all().order_by('-date_posted')
-    for job in jobs:
-        employer = job.employer
-        total_payments = Payment.objects.filter(
-            user=employer).aggregate(Sum('amount'))['amount__sum'] or 0
-        if total_payments >= int(job.salary):
-            job.payment_status = 'verified'
-        else:
-            job.payment_status = 'unverified'
-    paginator = Paginator(jobs, 3)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'jobs': jobs, 'page_obj': page_obj}
-    return render(request, 'jobapp/joblistings.html', context)'''
-
 
 def job_listings(request):
-    jobs = jobModel.objects.all().order_by('-date_posted')
+    if request.user.groups.filter(name='employer').exists():
+        jobs = jobModel.objects.filter(
+            employer=request.user).order_by('-date_posted')
+    else:
+        jobs = jobModel.objects.all().order_by('-date_posted')
     for job in jobs:
         employer = job.employer
         total_payments = Payment.objects.filter(
@@ -163,26 +140,6 @@ def apply_for_job(request, job_id):
     return redirect('job_application_status')
 
 
-# nanny page to track the status of teh job applied for
-'''def application_status(request):
-    nanny = request.user.nannydetails
-    job_applications = JobApplication.objects.filter(nanny=nanny)
-    context = {"job_applications": job_applications}
-
-    for job_application in job_applications:
-        contract = None
-        try:
-            contract = ContractModel.objects.get(
-                job=job_application.job, nanny=nanny)
-        except ContractModel.DoesNotExist:
-            pass
-
-        job_application.contract = contract
-        context["contract"] = contract
-
-    return render(request, 'jobapp/application_status.html', context)'''
-
-
 @login_required
 def application_status(request):
     try:
@@ -224,22 +181,6 @@ def about_us(request):
 
 def help(request):
     return render(request, "jobapp/help.html")
-
-
-# tracker timer
-'''def start_contract_duration_timer(contract_id: int, end_date: timezone.datetime):
-    # define a function that will be executed when the timer is done
-    def timer_done():
-        contract = ContractModel.objects.get(id=contract_id)
-        contract.status = 'completed'
-        contract.save()
-
-    # schedule the function to run at the end of the timer
-    async_task('time.sleep', (end_date - timezone.now()).total_seconds())
-    async_task(timer_done)'''
-
-
-#
 
 
 def create_contract_and_start_duration(request, application_id):
@@ -319,10 +260,6 @@ def accept_contract(request, contract_id):
 
     return render(request, 'jobapp/accept_contract.html', context)
 
-    # Set the timer to end the contract
-''' end_date = contract.start_date + timedelta(days=job.duration)
-    start_contract_duration_timer(contract.id, end_date)'''
-
 
 def view_contract(request, contract_id):
     # Get the contract object
@@ -356,8 +293,11 @@ def view_all_contracts(request):
 
 @login_required
 def view_all_contracts_nanny(request):
-    # Get all contracts
-    contracts = ContractModel.objects.filter(nanny=request.user)
+    # Get the NannyDetails instance for the logged-in user
+    nanny_details = NannyDetails.objects.get(user=request.user)
+
+    # Get all contracts for the nanny
+    contracts = ContractModel.objects.filter(nanny=nanny_details)
 
     # Render the template with the contract list
     return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts})
@@ -377,3 +317,24 @@ def delete_job_application(request, job_application_id):
 
     messages.success(request, 'Job application deleted successfully.')
     return redirect('job_application_status')
+
+
+# employer to end the contract
+
+@login_required
+def end_contract(request, contract_id):
+    # Get the contract object
+    contract = get_object_or_404(ContractModel, id=contract_id)
+
+    # Update the status of the contract to terminated
+    contract.status = 'terminated'
+    contract.save()
+
+    # Update the status of the job application to terminated
+    job_application = get_object_or_404(
+        JobApplication, job=contract.job, nanny=contract.nanny)
+    job_application.status = 'terminated'
+    job_application.save()
+
+    messages.success(request, "Contract has been terminated successfully")
+    return redirect("view_all_contracts")
