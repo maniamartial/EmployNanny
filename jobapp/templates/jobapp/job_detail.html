@@ -1,6 +1,7 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
+{% load jobapp_tags %}
   <div class="container mt-4">
     <h2 class="text-center">{{ job.category }}</h2>
     <hr>
@@ -20,9 +21,17 @@
           <div class="card-body">
             <h5 class="card-title">{{ job.category }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Posted by <span class="employer">{{ job.employer.username }}</span></h6>
-            <div class="card-body">
-              <a href="#" class="card-link btn btn-primary">Apply</a>
+            {% if request.user|has_group:'employer' %}
+             <div class="card-body">
+<a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt; Back</a>
             </div>
+            {% else%}
+            <div class="card-body">
+<a href="{% url 'apply_for_job' job_id=job.id %}" class="card-link btn btn-primary">Apply</a>
+<a href="{% url 'job_application_status' %}" class="card-link btn btn-outline-primary">&lt;&lt;&lt;</a>
+
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>

@@ -48,15 +48,15 @@
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        {% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-primary" href="{% url 'jobPosting'%}">Post Job</a>
+    {% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
 {% elif request.user|has_group:"nanny" %}
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="#">My Applications</a>
+<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
 {% else %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
 {% endif %}
       </div>
@@ -73,15 +73,15 @@
        <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-        {% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-primary" href="#">Post Job</a>
+      {% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
 {% elif request.user|has_group:"nanny" %}
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="#">My Applications</a>
+<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
 {% else %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
 {% endif %}
       </div>
@@ -96,15 +96,15 @@
        <div class="carousel-caption">
         <h3>discover a new you!</h3>
         <p>Transform your look today with our special offers!</p>
-    {% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
-        <a class="btn btn-primary" href="#">Post Job</a>
+{% if request.user|has_group:"employer" %}
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
 {% elif request.user|has_group:"nanny" %}
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="#">My Applications</a>
+<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
 {% else %}
-    <a class="btn btn-primary" href="#">View Nannies</a>
+    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
 <a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
 {% endif %}
       </div>

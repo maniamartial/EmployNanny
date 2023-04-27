@@ -37,7 +37,7 @@
       <div class="row">
         <div class="col-xl-4 col-lg-4 mb-50">
           <div class="footer-widget">
-            <div class="footer-logo">
+            <div class="footer-logo logo">
               <a href="{%url 'home'%}"
                 ><img
                   class="logo3"
@@ -67,16 +67,13 @@
               <h3>Useful Links</h3>
             </div>
             <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">about</a></li>
-              <li><a href="#">services</a></li>
-              <li><a href="#">portfolio</a></li>
+              <li><a href="{% url 'home'%}">Home</a></li>
+              <li><a href="{% url 'job_listing' %}">Jobs</a></li>
+                            <li><a href="{% url 'about_us' %}">about</a></li>
+
+              <li><a href="#">Help</a></li>
               <li><a href="#">Contact</a></li>
-              <li><a href="#">About us</a></li>
-              <li><a href="#">Our Services</a></li>
-              <li><a href="#">Expert Team</a></li>
-              <li><a href="#">Contact us</a></li>
-              <li><a href="#">Latest News</a></li>
+             
             </ul>
           </div>
         </div>

@@ -12,10 +12,13 @@ urlpatterns = [
     # employer edit job
     path('jobs/<int:job_id>/edit/', views.edit_job,
          name='edit_job'),
-    # employer delete the job
 
+
+
+    # employer delete the job
     path('jobs/<int:pk>/delete/', views.delete_job, name='delete_job'),
     path("nannies", views.show_all_nannies, name="nannies"),
+
 
     # contract
     # path('contract/<int:job_id>/', views.create_contract, name='contract'),
@@ -59,5 +62,15 @@ urlpatterns = [
     # nanny deleting job
     path('job_application/<int:job_application_id>/delete/',
          views.delete_job_application, name='delete_job_application'),
+
+
+    # end contract - employer
+    path('end-contract/<int:contract_id>/',
+         views.end_contract, name='end_contract'),
+
+
+    # nanny view all contracts
+    path('contracts/nanny/', views.view_all_contracts_nanny,
+         name='view_all_contracts_nanny'),
 
 ]
