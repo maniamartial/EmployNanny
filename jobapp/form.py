@@ -35,3 +35,16 @@ class JobForm(jobPostingForm):
     class Meta:
         model = ContractModel
         #fields = ["end_date", "status"]'''
+CATEGORIES = (
+    ('Full-time Nanny', 'full-time nanny'),
+    ('Part-time Nanny', 'parttime nanny'),
+    ('Live-in Nanny', 'live-in nanny'),
+    ('Live-out Nanny', 'Live-out Nanny'),
+    ('Night Nanny', 'night nanny')
+)
+
+
+class JobSearchForm(forms.Form):
+    category_query = forms.ChoiceField(choices=CATEGORIES)
+    min_salary = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Min Salary'}), required=False)
