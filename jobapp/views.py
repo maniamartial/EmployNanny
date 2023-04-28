@@ -1,3 +1,5 @@
+from decimal import Decimal
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from jobapp.models import JobApplication
 from django.core.paginator import Paginator
@@ -7,7 +9,7 @@ from .models import ContractModel
 #from django_q.tasks import async_task
 from datetime import timedelta
 from django.utils import timezone
-from .models import jobModel, JobApplication
+from .models import jobModel, JobApplication, CATEGORIES
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import jobModel, ContractModel
@@ -16,7 +18,7 @@ from .models import jobModel
 from .form import jobPostingForm, JobForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.models import NannyDetails
+from users.models import NannyDetails, AGE_GROUP_CHOICES
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from payment.models import Payment
@@ -45,7 +47,7 @@ def jobPosting(request):
     return render(request, 'jobapp/jobPostingTemplate.html', context)
 
 
-def job_listings(request):
+'''def job_listings(request):
     if request.user.groups.filter(name='employer').exists():
         jobs = jobModel.objects.filter(
             employer=request.user).order_by('-date_posted')
@@ -63,15 +65,75 @@ def job_listings(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
+    return render(request, 'jobapp/joblistings.html', context)'''
+
+
+def job_listings(request):
+    if request.user.groups.filter(name='employer').exists():
+        jobs = jobModel.objects.filter(
+            employer=request.user).order_by('-date_posted')
+    else:
+        jobs = jobModel.objects.all().order_by('-date_posted')
+    for job in jobs:
+        employer = job.employer
+        total_payments = Payment.objects.filter(
+            user=employer).aggregate(Sum('amount'))['amount__sum'] or 0
+        if total_payments >= int(job.salary):
+            job.payment_status = 'verified'
+        else:
+            job.payment_status = 'unverified'
+
+    # Apply filters
+    category_query = request.GET.get('category')
+    salary_min = request.GET.get('salary_min')
+
+    if category_query:
+        jobs = jobs.filter(category__iexact=category_query)
+    if salary_min:
+        jobs = jobs.filter(salary__gte=Decimal(salary_min))
+
+    paginator = Paginator(jobs, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'page_obj': page_obj,
+        'category_query': category_query,
+        'salary_min': salary_min,
+        'categories': CATEGORIES
+    }
     return render(request, 'jobapp/joblistings.html', context)
 
 
 def show_all_nannies(request):
-    nannies = NannyDetails.objects.all().order_by("-date_joined")
+    # set to empty string if not present
+    city_query = request.GET.get('city', '')
+    age_query = request.GET.get('age')
+
+    if city_query and age_query:
+        nannies = NannyDetails.objects.filter(
+            city__icontains=city_query, age_bracket=age_query).order_by("-date_joined")
+    elif city_query:
+        nannies = NannyDetails.objects.filter(
+            city__icontains=city_query).order_by("-date_joined")
+    elif age_query:
+        nannies = NannyDetails.objects.filter(
+            age_bracket=age_query).order_by("-date_joined")
+    else:
+        nannies = NannyDetails.objects.all().order_by("-date_joined")
+
     paginator = Paginator(nannies, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {"page_obj": page_obj}
+
+    # set default value to '' if age_query is not present
+    age_query_value = age_query if age_query else ''
+
+    context = {
+        "page_obj": page_obj,
+        "city_query": city_query,
+        "age_query": AGE_GROUP_CHOICES,
+        "selected_age_query": age_query_value,  # add selected_age_query to context
+    }
     return render(request, "jobapp/nannies_available.html", context)
 
 

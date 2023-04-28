@@ -21,6 +21,30 @@
 
 <h2 class="text-center">All Nannies</h2>
 <div class="container" style="max-width: 90%">
+
+<form method="GET" >
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="city">City:</label>
+      <input type="text" class="form-control" id="city" name="city" value="{{ city_query }}">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="age">Age Bracket:</label>
+      <select class="form-control" id="age" name="age">
+        <option value="">Any</option>
+        {% for choice in age_query %}
+        <option value="{{ choice.0 }}" {% if selected_age_query == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-3">
+        <label for="age">.</label>
+      <button type="submit" class="btn btn-outline-primary btn-block">Search</button>
+    </div>
+  </div>
+</form>
+
+
   <div class="row justify-content-center mb-4 px-6">
     {% for nanny in page_obj %}
       <div class="col-md-4 mb-4">

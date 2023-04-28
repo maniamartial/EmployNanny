@@ -66,7 +66,8 @@ background-color: #0275d8;
 
 #slider-home .btn:hover {
   background: #ffffff;
-color: #0275d8;}
+color: #0275d8;
+}
 
 .logo3 {
   height: 50%;
@@ -94,3 +95,4 @@ color: #0275d8;}
     height: 600px;
   }
 }
+

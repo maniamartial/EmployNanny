@@ -10,13 +10,43 @@
     color:black;
   }
 </style>
-<h2 class="text-center">All Job Listings</h2>
+<h2 class="text-center">All Job Available</h2>
 {% if messages %}
 <div class="alert alert-success">
   {% for message in messages %} {{ message }} {% endfor %}
 </div>
 {% endif %}
 <div class="container" style="max-width: 90%">
+
+<form method="GET">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="category">Category:</label>
+      <select id="category" name="category" class="form-control">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.0 }}" {% if category_query == category.0 %}selected{% endif %}>{{ category.1 }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="salary_min">Min Salary:</label>
+      <input type="number" class="form-control" id="salary_min" name="salary_min" placeholder="Min" value="{{ salary_min }}">
+    </div>
+  
+  <div class="form-group col-md-3">
+          <label for="salary_min">.</label>
+    <button type="submit" class="btn btn-outline-primary btn-block">Search</button>
+    </div>
+  </div>
+</form>
+
+
+
+
+
+
+
   <div class="row justify-content-center mb-4 px-6">
     {% for job in page_obj %}
     <div class="col-md-4 mb-4">
@@ -36,7 +66,7 @@
           <p class="card-text">{{ job.job_description|truncatechars:200 }}</p>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">City: {{ job.city }}</li>
-            <li class="list-group-item">Address: {{ job.address }}</li>
+            <li class="list-group-item">Address: {{ job.addresss }}</li>
             <li class="list-group-item">Salary: {{ job.salary }}</li>
             <li class="list-group-item">Duration: {{ job.duration }}</li>
             <li class="list-group-item">Start Date: {{ job.start_date }}</li>
