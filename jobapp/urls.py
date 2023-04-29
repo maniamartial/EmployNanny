@@ -73,4 +73,19 @@ urlpatterns = [
     path('contracts/nanny/', views.view_all_contracts_nanny,
          name='view_all_contracts_nanny'),
 
+
+    # Hire nanny directly
+    path('direct_contract/<int:nanny_id>/',
+         views.hire_nanny_direct, name='direct_contract'),
+
+
+    # accepting direct contract
+    path('contract/<int:contract_id>/accept-direct/',
+         views.accept_direct_contract, name='accept_direct_contract'),
+
+
+    # end direct contract
+    path('direct-contract/<int:contract_id>/end/',
+         views.end_direct_contract, name='end_direct_contract'),
+
 ]

@@ -115,24 +115,6 @@ def nannyVerificationDetails(request):
     return render(request, "users/nannyDetails.html", context)
 
 
-'''@login_required
-def nanny_profile(request):
-    nanny = NannyDetails.objects.get(user=request.user)
-    context = {
-        'nanny': nanny
-    }
-    return render(request, 'users/nannyProfile.html', context)'''
-
-
-'''def nanny_profile(request, nanny_id):
-    nanny = NannyDetails.objects.get(id=nanny_id)
-    context = {
-        "nanny": nanny
-    }
-    return render(request, 'users/nannyProfile.html', context)'''
-# rest of the code
-
-
 def nanny_profile(request, nanny_id):
     try:
         nanny = NannyDetails.objects.get(id=nanny_id)

@@ -1,0 +1,51 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.job_category.id_for_label }}">Job Category</label>
+{{ form.job_category }}        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" class="form-control" id="city" name="city" required>
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary</label>
+          <input type="number" class="form-control" id="salary" name="salary" required>
+        </div>
+        <div class="form-group">
+          <label for="start_date">Start Date</label>
+          <input type="date" class="form-control" id="start_date" name="start_date" required>
+        </div>
+        <div class="form-group">
+          <label for="end_date">End Date</label>
+          <input type="date" class="form-control" id="end_date" name="end_date" required>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="nanny_name">Nanny Name</label>
+          <input type="text" class="form-control" id="nanny_name" name="nanny_name" value="{{ nanny.first_name }}  {{ nanny.last_name }}" readonly>
+        </div>
+        <div class="form-group">
+          <label for="nanny_email">Nanny Email</label>
+          <input type="email" class="form-control" id="nanny_email" name="nanny_email" value="{{ nanny.user.email }}" readonly>
+        </div>
+        <div class="form-group">
+          <label for="nanny_phone">Nanny Phone</label>
+          <input type="tel" class="form-control" id="nanny_phone" name="nanny_phone" value="{{ nanny.phone }}" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="job_description">Job Description</label>
+      <textarea class="form-control" id="job_description" name="job_description" rows="5" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock content %}

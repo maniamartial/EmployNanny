@@ -1,3 +1,4 @@
+from .models import DirectContract
 from django import forms
 from .models import jobModel, ContractModel
 
@@ -48,3 +49,17 @@ class JobSearchForm(forms.Form):
     category_query = forms.ChoiceField(choices=CATEGORIES)
     min_salary = forms.IntegerField(widget=forms.NumberInput(
         attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'Min Salary'}), required=False)
+
+
+# direct contract form
+
+
+class DirectContractForm(forms.ModelForm):
+    class Meta:
+        model = DirectContract
+        fields = ['job_category', 'city', 'salary', 'start_date',
+                  'end_date', 'job_description']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'})
+        }

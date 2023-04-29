@@ -1,0 +1,52 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<style>
+p{
+  color:black;
+}
+
+</style>
+<div class="container status-height">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h1 class="text-center mb-4">Direct Contract Details</h1>
+{% if messages %}
+<div class="alert alert-success">
+  {% for message in messages %} {{ message }} {% endfor %}
+</div>
+{% endif %}
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Job</h5>
+          <p class="card-text">{{ direct_contract.job_category }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <h5 class="card-title">Nanny</h5>
+            <p class="card-text">{{ direct_contract.nanny }}</p>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">Employer</h5>
+            <p class="card-text">{{ direct_contract.employer }}</p>
+          </li>
+          <li class="list-group-item">
+            <h5 class="card-title">Start Date</h5>
+            <p class="card-text">{{ direct_contract.start_date }}</p>
+          </li>
+          
+        </ul>
+     <div class="card-body">
+  <form method="post">
+    {% csrf_token %}
+    <div class="btn-group" role="group">
+      <button type="submit" name="accept" class="btn btn-success mr-2">Accept</button>
+      <button type="submit" name="reject" class="btn btn-danger ml-auto">Reject</button>
+    </div>
+  </form>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
