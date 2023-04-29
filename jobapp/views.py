@@ -1,3 +1,4 @@
+from .models import DirectContract
 from decimal import Decimal
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
@@ -15,7 +16,7 @@ from django.shortcuts import render, redirect
 from .models import jobModel, ContractModel
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import jobModel
-from .form import jobPostingForm, JobForm
+from .form import jobPostingForm, JobForm, DirectContractForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import NannyDetails, AGE_GROUP_CHOICES
@@ -324,23 +325,40 @@ def accept_contract(request, contract_id):
 
 
 def view_contract(request, contract_id):
-    # Get the contract object
-    contract = get_object_or_404(ContractModel, id=contract_id)
+    try:
+        # Check if contract is a ContractModel
+        contract = ContractModel.objects.get(id=contract_id)
+        direct_contract = None
 
-    # Determine the status of the contract
-    if contract.status == 'active':
-        status = "Active"
-    elif contract.status == 'terminated':
-        status = "Terminated"
-    elif contract.accepted_by_nanny:
-        status = "Accepted"
-    elif contract.rejected_by_nanny:
-        status = "Rejected"
-    else:
-        status = "Pending"
+        # Determine the status of the contract
+        if contract.status == 'active':
+            status = "Active"
+        elif contract.status == 'terminated':
+            status = "Terminated"
+        elif contract.accepted_by_nanny:
+            status = "Accepted"
+        elif contract.rejected_by_nanny:
+            status = "Rejected"
+        else:
+            status = "Pending"
+
+    except ContractModel.DoesNotExist:
+        # Check if contract is a DirectContract
+        direct_contract = DirectContract.objects.get(id=contract_id)
+        contract = None
+        if direct_contract.status == 'active':
+            status = "Active"
+        elif direct_contract.status == 'terminated':
+            status = "Terminated"
+        elif direct_contract.status == "accepted":
+            status = "Accepted"
+        elif direct_contract.status == "rejected":
+            status = "Rejected"
+        else:
+            status = "Pending"
 
     # Render the template with the contract details and status
-    return render(request, "jobapp/view_contract.html", {"contract": contract, "status": status})
+    return render(request, "jobapp/view_contract.html", {"contract": contract, "direct_contract": direct_contract, "status": status, })
 
 
 # employer to view all the contracts that exists
@@ -348,9 +366,10 @@ def view_contract(request, contract_id):
 def view_all_contracts(request):
     # Get all contracts
     contracts = ContractModel.objects.filter(employer=request.user)
+    direct_contracts = DirectContract.objects.filter(employer=request.user)
 
     # Render the template with the contract list
-    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts})
+    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts, "direct_contracts": direct_contracts})
 
 
 @login_required
@@ -360,9 +379,10 @@ def view_all_contracts_nanny(request):
 
     # Get all contracts for the nanny
     contracts = ContractModel.objects.filter(nanny=nanny_details)
+    direct_contracts = DirectContract.objects.filter(nanny=nanny_details)
 
     # Render the template with the contract list
-    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts})
+    return render(request, "jobapp/view_all_contracts.html", {"contracts": contracts, "direct_contracts": direct_contracts})
 
 
 # delete the job application
@@ -383,7 +403,7 @@ def delete_job_application(request, job_application_id):
 
 # employer to end the contract
 
-@login_required
+'''@login_required
 def end_contract(request, contract_id):
     # Get the contract object
     contract = get_object_or_404(ContractModel, id=contract_id)
@@ -399,4 +419,87 @@ def end_contract(request, contract_id):
     job_application.save()
 
     messages.success(request, "Contract has been terminated successfully")
+    return redirect("view_all_contracts")'''
+
+
+@login_required
+def end_contract(request, contract_id):
+    # Check if it's a ContractModel or DirectContract
+    contract = ContractModel.objects.get(id=contract_id)
+
+    # Update the status of the contract to terminated
+    contract.status = 'terminated'
+    contract.save()
+
+    # Update the status of the job application to terminated
+    job_application = get_object_or_404(
+        JobApplication, job=contract.job, nanny=contract.nanny)
+    job_application.status = 'terminated'
+    job_application.save()
+
+    messages.success(request, "Contract has been terminated successfully")
+    return redirect("view_all_contracts")
+
+
+# hire nanny directly
+
+
+def hire_nanny_direct(request, nanny_id):
+    nanny = NannyDetails.objects.get(id=nanny_id)
+    print(nanny)
+    if request.method == 'POST':
+        form = DirectContractForm(request.POST)
+        if form.is_valid():
+            contract = form.save(commit=False)
+            contract.nanny = nanny
+            contract.employer = request.user
+            contract.status = 'active'
+            contract.save()
+            # replace this with your desired redirect
+            return redirect('home')
+    else:
+        form = DirectContractForm()
+    return render(request, 'jobapp/direct_contract.html', {'form': form, 'nanny': nanny})
+
+
+# nanny accept the direct contract
+
+
+def accept_direct_contract(request, contract_id):
+    direct_contract = get_object_or_404(DirectContract, id=contract_id)
+
+    if request.method == 'POST':
+        if 'accept' in request.POST:
+            # Handle contract acceptance
+            direct_contract.status = 'accepted'
+            direct_contract.save()
+            # TODO: Add code to notify the employer of the nanny's acceptance
+        elif 'reject' in request.POST:
+            # Handle contract rejection
+            direct_contract.status = 'terminated'
+            direct_contract.save()
+            # TODO: Add code to notify the employer of the nanny's rejection
+
+        # Redirect to the contract details page
+        return redirect('view_all_contracts_nanny')
+
+    context = {
+        'direct_contract': direct_contract,
+    }
+
+    return render(request, 'jobapp/accept_direct_contract.html', context)
+
+
+# end contract of direct contract
+@login_required
+def end_direct_contract(request, contract_id):
+    # Get the direct contract object
+    direct_contract = get_object_or_404(DirectContract, id=contract_id)
+
+    # Update the status of the direct contract to terminated
+    direct_contract.status = 'terminated'
+    direct_contract.save()
+
+    messages.success(
+        request, "Direct contract has been terminated successfully")
     return redirect("view_all_contracts")

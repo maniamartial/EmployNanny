@@ -4,7 +4,7 @@
 <div class="container status-height">
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <h1 class="text-center mb-4">Contracts</h1>
+      <h2 class="text-center mb-4">Contracts</h2>
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
@@ -31,6 +31,47 @@
           {% empty %}
           <tr>
             <td colspan="5">No contracts found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="text-center mb-4">Direct Contracts</h2>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+              <th>Job Category</th>
+            <th>Employer</th>
+                <th>Salary</th>
+            <th>Start Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for contract in direct_contracts %}
+          <tr>
+            <td>{{ contract.job_category }}</td>
+             <td>{{ contract.employer }}</td>
+            <td>{{ contract.salary }}</td>
+            <td>{{ contract.start_date|date:"n/j/Y" }}</td>
+            
+            <td {% if contract.status == 'Terminated' %}class="text-danger"{% elif contract.status == 'Active' %}class="text-primary"{% endif %}>
+              {{ contract.get_status_display }}
+            </td>
+            <td>
+      {% if contract.status == 'active' %}
+        <a href="{% url 'accept_direct_contract' contract.id %}" class="btn btn-success">Accept Contract</a>
+      {% elif contract.status == 'terminated' %}
+        <a href="#" class="btn btn-danger">Delete Contract</a>
+      {% elif contract.status == 'accepted' %}
+        <a href="{% url 'view_contract' contract_id=contract.id %}" class="btn btn-primary">View Contract</a>
+      {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7">No direct contracts found.</td>
           </tr>
           {% endfor %}
         </tbody>

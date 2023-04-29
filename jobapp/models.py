@@ -12,7 +12,7 @@ CATEGORIES = (
     ('Full-time Nanny', 'full-time nanny'),
     ('Part-time Nanny', 'parttime nanny'),
     ('Live-in Nanny', 'live-in nanny'),
-    ('Live-out Nanny', 'Live-out Nanny'),
+    ('Live-out Nanny', 'live-out nanny'),
     ('Night Nanny', 'night nanny')
 )
 
@@ -121,3 +121,29 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.nanny.user.username} applied for {self.job.category}"
+
+
+# direct contracts, where employer dont post a job, but sends an offer directly
+class DirectContract(models.Model):
+    nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
+    employer = models.ForeignKey(User, on_delete=models.CASCADE)
+    job_category = models.CharField(
+        max_length=100, choices=CATEGORIES, default="Full-time Nanny")
+    city = models.CharField(max_length=100)
+    salary = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    job_description = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=100, choices=CONTRACT_STATUS, default="pending")
+    amount_to_receive = models.IntegerField()
+    company_commission = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        # calculate amount_to_receive as 90% of salary
+        self.amount_to_receive = int(self.salary * 0.9)
+
+        # calculate company_commission as 10% of salary
+        self.company_commission = int(self.salary * 0.1)
+
+        super().save(*args, **kwargs)
