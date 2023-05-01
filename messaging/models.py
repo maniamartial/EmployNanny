@@ -8,6 +8,7 @@ class Conversation(models.Model):
     participants = models.ManyToManyField(User, related_name='conversations')
 
 
+# creates a table in teh db called message, which will store all the fields
 class Message(models.Model):
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name='messages')

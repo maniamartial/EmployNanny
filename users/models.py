@@ -21,6 +21,7 @@ AGE_GROUP_CHOICES = (
 )
 
 
+# this creates a table for nanny details in the db
 class NannyDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
@@ -48,6 +49,7 @@ class NannyDetails(models.Model):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+# To add an image, yu have to shape it and reduce the size
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -60,6 +62,7 @@ class NannyDetails(models.Model):
             img.save(self.image.path)
 
 
+# this creates a table in teh database called EmployerProfile
 class EmployerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
