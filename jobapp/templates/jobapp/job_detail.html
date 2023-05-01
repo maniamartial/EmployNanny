@@ -28,7 +28,7 @@
             {% else%}
             <div class="card-body">
 <a href="{% url 'apply_for_job' job_id=job.id %}" class="card-link btn btn-primary">Apply</a>
-<a href="{% url 'job_application_status' %}" class="card-link btn btn-outline-primary">&lt;&lt;&lt;</a>
+<a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt;&lt;</a>
 
             </div>
             {% endif %}
