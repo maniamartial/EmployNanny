@@ -40,10 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
-
     'channels',
-
-
+    'Notifications',
     'payment',
     'users',
     'messaging',

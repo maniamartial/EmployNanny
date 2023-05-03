@@ -1,3 +1,10 @@
+from Notifications.models import Notification
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.shortcuts import render
+from django.conf import settings
+from django.core.mail import send_mail
 from decimal import Decimal
 from django.db.models import Q
 from jobapp.models import JobApplication
@@ -189,6 +196,30 @@ def delete_job(request, pk):
 
 
 # nanny making an applcations
+'''@login_required
+def apply_for_job(request, job_id):
+    job = get_object_or_404(jobModel, id=job_id)
+    # get the nannydetails from the loggedin nanny
+    nanny_details = request.user.nannydetails
+
+    if nanny_details is None:
+        # Redirect to a page that explains that the user needs to have a NannyDetails object
+        return redirect('nannyDetails')
+
+    # Check if the nanny has already applied for the job
+    if JobApplication.objects.filter(job=job, nanny=nanny_details).exists():
+        messages.warning(request, 'You have already applied for this job.')
+        return redirect('job_listing')
+
+    # Create a new JobApplication object
+    job_application = JobApplication(job=job, nanny=nanny_details)
+    job_application.save()
+
+    messages.success(
+        request, 'Your job application has been submitted successfully.')
+    return redirect('job_application_status')'''
+
+
 @login_required
 def apply_for_job(request, job_id):
     job = get_object_or_404(jobModel, id=job_id)
@@ -207,6 +238,28 @@ def apply_for_job(request, job_id):
     # Create a new JobApplication object
     job_application = JobApplication(job=job, nanny=nanny_details)
     job_application.save()
+
+    # Send email notification to the employer
+    employer_email = job.employer.email
+    nanny_name = f'{nanny_details.first_name} {nanny_details.last_name}'
+    subject = 'New Job Applicant'
+    message = f'{nanny_name} has applied for your job. Please check your dashboard to view their application.'
+#html_message = render_to_string('notifications/email_template.html', {'nanny_name': nanny_name})
+    email = EmailMessage(
+        subject, message, 'from@example.com', [employer_email])
+    email.content_subtype = "html"
+    email.send()
+
+ # Save notification to the employer's model
+    title = "Received an applicant"
+    notification_message = f'{nanny_name} has applied for your job. Please check your dashboard to view their application.'
+    employer_notification = Notification(
+        user=job.employer, message=notification_message, title=title)
+    print(employer_notification)
+    try:
+        employer_notification.save()
+    except Exception as e:
+        print(f"Error saving notification: {e}")
 
     messages.success(
         request, 'Your job application has been submitted successfully.')

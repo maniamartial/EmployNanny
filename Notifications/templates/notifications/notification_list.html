@@ -1,0 +1,51 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+
+<style>
+.notification-title{
+
+font-size:18px;
+  font-weight: lighter;
+}
+
+</style>
+    <div class="container mt-5" style="min-height: 600px;">
+        <h1>Notifications</h1>
+        <ul class="list-group">
+            {% for notification in notifications %}
+                <li class="list-group-item{% if not notification.read %} font-weight-bold{% endif %}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="message" data-toggle="collapse" data-target="#collapse{{ notification.id }}" aria-expanded="false" aria-controls="collapse{{ notification.id }}">
+                            <span class="notification-title">{{ notification.title }}:</span> 
+                            <i class="fa fa-chevron-down ml-2"></i>
+                        </span>
+                        <small class="text-muted">{{ notification.created_at }}</small>
+                    </div>
+                    <div class="collapse" id="collapse{{ notification.id }}">
+                        <div class="mt-2">
+                            {{ notification.message }}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block styles %}
+    <style>
+        .message {
+            max-width: calc(100% - 100px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+{% endblock %}

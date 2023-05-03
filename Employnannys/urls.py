@@ -27,6 +27,7 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('chat/', include('messaging.urls')),
     path('payment/', include('payment.urls')),
+    path('notifications/', include('Notifications.urls')),
 
 
     # authentication
@@ -54,6 +55,7 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'),
          name='password_reset_complete'),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
