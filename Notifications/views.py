@@ -4,6 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 
 # confirm if teh email was sent and change the boolean
@@ -18,6 +19,7 @@ def send_notification_email(notification):
         notification.save()
 
 
+@login_required
 def notification_list(request):
     notifications = Notification.objects.filter(user=request.user)
     context = {
