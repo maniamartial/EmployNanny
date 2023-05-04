@@ -31,6 +31,8 @@ urlpatterns = [
     path('apply/<int:job_id>/', views.apply_for_job, name='apply_for_job'),
 
     # view applications made on a job
+    # path('jobs/<int:job_id>/applications/',views.job_applications, name='job_applications'),'''
+
     path('jobs/<int:job_id>/applications/',
          views.job_applications, name='job_applications'),
 

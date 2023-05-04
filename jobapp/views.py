@@ -1,3 +1,4 @@
+from django.shortcuts import render, redirect, get_object_or_404
 from Notifications.models import Notification
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
@@ -22,6 +23,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from payment.models import Payment
 from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse
 
 
 # Define a view function that renders the home page template
@@ -195,35 +197,10 @@ def delete_job(request, pk):
     return render(request, 'jobapp/update_job.html', context)
 
 
-# nanny making an applcations
-'''@login_required
-def apply_for_job(request, job_id):
-    job = get_object_or_404(jobModel, id=job_id)
-    # get the nannydetails from the loggedin nanny
-    nanny_details = request.user.nannydetails
-
-    if nanny_details is None:
-        # Redirect to a page that explains that the user needs to have a NannyDetails object
-        return redirect('nannyDetails')
-
-    # Check if the nanny has already applied for the job
-    if JobApplication.objects.filter(job=job, nanny=nanny_details).exists():
-        messages.warning(request, 'You have already applied for this job.')
-        return redirect('job_listing')
-
-    # Create a new JobApplication object
-    job_application = JobApplication(job=job, nanny=nanny_details)
-    job_application.save()
-
-    messages.success(
-        request, 'Your job application has been submitted successfully.')
-    return redirect('job_application_status')'''
-
-
 @login_required
 def apply_for_job(request, job_id):
     job = get_object_or_404(jobModel, id=job_id)
-    # get the nannydetails from the loggedin nanny
+    # get the nanny_details from the logged-in nanny
     nanny_details = request.user.nannydetails
 
     if nanny_details is None:
@@ -243,18 +220,17 @@ def apply_for_job(request, job_id):
     employer_email = job.employer.email
     nanny_name = f'{nanny_details.first_name} {nanny_details.last_name}'
     subject = 'New Job Applicant'
-    message = f'{nanny_name} has applied for your job. Please check your dashboard to view their application.'
-#html_message = render_to_string('notifications/email_template.html', {'nanny_name': nanny_name})
+
+    message = f'{nanny_name} has applied for your job. Please check your <a href="http://127.0.0.1:8000/jobs/{job_id}/applications/">dashboard</a> to view their application.'
+    # html_message = render_to_string('jobapp/email_template.html', {'nanny_name': nanny_name})
     email = EmailMessage(
         subject, message, 'from@example.com', [employer_email])
     email.content_subtype = "html"
     email.send()
 
  # Save notification to the employer's model
-    title = "Received an applicant"
-    notification_message = f'{nanny_name} has applied for your job. Please check your dashboard to view their application.'
     employer_notification = Notification(
-        user=job.employer, message=notification_message, title=title)
+        user=job.employer, message=message, title=subject)
     print(employer_notification)
     try:
         employer_notification.save()
@@ -266,9 +242,9 @@ def apply_for_job(request, job_id):
     return redirect('job_application_status')
 
 
-@login_required
+@ login_required
 def application_status(request):
-    # check if the nanny loggedin has nannyDetails
+    # check if the nanny logged-in has nannyDetails
     try:
         nanny = request.user.nannydetails
     except NannyDetails.DoesNotExist:
@@ -294,7 +270,7 @@ def application_status(request):
 
 
 # employer able to view applicants for specific job he/she posted
-@login_required
+@ login_required
 def job_applications(request, job_id):
     job = jobModel.objects.get(id=job_id)
     # filter the applicants only for the specified job ID
@@ -347,8 +323,18 @@ def create_contract_and_start_duration(request, application_id):
         application.status = 'active'
         application.save()
 
-        messages.success("Contract has been created successfully.")
+        messages.success(request, "Contract has been created successfully.")
+    nanny_email = nanny.user.email
+    employer_name = f'{employer.username}'
+    subject = 'New Contract'
+    message = f'{employer_name} has created a new contract for you. Please log in to your account to accept the contract.'
+    email = EmailMessage(subject, message, 'from@example.com', [nanny_email])
+    email.send()
 
+    # Save notification to the nanny's model
+    nanny_notification = Notification(
+        user=nanny.user, message=message, title=subject)
+    nanny_notification.save()
     context = {
 
         'application': application,
@@ -358,9 +344,10 @@ def create_contract_and_start_duration(request, application_id):
     return render(request, 'jobapp/create_contract.html', context)
 
 
-# nanny accepting/rejecting the contract
+@login_required
 def accept_contract(request, contract_id):
     contract = get_object_or_404(ContractModel, id=contract_id)
+    employer_email = contract.job.employer.email
 
     if request.method == 'POST':
         if 'accept' in request.POST:
@@ -371,7 +358,19 @@ def accept_contract(request, contract_id):
                 job=contract.job, nanny=contract.nanny)
             job_application.status = 'accepted'
             job_application.save()
-            # TODO: Add code to notify the employer of the nanny's acceptance
+            # Notify the employer of the nanny's acceptance
+            subject = 'Contract created'
+            message = f'Your contract for {contract.job.category} with {contract.nanny.user.username} has been started.'
+            Notification.objects.create(
+                user=contract.job.employer, message=message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract accepted successfully.')
         elif 'reject' in request.POST:
             # Handle contract rejection
             contract.status = 'terminated'
@@ -380,7 +379,19 @@ def accept_contract(request, contract_id):
                 job=contract.job, nanny=contract.nanny)
             job_application.status = 'rejected'
             job_application.save()
-            # TODO: Add code to notify the employer of the nanny's rejection
+            # Notify the employer of the nanny's rejection
+            subject = 'Contract rejected'
+            message = f'Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
+            Notification.objects.create(
+                user=contract.job.employer, message=message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract rejected successfully.')
 
         # Redirect to the contract details page
         return redirect('job_application_status')
@@ -455,6 +466,22 @@ def nanny_view_all_contracts(request):
 
 
 # delete the job application
+'''@login_required
+def delete_job_application(request, job_application_id):
+    # get the specified job application
+    job_application = JobApplication.objects.get(id=job_application_id)
+
+    # Check if the current user is the nanny who applied for the job
+    if job_application.nanny.user != request.user:
+        return HttpResponseForbidden("You don't have permission to delete this job application.")
+
+    # Delete the job application
+    job_application.delete()
+
+    messages.success(request, 'Job application deleted successfully.')
+    return redirect('job_application_status')'''
+
+
 @login_required
 def delete_job_application(request, job_application_id):
     # get the specified job application
@@ -463,6 +490,20 @@ def delete_job_application(request, job_application_id):
     # Check if the current user is the nanny who applied for the job
     if job_application.nanny.user != request.user:
         return HttpResponseForbidden("You don't have permission to delete this job application.")
+
+    # Notify the employer that the job application has been deleted
+    subject = 'Job Application Deleted'
+    message = f"Hello {job_application.job.employer.username},\n\nYour job application from {job_application.nanny.first_name} for the position of {job_application.job.category} has been deleted.\n\nBest regards,\nThe Nanny Agency"
+    send_mail(
+        subject,
+        message,
+        'noreply@nannyagency.com',
+        [job_application.job.employer.user.email],
+        fail_silently=False,
+    )
+    notification = Notification(
+        user=job_application.job.employer, title=subject, message=message)
+    notification.save()
 
     # Delete the job application
     job_application.delete()
@@ -487,46 +528,104 @@ def end_contract(request, contract_id):
     job_application.status = 'terminated'
     job_application.save()
 
+    # Send an email notification to the nanny
+    subject = 'Contract Terminated'
+    message = f'Hello {contract.nanny.user.first_name},\n\nYour contract with {contract.job.employer.user.first_name} has been terminated. Please contact the employer to discuss any issues and to arrange for the return of any materials.\n\nBest regards,\nThe Nanny Agency'
+    send_mail(
+        subject,
+        message,
+        'noreply@nannyagency.com',
+        [contract.nanny.user.email],
+        fail_silently=False,
+    )
+
+    # Save a notification for the nanny
+    notification = Notification(
+        user=contract.nanny.user, title=subject, message=message)
+    notification.save()
+
     messages.success(request, "Contract has been terminated successfully")
     return redirect("view_all_contracts")
 
 
-# employer to hire nanny directly
+@login_required
 def hire_nanny_direct(request, nanny_id):
-    # get the nanny Details
-    nanny = NannyDetails.objects.get(id=nanny_id)
+    nanny = get_object_or_404(NannyDetails, id=nanny_id)
+
     if request.method == 'POST':
         form = DirectContractForm(request.POST)
-        # validate direct-contract form
+
         if form.is_valid():
             contract = form.save(commit=False)
             contract.nanny = nanny
             contract.employer = request.user
             contract.status = 'active'
             contract.save()
-            # replace this with your desired redirect
+
+            # Send a notification to the nanny
+            subject = 'Direct Contract Offer'
+            message = f'Hello {nanny.user.first_name},\n\nYou have received a direct contract offer from {request.user.first_name}. Please go to your dashboard to accept or reject the contract.\n\nBest regards,\nThe Nanny Agency'
+            send_mail(
+                subject,
+                message,
+                'noreply@nannyagency.com',
+                [nanny.user.email],
+                fail_silently=False,
+            )
+            notification = Notification(
+                user=nanny.user, title=subject, message=message)
+            notification.save()
+
             return redirect('home')
     else:
         form = DirectContractForm()
+
     context = {'form': form, 'nanny': nanny}
     return render(request, 'jobapp/direct_contract.html', context)
 
 
-# nanny accept the direct contract
+@login_required
 def accept_direct_contract(request, contract_id):
     direct_contract = get_object_or_404(DirectContract, id=contract_id)
+    employer = direct_contract.employer
+    employer_user = employer
 
     if request.method == 'POST':
         if 'accept' in request.POST:
             # Handle contract acceptance
             direct_contract.status = 'accepted'
             direct_contract.save()
-            # TODO: Add code to notify the employer of the nanny's acceptance
+            # Notify the employer of the nanny's acceptance
+            subject = 'Direct Contract Accepted'
+            message = f'Hello {employer.username},\n\nYour direct contract with {direct_contract.nanny.first_name} has been accepted. Please contact the nanny to finalize the details of the contract and to discuss start dates and times.\n\nBest regards,\nThe Nanny Agency'
+            send_mail(
+                subject,
+                message,
+                'noreply@nannyagency.com',
+                [employer_user.email],
+                fail_silently=False,
+            )
+            notification = Notification(
+                user=employer, title=subject, message=message)
+            notification.save()
+
         elif 'reject' in request.POST:
             # Handle contract rejection
             direct_contract.status = 'terminated'
             direct_contract.save()
-            # TODO: Add code to notify the employer of the nanny's rejection
+            # Notify the employer of the nanny's rejection
+            subject = 'Direct Contract Denied'
+            message = f'Hello {employer.username},\n\nYour direct contract with {direct_contract.nanny.first_name} has been denied. Please contact the nanny to discuss any issues and to arrange for the return of any materials.\n\nBest regards,\nThe Nanny Agency'
+            send_mail(
+                subject,
+                message,
+                'noreply@nannyagency.com',
+                [employer_user.email],
+                fail_silently=False,
+            )
+            notification = Notification(
+                user=employer, title=subject, message=message)
+            notification.save()
 
         # Redirect to the contract details page
         return redirect('view_all_contracts_nanny')
@@ -543,6 +642,8 @@ def accept_direct_contract(request, contract_id):
 def end_direct_contract(request, contract_id):
     # Get the direct contract object
     direct_contract = get_object_or_404(DirectContract, id=contract_id)
+    nanny_details = direct_contract.nanny
+    nanny_user = nanny_details.user
 
     # Update the status of the direct contract to terminated
     direct_contract.status = 'terminated'
@@ -550,4 +651,18 @@ def end_direct_contract(request, contract_id):
 
     messages.success(
         request, "Direct contract has been terminated successfully")
+    # Send an email notification to the nanny
+    subject = 'Contract Ended'
+    message = f'Hello {nanny_details.first_name},\n\nThe contract with {direct_contract.employer.first_name} has ended. Please contact the employer to settle any outstanding payments and to discuss future opportunities.\n\nBest regards,\nThe Nanny Agency'
+    send_mail(
+        subject,
+        message,
+        'noreply@nannyagency.com',
+        [nanny_user.email],
+        fail_silently=False,
+    )
+    notification = Notification(
+        user=nanny_user, title=subject, message=message)
+    notification.save()
+
     return redirect("view_all_contracts")

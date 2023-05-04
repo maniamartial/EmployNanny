@@ -59,16 +59,19 @@
     <li style="background-color: #0275d8">
       <a href="{% url 'nannies' %}">Nanies Available</a>
     </li>
+    <li><a href="{% url 'view_all_contracts' %}" style="background-color: #0275d8">Contracts</a></li>
     {% else %}
     <li style="background-color: #0275d8">
       <a href="{% url 'job_listing' %}">Jobs Available</a>
+      <li><a href="{% url 'view_all_contracts_nanny' %}" style="background-color: #0275d8">Contracts</a></li>
     </li>
     {% endif %}
 
 
+
   </ul>
 </li>
-          <li><a href="{%url 'about_us'%}">About</a></li>
+     
            <li>
             <a href="#" class="username">
               {% if user.is_authenticated %}
@@ -114,13 +117,9 @@
               {% endif %}
             </ul>
           </li>
-          {% if request.user|has_group:'employer' %}
-<li><a href="{% url 'view_all_contracts' %}">Contracts</a></li>
-          {% elif request.user|has_group:'nanny' %}
-<li><a href="{% url 'view_all_contracts_nanny' %}">Contracts</a></li>
-{% else %}
-<li><a href="{% url 'view_all_contracts' %}">Contracts</a></li>
-{% endif %}
+               <li><a href="{%url 'about_us'%}">About</a></li>
+<li><a href="{% url 'notification_list' %}" >Notifications</a></li>
+ 
         </ul>
       </nav>
     </div>
