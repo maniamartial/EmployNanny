@@ -5,13 +5,17 @@
 <style>
 .notification-title{
 
-font-size:18px;
+font-size:20px;
   font-weight: lighter;
+}
+.notificaton-message{
+    font-weight:lighter;
 }
 
 </style>
     <div class="container mt-5" style="min-height: 600px;">
         <h1>Notifications</h1>
+        {% if notifications %}
         <ul class="list-group">
             {% for notification in notifications %}
                 <li class="list-group-item{% if not notification.read %} font-weight-bold{% endif %}">
@@ -23,13 +27,17 @@ font-size:18px;
                         <small class="text-muted">{{ notification.created_at }}</small>
                     </div>
                     <div class="collapse" id="collapse{{ notification.id }}">
-                        <div class="mt-2">
+                        <div class="mt-2 notificaton-message">
                             {{ notification.message }}
                         </div>
                     </div>
                 </li>
+               
             {% endfor %}
         </ul>
+        {% else %}
+        <p>No notifications</p>
+        {% endif %}
     </div>
 {% endblock %}
 
