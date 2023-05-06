@@ -1,0 +1,24 @@
+<div class="recent-jobs my-5">
+  <h2  class="text-center">Featured Nannies</h2>
+  <div class="row">
+    {% for nanny in featured_nannies %}
+    <div class="col-sm-4 mb-3">
+      <a href="{% url 'nanny_profile' nanny.id %}">
+        <div class="card h-100">
+          <img src="{{ nanny.image.url }}" class="card-img-top rounded-circle mx-auto my-2" alt="{{ nanny.first_name }}" style="width: 120px; height: 120px;">
+          <div class="card-body text-center">
+  <h5 class="card-title">{{ nanny.first_name }} {{ nanny.last_name }}</h5>
+  <p class="card-text">{{ nanny.city }}</p>
+  <p class="card-text">Age group: {{ nanny.age_bracket }}</p>
+  <p class="card-text">{{ nanny.description|truncatechars:100 }}</p>
+  <p class="card-text"><small class="text-muted">Available: {{ nanny.availability }}</small></p>
+</div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="text-center">
+    <a href="{% url 'nannies' %}" class="btn btn-primary">View All Nannies</a>
+  </div>
+</div>

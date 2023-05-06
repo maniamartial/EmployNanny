@@ -25,7 +25,12 @@ from django.urls import reverse
 
 # Define a view function that renders the home page template
 def home(request):
-    return render(request, "jobapp/home.html")
+    recent_jobs = jobModel.objects.order_by('-date_posted')[:3]
+    featured_nannies = NannyDetails.objects.order_by('-date_joined')[:3]
+    context = {'recent_jobs': recent_jobs,
+               'featured_nannies': featured_nannies}
+
+    return render(request, "home/home.html", context)
 
 
 def jobPosting(request):
