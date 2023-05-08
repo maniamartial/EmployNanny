@@ -20,15 +20,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('reports/', include('AdminReports.urls')),
     path('', include('jobapp.urls')),
     path('auth/', include('users.urls')),
     path('chat/', include('messaging.urls')),
     path('payment/', include('payment.urls')),
     path('notifications/', include('Notifications.urls')),
-
 
     # authentication
     # Password reset form view.
