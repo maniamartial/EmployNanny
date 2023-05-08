@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Transaction List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tfoot td {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transaction List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Employer name</th>
+                <th>Amount deposited</th>
+                <th>Salary for jobs</th>
+                <th>Company commission</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.user.username }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.salary }}</td>
+                <td>{{ payment.company_commission }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><strong>Total:</strong></td>
+                <td><strong>{{ total_amount }}</strong></td>
+                <td><strong>{{ total_salary }}</strong></td>
+                <td><strong>{{ total_commission }}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

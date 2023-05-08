@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'payment',
     'users',
     'messaging',
+    'AdminReports'
+
 
 ]
 

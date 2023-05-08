@@ -1,0 +1,36 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Employer List</h1>
+
+    <table class="table table-striped">
+        <thead class="thead-ligt" style="background-color: rgb(128, 167, 128);">
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Jobs Posted</th>
+                <th scope="col">Active Contracts</th>
+                <th scope="col">Done Payments</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employer in employers %}
+                <tr>
+                    <td>{{ employer.username }}</td>
+                    <td>{{ employer.jobs_posted }}</td>
+                    <td>{{ employer.active_contracts }}</td>
+                    <td>{{ employer.done_payments }}</td>
+                    <td>
+<form method="POST" action="#">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
