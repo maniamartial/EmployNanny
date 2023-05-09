@@ -1,0 +1,38 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Nanny List</h1>
+
+    <table class="table table-striped">
+        <thead class="thead-ligt" style="background-color: rgb(128, 167, 128);">
+            <tr>
+                <th scope="col">Names</th>
+                <th scope="col">ID Number</th>
+                <th scope="col">Date Joined</th>
+                <th scope="col">Joba Applied</th>
+                <th scope="col">Active Contracts</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nanny in nannies %}
+                <tr>
+                    <td>{{ nanny.first_name }} {{nanny.last_name}}</td>
+                    <td>{{ nanny.id_number }}</td>
+<td>{{ nanny.date_joined|date:"n/j/Y" }}</td>
+                    <td>{{ nanny.jobs_applied_for }}</td>
+                    <td>{{ nanny.contract_exists }}</td>
+                    <td>
+                        
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<a href="{% url 'generate_nanny_report' %}" class="btn btn-primary">Download PDF</a>
+
+</div>
+{% endblock %}

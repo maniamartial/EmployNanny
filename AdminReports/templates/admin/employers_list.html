@@ -20,17 +20,17 @@
                     <td>{{ employer.username }}</td>
                     <td>{{ employer.jobs_posted }}</td>
                     <td>{{ employer.active_contracts }}</td>
-                    <td>{{ employer.done_payments }}</td>
+                    <td>{{ employer.payment_made }}</td>
                     <td>
-<form method="POST" action="#">
-                            {% csrf_token %}
+                        
                             <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
+                        
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'generate_employers_pdf' %}" class="btn btn-primary">Download PDF</a>
+
 </div>
 {% endblock %}
-
