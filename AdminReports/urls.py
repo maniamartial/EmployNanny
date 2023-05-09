@@ -6,7 +6,14 @@ urlpatterns = [
     path('pdf/', views.GeneratePdfTransactions.as_view(), name='generate-pdf'),
     path('excel/', views.ExportExcelTransactions.as_view(), name='export-excel'),
     path('employers/', views.employers_list, name='employers_list'),
-    path('employers/<int:employer_id>/delete/',
+    path('employers/<int:pk>/delete/',
          views.delete_employer, name='delete_employer'),
+
+    path('reports/employers/pdf/', views.generate_employer_report,
+         name='generate_employers_pdf'),
+
+    path('nannies/', views.nanny_list, name="nanny_list"),
+    path('download-nanny-list/', views.generate_nanny_report,
+         name='generate_nanny_report'),
 
 ]
