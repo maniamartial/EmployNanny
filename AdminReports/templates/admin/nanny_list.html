@@ -23,11 +23,10 @@
 <td>{{ nanny.date_joined|date:"n/j/Y" }}</td>
                     <td>{{ nanny.jobs_applied_for }}</td>
                     <td>{{ nanny.contract_exists }}</td>
-                    <td>
                         
-                            <button type="submit" class="btn btn-danger">Delete</button>
+        <td><a href="#" class="btn btn-danger">Delete</a></td>
+
                         
-                    </td>
                 </tr>
             {% endfor %}
         </tbody>
