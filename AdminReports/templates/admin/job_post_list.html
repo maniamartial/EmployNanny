@@ -1,0 +1,35 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-center">Job Postings</h2>
+  <table class="table table-stripped">
+    <thead style="background-color: rgb(128, 167, 128);">
+      <tr>
+        <th scope="col">Job Post ID</th>
+        <th>Job Category</th>
+        <th>Employer</th>
+        <th>Salary</th>
+        <th>Applicants</th>
+        <th>Contract Exists</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for job_post in job_posts %}
+        <tr>
+          <td >{{ job_post.id }}</td>
+          <td>{{ job_post.category }}</td>
+          <td>{{ job_post.employer }}</td>
+          <td class="text-center">{{ job_post.salary }}</td>
+          <td class="text-center">{{ job_post.num_applicants }}</td>
+          <td class="text-center">{% if job_post.contract_exists %}Yes{% else %}No{% endif %}</td>
+          <td><a href="#" class="btn btn-danger">Delete</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'generate_nanny_report' %}" class="btn btn-primary">Download PDF</a>
+
+</div>
+{% endblock %}

@@ -16,4 +16,9 @@ urlpatterns = [
     path('download-nanny-list/', views.generate_nanny_report,
          name='generate_nanny_report'),
 
+    path('delete_nanny/<int:nanny_id>/',
+         views.delete_nanny, name='delete_nanny'),
+    path('job_posts/', views.job_post_list, name='job_post_list'),
+
+
 ]
