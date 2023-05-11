@@ -1,0 +1,69 @@
+{% extends 'jobapp/base.html' %}
+{% block content%}
+
+<div class="container">
+
+<h2 class="text-center">Contract</h2>
+    <table class="table table-striped">
+        <thead style="background-color: rgb(128, 167, 128);">
+            <tr>
+                <th>Job Category</th>
+                <th>Employer</th>
+                <th>Nanny</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+         {% for contract in contracts %}
+    <tr>
+        <td>{{ contract.job.category }}</td>
+        <td>{{ contract.employer }}</td>
+        <td>{{ contract.nanny }}</td>
+        <td>{{ contract.start_date|date:"n/j/Y" }}</td>
+        <td>{{ contract.end_date|date:"n/j/Y" }}</td>
+        <td>{{ contract.job.salary }}</td>
+        <td{% if contract.status == 'terminated' %} style="color: red;"{% elif contract.status == 'active' %} style="color: blue;"{% endif %}>{{ contract.status }}</td>
+    <td><a href="{% url 'delete_contract' contract.id %}" class="btn btn-danger">Delete</a></td>
+
+    </tr>
+{% endfor %}
+
+        </tbody>
+    </table>
+
+    <h2 class="text-center">Direct Contracts</h2>
+    <table class="table table-striped">
+        <thead style="background-color: rgb(128, 167, 128);">
+            <tr>
+                <th>Job Category</th>
+                <th>Employer</th>
+                <th>Nanny</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for direct_contract in direct_contracts %}
+            <tr>
+                <td>{{ direct_contract.job_category }}</td>
+                <td>{{ direct_contract.employer }}</td>
+                <td>{{ direct_contract.nanny }}</td>
+                <td>{{ direct_contract.start_date|date:"n/j/Y" }}</td>
+                <td>{{ direct_contract.end_date|date:"n/j/Y" }}</td>
+                <td>{{ direct_contract.salary }}</td>
+        <td{% if direct_contract.status == 'terminated' %} style="color: red;"{% elif direct_contract.status == 'active' %} style="color: blue;" {% elif direct_contract.status == 'accepted' %} style="color: blue;"{% endif %}>{{ direct_contract.status }}</td>
+    <td><a href="{% url 'delete_direct_contract' direct_contract.id %}" class="btn btn-danger">Delete</a></td>
+    </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'generate_contract_pdf' %}" class="btn btn-primary">Download</a>
+</div>
+    {% endblock content%}

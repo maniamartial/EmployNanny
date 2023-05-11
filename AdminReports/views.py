@@ -1,7 +1,12 @@
+from django.shortcuts import get_object_or_404
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from django.views.generic import View
 from jobapp.models import jobModel
 from django.contrib import messages
 from datetime import datetime
-from jobapp.models import JobApplication, jobModel, ContractModel
+from jobapp.models import JobApplication, jobModel, ContractModel, DirectContract
 from users.models import NannyDetails
 from reportlab.pdfgen import canvas
 from jobapp.models import jobModel, ContractModel
@@ -12,7 +17,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
-from tablib import Dataset
 from .resources import PaymentResource
 from xhtml2pdf import pisa
 from django.views import View
@@ -22,7 +26,6 @@ from payment.models import Payment
 from django.db.models import Sum
 # Create your views here.
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
 
 
 def transaction_list(request):
@@ -104,10 +107,9 @@ def employers_list(request):
 
 
 def delete_employer(request, user_id):
-    if request.method == 'POST':
-        user = User.objects.get(pk=user_id)
-        user.delete()
-        return redirect('employer_list')
+    user = User.objects.get(pk=user_id)
+    user.delete()
+    return redirect('employer_list')
 
 
 # download pdf
@@ -193,23 +195,6 @@ def nanny_list(request):
     return render(request, 'admin/nanny_list.html', context)
 
 
-'''for nanny_detail in nanny_details:
-        job_applications = JobApplication.objects.filter(
-            nanny=nanny_detail.user)
-        contracts = ContractModel.objects.filter(
-            nanny=nanny_detail.user, status='active')
-
-        nanny_info.append({
-            'first_name': nanny_detail.first_name,
-            'last_name': nanny_detail.last_name,
-            'id_number': nanny_detail.id_number,
-            'date_joined': nanny_detail.date_joined,
-            'jobs_applied_for': job_applications.count(),
-            'contract_exists': True if contracts.exists() else False,
-        })
-'''
-
-
 def generate_nanny_report(request):
     # Get the nanny data
     nanny_details = NannyDetails.objects.filter(user__groups__name='nanny')
@@ -271,49 +256,15 @@ def generate_nanny_report(request):
 # delete nanny
 
 
-def delete_nanny(request, nanny_id):
-    try:
-        # Get the nanny object from the database
-        nanny = NannyDetails.objects.get(id=nanny_id)
+def delete_nanny(request, id):
+    nanny = get_object_or_404(NannyDetails, id=id)
 
-        # Delete the nanny from the database
-        nanny.delete()
-
-        # Redirect to the nanny list page with a success message
-        messages.success(request, "Nanny deleted successfully.")
-        return redirect('nanny_list')
-
-    except NannyDetails.DoesNotExist:
-        # If the nanny with the specified ID doesn't exist, show an error message
-        messages.error(request, "Nanny does not exist.")
-        return redirect('nanny_list')
+    # if request.method == 'POST':
+    nanny.delete()
+    return redirect('nanny_list')
 
 
 # display all the job posted and applications
-
-'''
-def job_post_list(request):
-    job_posts = jobModel.objects.all()
-    job_post_info = []
-    for job_post in job_posts:
-        job_applicants = JobApplication.objects.filter(job=job_post)
-        print(job_applicants.count())
-        active_contract = ContractModel.objects.filter(
-            job=job_post, status="active")
-        print(True if active_contract.exists() else False)
-
-        job_post_info.append({
-            "job_applicants": job_applicants.count(),
-            "active_contract": True if active_contract.exists() else False,
-        })
-
-    context = {
-        'job_posts': job_posts,
-        "job_post_info": job_post_info,
-    }
-    return render(request, 'admin/job_post_list.html', context)'''
-
-
 def job_post_list(request):
     job_posts = jobModel.objects.all()
     for job_post in job_posts:
@@ -325,8 +276,6 @@ def job_post_list(request):
 
 
 # generate job_list report
-
-
 def generate_job_post_report(request):
     # Get the job post data
     job_posts = jobModel.objects.all()
@@ -383,3 +332,126 @@ def generate_job_post_report(request):
     p.showPage()
     p.save()
     return response
+
+
+# Display all the contracts available
+
+
+def display_contracts(request):
+    contracts = ContractModel.objects.all()
+    direct_contracts = DirectContract.objects.all()
+    context = {
+        'contracts': contracts,
+        'direct_contracts': direct_contracts
+    }
+    return render(request, 'admin/contract_lists.html', context)
+
+
+# download pdf
+
+
+def generate_contract_pdf(request):
+    # Create a file object to write the PDF to
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="contracts.pdf"'
+
+    # Create a canvas object to draw on
+    pdf_canvas = canvas.Canvas(response, pagesize=letter)
+
+    # Define styles for the table header and rows
+    table_header_style = ('Helvetica-Bold', 12)
+    table_row_style = ('Helvetica', 10)
+
+    # Draw the contracts table
+    pdf_canvas.setFont(*table_header_style)
+    pdf_canvas.drawString(1*inch, 10*inch, 'Contracts')
+    pdf_canvas.setFont(*table_row_style)
+    y = 9.5*inch
+
+    # Add table headers
+    pdf_canvas.setFont("Helvetica-Bold", 11)
+    pdf_canvas.drawString(1*inch, y, 'Job Category')
+    pdf_canvas.drawString(2.5*inch, y, 'Employer')
+    pdf_canvas.drawString(4*inch, y, 'Nanny')
+    pdf_canvas.drawString(5.5*inch, y, 'Start Date')
+    pdf_canvas.drawString(6.5*inch, y, 'Status')
+    pdf_canvas.drawString(7.5*inch, y, 'Salary')
+    y -= 0.25*inch
+
+    # Add line after headers
+    pdf_canvas.line(1*inch, y, 8.5*inch, y)
+    y -= 0.25*inch
+
+    for contract in ContractModel.objects.all():
+        pdf_canvas.setFont("Helvetica", 10)
+        pdf_canvas.drawString(1*inch, y, contract.job.category)
+        pdf_canvas.drawString(2.5*inch, y, str(contract.employer))
+
+        pdf_canvas.drawString(4*inch, y, str(contract.nanny))
+        pdf_canvas.drawString(5.5*inch, y, str(contract.start_date))
+        if contract.status == 'terminated':
+            pdf_canvas.setFillColor(colors.red)
+        elif contract.status == 'active':
+            pdf_canvas.setFillColor(colors.blue)
+        pdf_canvas.drawString(6.5*inch, y, contract.status)
+        pdf_canvas.setFillColor(colors.black)
+        pdf_canvas.drawString(7.5*inch, y, str(contract.job.salary))
+
+        y -= 0.25*inch
+
+    # Draw the direct contracts table
+    pdf_canvas.setFont(*table_header_style)
+    pdf_canvas.drawString(1*inch, y-0.25*inch, 'Direct Contracts')
+    pdf_canvas.setFont(*table_row_style)
+    y -= 0.75*inch
+    # Add table headers
+    pdf_canvas.setFont("Helvetica-Bold", 11)
+    pdf_canvas.drawString(1*inch, y, 'Job Category')
+    pdf_canvas.drawString(2.5*inch, y, 'Employer')
+    pdf_canvas.drawString(4*inch, y, 'Nanny')
+    pdf_canvas.drawString(5.5*inch, y, 'Start Date')
+    pdf_canvas.drawString(6.5*inch, y, 'Status')
+    pdf_canvas.drawString(7.5*inch, y, 'Salary')
+    y -= 0.25*inch
+
+    # Add line after headers
+    pdf_canvas.line(1*inch, y, 8.5*inch, y)
+    y -= 0.25*inch
+    for direct_contract in DirectContract.objects.all():
+        pdf_canvas.setFont("Helvetica", 10)
+
+        pdf_canvas.drawString(1*inch, y, direct_contract.job_category)
+        pdf_canvas.drawString(2.5*inch, y, str(direct_contract.employer))
+        pdf_canvas.drawString(
+            4*inch, y, str(direct_contract.nanny))
+
+        pdf_canvas.drawString(5.5*inch, y, str(direct_contract.start_date))
+        if direct_contract.status == 'terminated':
+            pdf_canvas.setFillColor(colors.red)
+        elif direct_contract.status == 'active':
+            pdf_canvas.setFillColor(colors.blue)
+        elif direct_contract.status == 'accepted':
+            pdf_canvas.setFillColor(colors.blue)
+        pdf_canvas.drawString(6.5*inch, y, direct_contract.status)
+        pdf_canvas.setFillColor(colors.black)
+        pdf_canvas.drawString(7.5*inch, y, str(direct_contract.salary))
+
+        y -= 0.25*inch
+
+    # Save the PDF to the response
+    pdf_canvas.save()
+
+    return response
+
+
+# delete contract
+def delete_contract(request, id):
+    contract = ContractModel.objects.get(id=id)
+    contract.delete()
+    return redirect('display_contract')
+
+
+def delete_direct_contract(request, id):
+    direct_contract = DirectContract.objects.get(id=id)
+    direct_contract.delete()
+    return redirect('display_contracts')
