@@ -1,3 +1,7 @@
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.admin.models import LogEntry
+from io import BytesIO
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from reportlab.lib.units import inch
 from reportlab.lib import colors
@@ -455,3 +459,102 @@ def delete_direct_contract(request, id):
     direct_contract = DirectContract.objects.get(id=id)
     direct_contract.delete()
     return redirect('display_contracts')
+
+
+# Create employer details about contract
+
+
+@login_required
+def employer_payments(request):
+    payments = Payment.objects.filter(user=request.user, status='success')
+    total_amount = payments.aggregate(Sum('amount'))['amount__sum']
+    context = {
+        'payments': payments,
+        'total_amount': total_amount,
+    }
+    return render(request, 'admin/employer_payment_history.html', context)
+
+
+# Download teh employer pdf payments history
+
+
+@login_required
+def employer_payment_history_pdf(request):
+    # Retrieve the payments of the logged-in user
+    user_payments = Payment.objects.filter(user=request.user, status='success')
+
+    # Calculate the total amount of payments
+    total_amount = sum(payment.amount for payment in user_payments)
+
+    # Create a byte stream for the PDF file
+    buffer = BytesIO()
+
+    # Create the PDF object, using the BytesIO object as its "file."
+    p = canvas.Canvas(buffer)
+
+    # Set up the PDF document
+    p.setPageSize((612, 792))
+    p.setTitle("Employer Payment History")
+
+    # Set up the heading
+    p.setFont("Helvetica-Bold", 16)
+    p.drawCentredString(300, 700, str(
+        request.user.username) + " Transaction History")
+    p.line(50, 685, 550, 685)
+
+    # Set up the table headers
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, 660, "Payment Date")
+    p.drawString(150, 660, "Phone Number")
+    p.drawString(300, 660, "Amount")
+    p.drawString(450, 660, "Description")
+    p.line(50, 655, 550, 655)
+
+    # Set up the table rows
+    p.setFont("Helvetica", 12)
+    y = 630
+    for payment in user_payments:
+        p.drawString(50, y, payment.timestamp.strftime("%Y-%m-%d"))
+        p.drawString(150, y, str(payment.phone_number))
+        p.drawString(300, y, str(payment.amount))
+        p.drawString(450, y, payment.description)
+        y -= 25
+
+    # Set up the total amount
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(300, y - 25, "Total Amount:")
+    p.drawString(450, y - 25, str(total_amount))
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    return HttpResponse(buffer, content_type="application/pdf")
+
+
+# user logs activity
+
+
+@login_required
+def user_activity_logs(request):
+    logs = LogEntry.objects.all().order_by(
+        '-action_time')[:50]  # Get the last 50 logs
+    logs_data = []
+    for log in logs:
+        content_type = ContentType.objects.get_for_id(log.content_type_id)
+        logs_data.append({
+            'user': log.user,
+            'action_time': log.action_time,
+            'content_type': content_type,
+            'object_repr': log.object_repr,
+            'action_flag': log.get_action_flag_display(),
+            'change_message': log.change_message
+        })
+    context = {'logs_data': logs_data}
+    return render(request, 'admin/user_activity_logs.html', context)
+
+
+#nanny payroll report

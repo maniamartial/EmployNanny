@@ -1,0 +1,15 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1>Post Review</h1>
+    <p>Enter your review for {{ contract.nanny }}:</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+{% endblock %}

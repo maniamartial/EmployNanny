@@ -1,3 +1,5 @@
+from .form import ReviewForm
+from .models import Rating
 from django.shortcuts import render, redirect, get_object_or_404
 from Notifications.models import Notification
 from django.template.loader import render_to_string
@@ -536,9 +538,11 @@ def end_contract(request, contract_id):
     notification = Notification(
         user=contract.nanny.user, title=subject, message=message)
     notification.save()
+    return redirect('post_review', contract_id=contract_id)
 
-    messages.success(request, "Contract has been terminated successfully")
-    return redirect("view_all_contracts")
+   # return redirect('job_detail', job_id=job_id)
+    #messages.success(request, "Contract has been terminated successfully")
+    # return redirect("view_all_contracts")
 
 
 # Employers to send a direct contract from the nannies available
@@ -668,3 +672,85 @@ def end_direct_contract(request, contract_id):
     notification.save()
 
     return redirect("view_all_contracts")
+
+
+# Review
+
+
+@login_required
+def post_review(request, contract_id):
+    contract = get_object_or_404(ContractModel, pk=contract_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data['stars']
+            comment = form.cleaned_data['comment']
+            employer = request.user
+            nanny = contract.nanny
+            review = Rating.objects.create(
+                reviewer=employer,
+                receiver=nanny.user,
+                stars=rating,
+                comment=comment,
+            )
+
+            messages.success(request, "Your review has been posted!")
+            return redirect('home')
+    else:
+        form = ReviewForm()
+
+    # send email to nanny
+    subject = 'Give review'
+    message = f'Hello {contract.nanny.first_name},\n\nThe contract with {contract.employer} needs a review. Please click on the following link to go to your dashboard and accept or reject the contract:\n\n<a href="http://127.0.0.1:8000/post_review_nanny/{contract.id}/">Accept or reject the contract</a>.\n\nBest regards,\nEmployNanny'
+    send_mail(
+        subject,
+        message,
+        'noreply@nannyagency.com',
+        [contract.nanny.user.email],
+        fail_silently=False,
+    )
+    notification = Notification(
+        user=contract.nanny.user, title=subject, message=message)
+    notification.save()
+    context = {
+        'form': form,
+        'contract': contract,
+    }
+    return render(request, 'jobapp/post_review.html', context)
+
+
+@login_required
+def post_review_nanny(request, contract_id):
+    contract = get_object_or_404(ContractModel, pk=contract_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data['stars']
+            comment = form.cleaned_data['comment']
+            nanny = request.user
+            nanny = contract.nanny.user
+            review = Rating.objects.create(
+                reviewer=request.user,
+                receiver=contract.employer,
+                stars=rating,
+                comment=comment,
+            )
+
+            messages.success(request, "Your review has been posted!")
+            return redirect('home')
+    else:
+        form = ReviewForm()
+
+    context = {
+        'form': form,
+        'contract': contract,
+    }
+    return render(request, 'jobapp/post_review.html', context)
+
+
+# display ratings and feedback
+@login_required
+def display_reviews(request):
+    ratings = Rating.objects.filter(receiver=request.user)
+    context = {'ratings': ratings}
+    return render(request, 'jobapp/reviews.html', context)

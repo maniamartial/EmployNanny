@@ -30,6 +30,13 @@ urlpatterns = [
     path('direct_contracts/delete/<int:id>/',
          views.delete_direct_contract, name='delete_direct_contract'),
 
+    path("employer_payment_report", views.employer_payments,
+         name="employer_payment_report"),
+
+    path('employer_payment_history_pdf/', views.employer_payment_history_pdf,
+         name='employer_payment_history_pdf'),
+    path('user-activity-logs/', views.user_activity_logs,
+         name='user_activity_logs'),
 
 
 ]

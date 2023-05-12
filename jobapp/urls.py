@@ -88,4 +88,13 @@ urlpatterns = [
     path('direct-contract/<int:contract_id>/end/',
          views.end_direct_contract, name='end_direct_contract'),
 
+    # post review
+    path('post_review/<int:contract_id>/',
+         views.post_review, name='post_review'),
+
+    path('post_review_nanny/<int:contract_id>/',
+         views.post_review_nanny, name='post_review_nanny'),
+
+    path("reviews", views.display_reviews, name="display_reviews")
+
 ]
