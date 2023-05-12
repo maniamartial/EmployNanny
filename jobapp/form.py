@@ -1,3 +1,4 @@
+from .models import Rating
 from .models import DirectContract
 from django import forms
 from .models import jobModel, ContractModel
@@ -63,3 +64,27 @@ class DirectContractForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'})
         }
+
+
+#Ratings and comments
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ('stars', 'comment')
+
+    stars = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'min': 1,
+            'max': 5,
+            'placeholder': 'Enter rating (1-5)'
+        })
+    )
+    comment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your comment'
+        })
+    )

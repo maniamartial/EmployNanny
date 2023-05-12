@@ -1,3 +1,4 @@
+from .models import Rating
 from django.contrib import admin
 from .models import jobModel, ContractModel, JobApplication, DirectContract
 
@@ -18,7 +19,12 @@ class DirectContractAdmin(admin.ModelAdmin):
     list_display = ('employer', 'nanny', 'city', 'start_date')
 
 
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('reviewer', 'stars')
+
+
 admin.site.register(jobModel, PostJobdmin)
 admin.site.register(ContractModel, ContractAdmin)
 admin.site.register(JobApplication, JobApplicationAdmin)
 admin.site.register(DirectContract, DirectContractAdmin)
+admin.site.register(Rating, RatingAdmin)

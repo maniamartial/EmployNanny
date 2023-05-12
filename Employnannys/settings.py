@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'payment',
     'users',
     'messaging',
-    'AdminReports'
+    'AdminReports',
+    'django.contrib.humanize',
+
 
 
 ]

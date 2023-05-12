@@ -148,3 +148,28 @@ class DirectContract(models.Model):
         self.company_commission = int(self.salary * 0.1)
 
         super().save(*args, **kwargs)
+
+
+#Reviews and ratings
+
+
+class Rating(models.Model):
+    STARS_CHOICES = (
+        (1, '1 star'),
+        (2, '2 stars'),
+        (3, '3 stars'),
+        (4, '4 stars'),
+        (5, '5 stars'),
+    )
+
+    reviewer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews_given')
+    receiver = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews_received')
+    stars = models.PositiveSmallIntegerField(choices=STARS_CHOICES)
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.reviewer)
+        #abstract = True

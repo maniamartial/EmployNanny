@@ -1,0 +1,34 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-center">{{request.user}} Transaction History</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Phone Number</th>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Paid</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in payments %}
+        <tr>
+          <td>{{ payment.timestamp|date:'n/j/Y' }}</td>
+          <td>{{ payment.phone_number }}</td>
+          <td>{{ payment.amount }}</td>
+          <td>{{ payment.description }}</td>
+          <td>N/A</td>
+        </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="2"><strong>Total Amount Paid:</strong></td>
+        <td colspan="2"><strong>{{ total_amount }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+<a href="{% url 'employer_payment_history_pdf' %}" class="btn btn-primary" download>Download Payment History</a>
+</div>
+{% endblock %}
