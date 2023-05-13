@@ -1,18 +1,42 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
-
+{% load custom_filters %}
 <div class="container">
-  <h2 class="text-center">My Ratings</h2>
-  {% if ratings %}
-    <ul>
-      {% for rating in ratings %}
-        <li>{{ rating.stars }} stars - {{ rating.comment }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>You have not received any ratings yet.</p>
-  {% endif %}
-
+  <h2 class="text-center">Testimonials and Reviews</h2>
+<div class="center text-center mb-4">    
+    <p class="d-inline">Average Rating:</p>
+<ul class="list-unstyled mt-3 mb-4 d-inline-flex">
+  {% for i in avg_stars|range_filter %}
+    <li><i class="fas fa-star text-warning"></i></li>
+  {% endfor %}
+</ul>
 </div>
+   
+  <div class="row">
+    {% for rating in ratings %}
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ rating.reviewer.username }}</h4>
+          </div>
+          <div class="card-body">
+              <ul class="list-unstyled mt-3 mb-4 d-flex">
+              {% for i in rating.stars|range_filter %}
+                <li><i class="fas fa-star text-warning"></i></li>
+              {% endfor %}
+            </ul>
+            <p class="card-text">{{ rating.comment }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+ 
+</div>
+<style>
+  .d-flex li {
+    display: inline-block;
+  }
+</style>
 {% endblock %}

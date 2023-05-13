@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from .models import Rating
 from .models import DirectContract
 from django import forms
@@ -75,13 +76,16 @@ class ReviewForm(forms.ModelForm):
         fields = ('stars', 'comment')
 
     stars = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',
-            'min': 1,
-            'max': 5,
-            'placeholder': 'Enter rating (1-5)'
-        })
+        widget=forms.HiddenInput(attrs={'id': 'star-rating'}),
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
+
+    class Media:
+        css = {
+            'all': ('css/star-rating.css',)
+        }
+        js = ('js/star-rating.js',)
+
     comment = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'form-control',

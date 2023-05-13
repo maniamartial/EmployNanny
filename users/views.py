@@ -1,3 +1,4 @@
+from jobapp.models import Rating
 from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.core.exceptions import ObjectDoesNotExist
@@ -102,14 +103,21 @@ def nanny_verification_details(request):
 
 
 # show specified nanny profile with all the details
+
+
 def nanny_profile(request, nanny_id):
-    # check if the nanny has nannyDetails, if not show 404 page
     try:
         nanny = NannyDetails.objects.get(id=nanny_id)
     except ObjectDoesNotExist:
         return render(request, 'users/404.html')
+
+    ratings = Rating.objects.filter(receiver=nanny.user)
+    # Calculate the average rating of the nanny
+
     context = {
-        "nanny": nanny
+        "nanny": nanny,
+        "ratings": ratings,
+        "ratings": ratings
     }
     return render(request, 'users/nannyProfile.html', context)
 

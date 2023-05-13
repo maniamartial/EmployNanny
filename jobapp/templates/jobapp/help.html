@@ -1,0 +1,174 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+
+<style>
+.fa, .fas{
+    color:rgb(128, 167, 128);
+}
+a {
+  text-decoration: none;
+}
+</style>
+<div class="help-banner" style="min-height: 200px; background: rgb(128, 167, 128);">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h2 class="text-light">Welcome to Support</h2>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-md-6 offset-md-3">
+        <form method="get" action="#">
+          <div class="input-group">
+            <input type="text" name="query" class="form-control form-control-lg rounded-pill" placeholder="Search for help topics...">
+            <div class="input-group-append">
+              <button class="btn btn-primary btn-lg rounded-pill" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container ">
+  <h3 class="text-center mb-4">Recommended Topics</h3>
+  <div class="row">
+ <div class="col-md-4 mb-4">
+  <div class="card">
+    <div class="card-body text-center">
+      <a href="#" data-toggle="modal" data-target="#applyJobsModal" style="text-decoration: none;">
+        <i class="fa fa-briefcase fa-3x mb-3"></i>
+        <h5 class="card-title">Apply Jobs</h5>
+        <p class="card-text">Learn how to apply to jobs and increase your chances of getting hired.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="applyJobsModal" tabindex="-1" role="dialog" aria-labelledby="applyJobsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="applyJobsModalLabel">Apply Jobs</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% include "home/nanny_how_it_works.html"%}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="col-md-4 mb-4">
+      <div class="card">
+ <a href="#" class="#" data-toggle="modal" data-target="#exampleModal" style="text-decoration:none">
+            <div class="card-body text-center">
+            <i class="fas fa-clipboard-check fa-3x mb-3"></i>
+          <h5 class="card-title">Post Jobs</h5>
+          <p class="card-text">Find out how to post job openings and attract qualified candidates.</p>
+        </div>
+    </a>
+      </div>
+    </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">How to Post Jobs</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% include "home/employer_how_it_works.html" %}
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card ">
+        <div class="card-body text-center">
+          <i class="fa fa-credit-card fa-3x mb-3"></i>
+          <h5 class="card-title">Payments</h5>
+          <p class="card-text">Get help with payment-related issues and transactions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa fa-user fa-3x mb-3"></i>
+          <h5 class="card-title">Your Profile</h5>
+          <p class="card-text">Manage your profile and make it stand out to potential employers.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa fa-file-contract fa-3x mb-3"></i>
+          <h5 class="card-title">Contracts Issues</h5>
+          <p class="card-text">Resolve issues related to contracts and agreements with employers.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fa fa-lock fa-3x mb-3"></i>
+          <h5 class="card-title">Data and Privacy</h5>
+          <p class="card-text">Understand our policies on data and privacy protection.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--suggested topics-->
+<div class="container mt-5" style="max-width:65%">
+  <h3>Suggested Articles</h3>
+  <hr>
+  <div class="row">
+    <div class="col-md-6">
+      <h5><a href="#">How to write an effective job post</a></h5>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla malesuada 
+        quam sed nibh semper, non ullamcorper ipsum bibendum. Vivamus aliquet neque 
+        ac felis lacinia, in tincidunt elit dictum. Duis ut ultrices elit.</p>
+    </div>
+    <div class="col-md-6">
+      <h5><a href="#">Tips for improving your profile visibility</a></h5>
+      <p>Integer vel augue suscipit, tristique risus eget, faucibus felis. Maecenas
+         sit amet eleifend velit. Donec semper eros eu elit sagittis, quis aliquam lacus venenatis.</p>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h5><a href="#">Common issues with job applications and how to solve them</a></h5>
+      <p>Nam imperdiet libero ac fermentum bibendum. Ut non aliquam velit, sed interdum tellus. 
+        Donec sit amet ante ullamcorper, laoreet mauris vel, dictum mauris. Vestibulum quis vestibulum ex, 
+        quis feugiat magna. Ut porttitor nunc sit amet lacus pellentesque, quis pretium eros cursus.</p>
+    </div>
+    <div class="col-md-6">
+      <h5><a href="#">How to handle disputes and issues with contracts</a></h5>
+      <p>Nulla porttitor dui vel turpis fringilla suscipit. Duis eu neque et quam congue luctus a a nunc. 
+        Integer eget turpis non metus aliquet feugiat ac in tortor. Nam at pulvinar justo.</p>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

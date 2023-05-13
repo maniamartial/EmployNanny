@@ -3,6 +3,7 @@
 {% block content %}
 {% load static %}
 {% load myfilters %}
+{% load  custom_filters%}
 
 <style>
 .profile-image{
@@ -31,6 +32,7 @@
     </div>
   </div>
 </div>
+
   <div class="col-md-8">
     <div class="card">
       <div class="card-body">
@@ -64,6 +66,45 @@
         </div>
       </div>
     </div>
+    <!--Ratings and reviews-->
+    <div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Ratings and Reviews</h5>
+    {% if ratings %}
+  <table class="table table-striped">
+    <thead >
+      <tr>
+        <th>Star Rating</th>
+        <th>Reviewer</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rating in ratings %}
+        <tr>
+          <td> <ul class="list-unstyled mt-3 mb-4 d-flex">
+              {% for i in rating.stars|range_filter %}
+                <li><i class="fas fa-star text-warning"></i></li>
+              {% endfor %}
+            </ul></td>
+          <td>{{ rating.reviewer }}</td>
+          <td>{{ rating.comment }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No ratings or reviews yet.</p>
+{% endif %}
+
   </div>
+</div>
+
+  </div>
+
+  
+
+
+
 </div>
 {% endblock content %}

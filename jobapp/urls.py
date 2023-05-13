@@ -95,6 +95,7 @@ urlpatterns = [
     path('post_review_nanny/<int:contract_id>/',
          views.post_review_nanny, name='post_review_nanny'),
 
-    path("reviews", views.display_reviews, name="display_reviews")
+    path("reviews", views.display_reviews, name="display_reviews"),
+    path('help', views.help, name="help")
 
 ]
