@@ -1,15 +1,87 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
+{% load custom_filters %}
   <div class="container">
     <h1>Post Review</h1>
     <p>Enter your review for {{ contract.nanny }}:</p>
 
     <form method="post">
       {% csrf_token %}
-      {{ form.as_p }}
+      <div class="form-group">
+        <label for="{{ form.stars.id_for_label }}">Rating:</label>
+        <div class="rating">
+          {% for i in "12345"|make_list %}
+            {% if form.stars.value|default:""|add:""|int >= i %}
+              <span class="fa fa-star checked" data-star="{{ i }}"></span>
+            {% else %}
+              <span class="fa fa-star" data-star="{{ i }}"></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {{ form.stars }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.comment.id_for_label }}">Comment:</label>
+        {{ form.comment }}
+      </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
+
+  <script>
+    var ratingStars = document.querySelectorAll('.rating .fa-star');
+
+    ratingStars.forEach(function(star) {
+      star.addEventListener('click', function() {
+        var starsContainer = this.parentElement;
+        var starsInput = starsContainer.nextElementSibling;
+        var starsCount = parseInt(this.getAttribute('data-star'));
+        starsInput.value = starsCount;
+        for (var i = 0; i < ratingStars.length; i++) {
+          if (i < starsCount) {
+            ratingStars[i].classList.add('checked');
+          } else {
+            ratingStars[i].classList.remove('checked');
+          }
+        }
+      });
+      
+      star.addEventListener('mouseover', function() {
+        var starsCount = parseInt(this.getAttribute('data-star'));
+        for (var i = 0; i < ratingStars.length; i++) {
+          if (i < starsCount) {
+            ratingStars[i].classList.add('hover');
+          } else {
+            ratingStars[i].classList.remove('hover');
+          }
+        }
+      });
+      
+      star.addEventListener('mouseout', function() {
+        for (var i = 0; i < ratingStars.length; i++) {
+          ratingStars[i].classList.remove('hover');
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .rating {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fa-star {
+      font-size: 24px;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .checked, .hover {
+      color: #fcd800;
+    }
+  </style>
 {% endblock %}

@@ -20,7 +20,7 @@ class DirectContractAdmin(admin.ModelAdmin):
 
 
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ('reviewer', 'stars')
+    list_display = ('reviewer', 'receiver', 'stars')
 
 
 admin.site.register(jobModel, PostJobdmin)

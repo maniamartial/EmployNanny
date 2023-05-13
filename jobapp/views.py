@@ -1,3 +1,4 @@
+import math
 from .form import ReviewForm
 from .models import Rating
 from django.shortcuts import render, redirect, get_object_or_404
@@ -749,8 +750,23 @@ def post_review_nanny(request, contract_id):
 
 
 # display ratings and feedback
+
+
 @login_required
 def display_reviews(request):
     ratings = Rating.objects.filter(receiver=request.user)
-    context = {'ratings': ratings}
+    total_stars = 0
+    num_reviews = len(ratings)
+    for rating in ratings:
+        total_stars += rating.stars
+    if num_reviews > 0:
+        avg_stars = math.ceil(total_stars / num_reviews)
+    else:
+        avg_stars = None
+    context = {'ratings': ratings, 'avg_stars': avg_stars}
     return render(request, 'jobapp/reviews.html', context)
+
+
+# help page
+def help(request):
+    return render(request, "jobapp/help.html")
