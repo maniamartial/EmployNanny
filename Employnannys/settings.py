@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'jobapp',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'messaging',
     'AdminReports',
     'django.contrib.humanize',
+
 
 
 
@@ -83,7 +85,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Employnannys.wsgi.application'
 ASGI_APPLICATION = 'Employnannys.asgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -91,12 +92,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
 
@@ -108,6 +103,22 @@ CHANNEL_LAYERS = {
         },
     },
 }'''
+
+'''CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}'''
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
