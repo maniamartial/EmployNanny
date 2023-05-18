@@ -1,11 +1,43 @@
-<!-- chat/templates/chat/index.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-</head>
-<body>
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="chat-container">
+        <h3>Select Receiver:</h3>
+        <select id="receiver-select" class="form-control">
+          {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <input id="room-name-input" type="text" class="form-control" placeholder="Enter Room Name">
+        <br>
+        <input id="room-name-submit" type="button" class="btn btn-primary" value="Enter Room">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelector('#room-name-input').focus();
+  document.querySelector('#room-name-input').onkeyup = function(e) {
+    if (e.keyCode === 13) {  // Enter key
+      document.querySelector('#room-name-submit').click();
+    }
+  };
+
+  document.querySelector('#room-name-submit').onclick = function(e) {
+    var receiverId = document.querySelector('#receiver-select').value;
+    var roomName = document.querySelector('#room-name-input').value;
+    window.location.pathname = '/chat/' + roomName + '/' + receiverId + '/';
+  };
+</script>
+{% endblock %}
+
+<!--
+<div class="container mt-5">
     What chat room would you like to enter?<br>
     <input id="room-name-input" type="text" size="100"><br>
     <input id="room-name-submit" type="button" value="Enter">
@@ -23,5 +55,7 @@
             window.location.pathname = '/chat/' + roomName + '/';
         };
     </script>
-</body>
-</html>
+
+
+
+-->
