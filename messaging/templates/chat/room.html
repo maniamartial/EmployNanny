@@ -5,10 +5,32 @@
   <div class="row">
     <div class="col-md-8 offset-md-2">
       <div class="chat-container">
-        <h3>Logged-in User: {{ request.user.username }}</h3>  <!-- Display the logged-in user's username -->
-        <h3>Message Receiver: {{ receiver.username }}</h3>  <!-- Display the receiver's username -->
-        <textarea id="chat-log" class="form-control" rows="10" readonly></textarea>
-        <div class="input-group mt-2">
+        <div class="receiver-profile">
+          {% if receiver.profile.picture %}
+            <img src="{{ receiver.profile.picture.url }}" class="rounded-circle receiver-picture" alt="Receiver Profile Picture">
+          {% else %}
+            <div class="avatar receiver-picture"></div>
+          {% endif %}
+          <h3 class="receiver-username">{{ receiver.username }}</h3>
+        </div>
+        <div class="chat-log-container">
+          <div class="chat-log bg-light">
+            {% for message in messages %}
+              {% if message.sender == request.user %}
+                <div class="message sender-message">
+                  <div class="message-timestamp">{{ message.timestamp|date:"H:i" }}</div>
+                  <div class="message-content">{{ message.text }}</div>
+                </div>
+              {% else %}
+                <div class="message receiver-message">
+                  <div class="message-timestamp">{{ message.timestamp|date:"H:i" }}</div>
+                  <div class="message-content">{{ message.text }}</div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="input-group fixed">
           <input id="chat-message-input" type="text" class="form-control" placeholder="Type your message...">
           <button id="chat-message-submit" class="btn btn-primary">Send</button>
         </div>
@@ -31,8 +53,23 @@
 
   chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    const chatLog = document.querySelector('#chat-log');
-    chatLog.value += (data.message + '\n');
+    const chatLog = document.querySelector('.chat-log');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    if (data.sender === '{{ request.user.username }}') {
+      messageDiv.classList.add('sender-message');
+      messageDiv.innerHTML = `
+        <div class="message-timestamp">${data.timestamp}</div>
+        <div class="message-content">${data.message}</div>
+      `;
+    } else {
+      messageDiv.classList.add('receiver-message');
+      messageDiv.innerHTML = `
+        <div class="message-timestamp">${data.timestamp}</div>
+        <div class="message-content">${data.message}</div>
+      `;
+    }
+    chatLog.appendChild(messageDiv);
     chatLog.scrollTop = chatLog.scrollHeight;
   };
 
@@ -58,69 +95,78 @@
     }));
     messageInput.value = '';
   });
+
+  window.addEventListener('load', function() {
+    const chatLogContainer = document.querySelector('.chat-log-container');
+    chatLogContainer.scrollTop = chatLogContainer.scrollHeight;
+  });
 </script>
+
+<style>
+  .message {
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+
+  .receiver-message {
+    text-align: right;
+    background-color: #DCF8C6; /* Green background for sender's messages */
+    margin-left: 20%;
+  }
+
+  .sender-message {
+    text-align: left;
+    background-color: #f0f0f0; /* Grey background for receiver's messages */
+    margin-right: 20%;
+  }
+
+  .message-timestamp {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+  }
+
+  .message-content {
+    padding: 4px;
+  }
+
+  .receiver-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .receiver-picture {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #ccc; /* Grey background for avatar */
+    margin-bottom: 10px;
+  }
+
+  .receiver-username {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .chat-log-container {
+    height: 500px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+
+  input-group.fixed {
+    position: fixed;
+  
+  }
+</style>
 {% endblock %}
-
-
-
-
-<!--
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="chat-container">
-        <textarea id="chat-log" class="form-control" rows="10" readonly></textarea>
-        <div class="input-group mt-2">
-          <input id="chat-message-input" type="text" class="form-control" placeholder="Type your message...">
-          <button id="chat-message-submit" class="btn btn-primary">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-{{ room_name|json_script:"room-name" }}
-<script>
-  const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
-  const chatSocket = new WebSocket(
-    'ws://'
-    + window.location.host
-    + '/ws/chat/'
-    + roomName
-    + '/'
-  );
-
-  chatSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    const chatLog = document.querySelector('#chat-log');
-    chatLog.value += (data.message + '\n');
-    chatLog.scrollTop = chatLog.scrollHeight;
-  };
-
-  chatSocket.onclose = function(e) {
-    console.error('Chat socket closed unexpectedly');
-  };
-
-  const messageInput = document.querySelector('#chat-message-input');
-  const messageSubmit = document.querySelector('#chat-message-submit');
-
-  messageInput.focus();
-  messageInput.addEventListener('keyup', function(event) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      messageSubmit.click();
-    }
-  });
-
-  messageSubmit.addEventListener('click', function(event) {
-    const message = messageInput.value;
-    chatSocket.send(JSON.stringify({
-      'message': message
-    }));
-    messageInput.value = '';
-  });
-</script>
-
-
--->

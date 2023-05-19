@@ -1,9 +1,10 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Conversation, Message
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from asgiref.sync import sync_to_async
+
+from .models import Message
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -15,13 +16,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
-        # Create a conversation or retrieve an existing one
-        conversation, created = await sync_to_async(Conversation.objects.get_or_create)(participants=self.sender)
-        participants = await sync_to_async(conversation.participants.all)()
-        if self.receiver_id not in participants.values_list('id', flat=True):
-            receiver = await sync_to_async(User.objects.get)(id=self.receiver_id)
-            await sync_to_async(conversation.participants.set)(list(participants) + [receiver])
-
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -29,13 +23,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_text = text_data_json['message']
 
-        # Save the message in the database
-        conversation = await sync_to_async(Conversation.objects.get)(participants=self.sender)
         receiver = await sync_to_async(User.objects.get)(id=self.receiver_id)
+
+        # Save the message in the database
         message = await sync_to_async(Message.objects.create)(
-            conversation=conversation,
             sender=self.sender,
-            recipient=receiver,
+            receiver=receiver,
             text=message_text
         )
 
