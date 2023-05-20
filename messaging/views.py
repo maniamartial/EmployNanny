@@ -13,24 +13,26 @@ def room(request, room_name):
     receiver = get_user(request)  # Get the receiver, who is the logged-in user
     return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver})
 '''
+from django.shortcuts import get_object_or_404
 from .models import Message
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from jobapp.models import JobApplication
 
-
+'''
 def index(request):
     users = User.objects.all()  # Get all registered users
     return render(request, "chat/index.html", {"users": users})
+'''
 
 
-'''
-@login_required
-def room(request, room_name, receiver_id):
-    # Get the receiver using the receiver_id
-    receiver = User.objects.get(id=receiver_id)
-    return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver})
-'''
+def index(request, job_application_id):
+    job_application = get_object_or_404(JobApplication, id=job_application_id)
+    # Assuming the nanny is stored as a foreign key in the JobApplication model
+    receiver = job_application.nanny
+    # Get all registered users except the current user
+    return render(request, "chat/index.html", {"receiver": receiver})
 
 
 @login_required
