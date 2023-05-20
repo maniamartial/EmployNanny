@@ -50,7 +50,7 @@
                 </p>
                 <div class="action-buttons">
                     <button type="button" class="btn btn-primary"><a href="{% url 'nanny_profile' nanny_id=application.nanny.id %}" style="color:white">View Profile</a></button>
-                    <button type="button" class="btn btn-success">Message</button>
+    <a href="{% url 'index' job_application_id=application.id %}" class="btn btn-primary">Message</a>  <!-- Updated link -->
 <a href="{% url 'create_contract' application_id=application.id %}">
   <button type="button" class="btn btn-success">Hire</button>
 </a>

@@ -5,14 +5,9 @@
   <div class="row">
     <div class="col-md-8 offset-md-2">
       <div class="chat-container">
-        <div class="receiver-profile">
-          {% if receiver.profile.picture %}
-            <img src="{{ receiver.profile.picture.url }}" class="rounded-circle receiver-picture" alt="Receiver Profile Picture">
-          {% else %}
-            <div class="avatar receiver-picture"></div>
-          {% endif %}
-          <h3 class="receiver-username">{{ receiver.username }}</h3>
-        </div>
+       
+          <h5 class="receiver-username">{{ receiver.username }}</h5>
+        
         <div class="chat-log-container">
           <div class="chat-log bg-light">
             {% for message in messages %}
@@ -159,7 +154,7 @@
   }
 
   .chat-log-container {
-    height: 500px;
+    height: 450px;
     overflow-y: auto;
     margin-bottom: 20px;
   }

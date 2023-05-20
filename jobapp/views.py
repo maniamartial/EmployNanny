@@ -25,8 +25,9 @@ from django.db.models import Sum
 from payment.models import Payment
 from django.urls import reverse
 
-
 # Define a view function that renders the home page template
+
+
 def home(request):
     recent_jobs = jobModel.objects.order_by('-date_posted')[:3]
     featured_nannies = NannyDetails.objects.order_by('-date_joined')[:3]
@@ -275,12 +276,26 @@ def application_status(request):
 
 
 # employer able to view applicants for specific job he/she posted
-@ login_required
+'''@ login_required
 def job_applications(request, job_id):
     job = jobModel.objects.get(id=job_id)
     # filter the applicants only for the specified job ID
     job_applications = JobApplication.objects.filter(job=job)
     context = {'job': job, 'job_applications': job_applications}
+    return render(request, 'jobapp/job_applications.html', context)'''
+
+
+@login_required
+def job_applications(request, job_id):
+    job = jobModel.objects.get(id=job_id)
+    job_applications = JobApplication.objects.filter(job=job)
+    job_application_ids = [application.id for application in job_applications]
+    print("Job Application IDs:", job_application_ids)
+    # Get the nanny associated with the job application
+    receiver = job_applications.first().nanny
+
+    context = {'job': job, 'job_applications': job_applications,
+               'receiver': receiver}
     return render(request, 'jobapp/job_applications.html', context)
 
 
