@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from asgiref.sync import sync_to_async
 from django.core.mail import EmailMessage
 
-
+import uuid
 from .models import Message
 
 
@@ -13,7 +13,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.sender = self.scope['user']
         self.receiver_id = await sync_to_async(self.scope['url_route']['kwargs'].get)('receiver_id')
-        self.room_group_name = f'chat_{self.sender.id}_{self.receiver_id}'
+        #self.room_group_name = f'chat_{self.sender.id}_{self.receiver_id}'
+        self.room_group_name = str(uuid.uuid4())  # Generate a random room name
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -35,8 +36,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             receiver=receiver,
             text=message_text
         )
+        room_link = f'http://127.0.0.1:8000/chat/{self.room_group_name}/{self.sender.id}/'
         email_subject = f'New message from {self.sender.username}'
-        email_body = f'You have received a new message from {self.sender.username}:\n\n{message_text}'
+        email_body = f'You have received a new message from {self.sender.username}:\n\n{message_text}. Kindly go to <a href="{room_link}">Reply to message</a>'
         email = EmailMessage(email_subject, email_body, to=[receiver.email])
         await sync_to_async(email.send)()
 
