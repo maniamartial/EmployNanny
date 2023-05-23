@@ -2,72 +2,47 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container container-height mt-5">
   <div class="row">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8 offset-md-2 bg-light" style="width:80%">
       <div class="chat-container">
-        <h3>Select Receiver:</h3>
-        <p>Receiver: {{ receiver.user.username }}</p> <!-- Display the receiver's username -->
-        <input type="hidden" id="receiver-id" value="{{ receiver.user.id }}"> <!-- Store the receiver's ID in a hidden input field -->
-        <br>
-        <input id="room-name-input" type="text" class="form-control" placeholder="Enter Room Name">
-        <br>
-        <input id="room-name-submit" type="button" class="btn btn-primary" value="Enter Room">
+        <div class="d-flex align-items-center">
+          {% if receiver.profile_picture %}
+            <img src="{{ receiver.profile_picture.url }}" alt="{{ receiver.user.username }}" class="mr-3 user-avatar">
+          {% else %}
+            <i class="fas fa-user-circle fa-3x mr-3" style="color:rgb(128, 167, 128)"></i>
+          {% endif %}
+          
+          
+            <p class="mb-0 mr-3">{{ receiver.user.username }}</p>
+            <p class="mr-3">{{ room_name }}</p>
+          
+          
+          <input type="hidden" id="receiver-id" value="{{ receiver.user.id }}">
+          
+          <input id="room-name-submit" type="button" class="btn btn-primary" value="Enter Room">
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  document.querySelector('#room-name-input').focus();
-  document.querySelector('#room-name-input').onkeyup = function(e) {
-    if (e.keyCode === 13) {  // Enter key
-      document.querySelector('#room-name-submit').click();
-    }
-  };
-
   document.querySelector('#room-name-submit').onclick = function(e) {
     var receiverId = document.querySelector('#receiver-id').value;
-    var roomName = document.querySelector('#room-name-input').value;
+    var roomName = '{{ room_name }}';
     window.location.pathname = '/chat/' + roomName + '/' + receiverId + '/';
   };
 </script>
+
+<style>
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  .container-height{
+    min-height:500px;
+  }
+</style>
 {% endblock %}
-
-
-<!--
-
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-8 offset-md-2">
-      <div class="chat-container">
-        <h3>Select Receiver:</h3>
-        <select id="receiver-select" class="form-control">
-          {% for user in users %}
-            <option value="{{ user.id }}">{{ user.username }}</option>
-          {% endfor %}
-        </select>
-        <br>
-        <input id="room-name-input" type="text" class="form-control" placeholder="Enter Room Name">
-        <br>
-        <input id="room-name-submit" type="button" class="btn btn-primary" value="Enter Room">
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  document.querySelector('#room-name-input').focus();
-  document.querySelector('#room-name-input').onkeyup = function(e) {
-    if (e.keyCode === 13) {  // Enter key
-      document.querySelector('#room-name-submit').click();
-    }
-  };
-
-  document.querySelector('#room-name-submit').onclick = function(e) {
-    var receiverId = document.querySelector('#receiver-select').value;
-    var roomName = document.querySelector('#room-name-input').value;
-    window.location.pathname = '/chat/' + roomName + '/' + receiverId + '/';
-  };
-</script>
--->

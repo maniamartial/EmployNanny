@@ -13,6 +13,7 @@ def room(request, room_name):
     receiver = get_user(request)  # Get the receiver, who is the logged-in user
     return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver})
 '''
+import uuid  # Import the uuid module
 from django.shortcuts import get_object_or_404
 from .models import Message
 from django.shortcuts import render
@@ -27,12 +28,20 @@ def index(request):
 '''
 
 
-def index(request, job_application_id):
+'''def index(request, job_application_id):
     job_application = get_object_or_404(JobApplication, id=job_application_id)
     # Assuming the nanny is stored as a foreign key in the JobApplication model
     receiver = job_application.nanny
     # Get all registered users except the current user
-    return render(request, "chat/index.html", {"receiver": receiver})
+    return render(request, "chat/index.html", {"receiver": receiver})'''
+
+
+def index(request, job_application_id):
+
+    job_application = get_object_or_404(JobApplication, id=job_application_id)
+    receiver = job_application.nanny
+    room_name = str(uuid.uuid4())  # Generate a unique group name using uuid
+    return render(request, "chat/index.html", {"receiver": receiver, "room_name": room_name})
 
 
 @login_required
