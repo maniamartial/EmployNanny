@@ -1,0 +1,27 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container mt-5 container-min-height">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="chat-container">
+        {% if chats %}
+          {% for chat in chats %}
+            <div class="d-flex align-items-center chat-entry bg-light mt-3">
+              {% if chat.sender.profile_picture %}
+                <img src="{{ chat.sender.profile_picture.url }}" alt="{{ chat.sender.username }}" class="mr-3 user-avatar">
+              {% else %}
+                <i class="fas fa-user-circle fa-3x mr-3" style="color:rgb(128, 167, 128)"></i>
+              {% endif %}
+              <p class="mb-0 receiver-username">{{ chat.sender.username }}</p>
+              <a href="{% url 'room' room_name=chat.id receiver_id=chat.sender.id %}" class="btn btn-primary ml-auto">Enter Room</a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No chats available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

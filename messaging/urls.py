@@ -9,4 +9,5 @@ urlpatterns = [
     path('index/<int:job_application_id>/', views.index, name='index'),
 
     path("<str:room_name>/<int:receiver_id>/", views.room, name="room"),
+    path("chat_list", views.chat_list, name="chat_list")
 ]

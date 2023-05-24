@@ -1,0 +1,72 @@
+  .message {
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+  }
+
+  .sender-message {
+      text-align: right;
+      background-color: #DCF8C6;
+      /* Green background for sender's messages */
+      margin-left: 20%;
+  }
+
+  .receiver-message {
+      text-align: left;
+      background-color: #f0f0f0;
+      /* Grey background for receiver's messages */
+      margin-right: 20%;
+  }
+
+  .message-timestamp {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 4px;
+  }
+
+  .message-content {
+      padding: 4px;
+  }
+
+  .receiver-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+  }
+
+  .receiver-picture {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      margin-bottom: 10px;
+  }
+
+  .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #ccc;
+      /* Grey background for avatar */
+      margin-bottom: 10px;
+  }
+
+  .receiver-username {
+      font-size: 20px;
+      font-family: 'Roboto', sans-serif;
+      text-transform: capitalize;
+  }
+
+  .chat-log-container {
+      height: 450px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+  }
+
+  input-group.fixed {
+      position: fixed;
+
+  }
+  .container-min-height{
+    min-height: 450px;
+  }
