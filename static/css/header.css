@@ -2,12 +2,14 @@ h1,
 h2,
 h3,
 h4,
-h5,
-h6 {
+h5{
 color: #0275d8;
+font-family: 'Roboto', sans-serif;
  
 }
-
+h6{
+  font-family: 'Roboto', sans-serif;
+}
 a,
 a:hover,
 a:focus,
@@ -213,7 +215,9 @@ background-color: #0275d8;
   transition: all 0.25s ease;
 }
 #cssmenu ul ul li:hover {
+    background-color: rgb(128, 167, 128);
 }
+
 #cssmenu li:hover > ul {
   left: auto;
 }
@@ -478,5 +482,19 @@ background-color: #0275d8;
   #cssmenu > ul > li.has-sub > ul > li.active > a,
   #cssmenu > ul ul > li.has-sub > ul > li.active > a {
     border-top: none;
+  }
+}
+
+@media (max-width: 767px) {
+
+  /* Styles for small screens */
+  .menu li.active {
+    background-color: red;
+    /* Change the background color to red */
+  }
+
+  .menu li.active a {
+    color: blue;
+    /* Change the text color to blue */
   }
 }

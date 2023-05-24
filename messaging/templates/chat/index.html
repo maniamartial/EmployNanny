@@ -8,14 +8,13 @@
       <div class="chat-container">
         <div class="d-flex align-items-center">
           {% if receiver.profile_picture %}
-            <img src="{{ receiver.profile_picture.url }}" alt="{{ receiver.user.username }}" class="mr-3 user-avatar">
+            <img src="{{ receiver.profile_picture.url }}" alt="{{ receiver.user.username }}" class="mr-4 user-avatar">
           {% else %}
-            <i class="fas fa-user-circle fa-3x mr-3" style="color:rgb(128, 167, 128)"></i>
+            <i class="fas fa-user-circle fa-3x mr-4" style="color:rgb(128, 167, 128)"></i>
           {% endif %}
           
-          
-            <p class="mb-0 mr-3">{{ receiver.user.username }}</p>
-            <p class="mr-3">{{ room_name }}</p>
+            <p class="mb-0 mr-4">{{ receiver.user.username }}</p>
+            <p class="mr-4">{{ room_name }}</p>
           
           
           <input type="hidden" id="receiver-id" value="{{ receiver.user.id }}">
