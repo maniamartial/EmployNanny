@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container">
-
+<h2 class="text-center">Transactions </h2>
   <table class="table table-striped table-hover">
     <thead>
       <tr>
@@ -11,6 +11,7 @@
         <th>Amount deposited</th>
         <th>Salary for jobs</th>
         <th>Company commission</th>
+        <th>Action</th>
         
       </tr>
     </thead>
@@ -21,6 +22,7 @@
         <td>{{ payment.amount }}</td>
         <td>{{ payment.salary }}</td>
         <td>{{ payment.company_commission }}</td>
+        <td><a href="{% url 'delete_transaction' payment.id %}" class="btn btn-danger">Delete</a></td>
         
       </tr>
       {% endfor %}

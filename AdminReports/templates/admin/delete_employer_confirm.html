@@ -1,0 +1,12 @@
+{% extends 'jobapp/base.html'%}
+
+{% block content %}
+
+<div class="container">
+<form action="" metod="POST">
+{% csrf_token %}
+<button type="button" class="btn btn-danger">Delete employer</button>
+</form>
+
+</div>
+{% endblock content%}
