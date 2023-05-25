@@ -1,3 +1,6 @@
+from django.urls import reverse_lazy
+from django.views import generic
+from messaging.models import Message
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry
 from io import BytesIO
@@ -8,16 +11,12 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from django.views.generic import View
 from jobapp.models import jobModel
-from django.contrib import messages
-from datetime import datetime
 from jobapp.models import JobApplication, jobModel, ContractModel, DirectContract
 from users.models import NannyDetails
 from reportlab.pdfgen import canvas
 from jobapp.models import jobModel, ContractModel
-from django.db.models import Q
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.contrib.auth.models import User
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
@@ -30,8 +29,10 @@ from payment.models import Payment
 from django.db.models import Sum
 # Create your views here.
 from django.shortcuts import render, redirect
+from django.contrib.messages.views import SuccessMessageMixin
 
 
+# display all the transaction that took place
 def transaction_list(request):
     payments = Payment.objects.all()
     total_amount = payments.aggregate(Sum('amount'))['amount__sum']
@@ -49,6 +50,7 @@ def transaction_list(request):
     return render(request, 'admin/transaction_list.html', context)
 
 
+# Generate a pdf to the transactions
 class GeneratePdfTransactions(View):
     def get(self, request, *args, **kwargs):
         template = 'admin/transaction_list_table.html'
@@ -76,6 +78,7 @@ class GeneratePdfTransactions(View):
         return response
 
 
+# Generate an excell spreadsheet for transactions
 class ExportExcelTransactions(View):
     def get(self, request, *args, **kwargs):
         payments_resource = PaymentResource()
@@ -85,9 +88,20 @@ class ExportExcelTransactions(View):
         response['Content-Disposition'] = 'attachment; filename="payments.xls"'
         return response
 
+# Delete any transactions that took place maybe wrongly
 
+
+def delete_transaction(request, id):
+    transaction = Payment.objects.get(id=id)
+    transaction.delete()
+    return redirect('transaction_list')
+
+
+# Display the employer list
 def employers_list(request):
     employers = User.objects.filter(groups__name='employer')
+    for emp in employers:
+        print(emp.id)
     employer_info = []
 
     for employer in employers:
@@ -107,18 +121,22 @@ def employers_list(request):
     context = {'employers': employer_info}
     return render(request, 'admin/employers_list.html', context)
 
+
 # will revisit
-
-
-def delete_employer(request, user_id):
-    user = User.objects.get(pk=user_id)
+def delete_employer(request, id):
+    user = User.objects.get(id=id)
     user.delete()
     return redirect('employer_list')
 
 
+'''class DeleteEmployer(SuccessMessageMixin, generic.DeleteView):
+    model = 'user'
+    template_name = 'admin/delete_employer_confirm.html'
+    success_message = "Employer has been deleted"
+    success_url = reverse_lazy('employer_list')'''
+
+
 # download pdf
-
-
 def generate_employer_report(request):
     # Get the employer data
     employers = User.objects.filter(groups__name='employer')
@@ -175,9 +193,7 @@ def generate_employer_report(request):
     return response
 
 
-# nannylist
-
-
+# nanny_list
 def nanny_list(request):
     nanny_details = NannyDetails.objects.filter(user__groups__name='nanny')
     nanny_info = []
@@ -258,12 +274,8 @@ def generate_nanny_report(request):
 
 
 # delete nanny
-
-
 def delete_nanny(request, id):
     nanny = get_object_or_404(NannyDetails, id=id)
-
-    # if request.method == 'POST':
     nanny.delete()
     return redirect('nanny_list')
 
@@ -557,4 +569,15 @@ def user_activity_logs(request):
     return render(request, 'admin/user_activity_logs.html', context)
 
 
-#nanny payroll report
+def messages(request):
+    chats = Message.objects.all()
+    context = {
+        'chats': chats
+    }
+    return render(request, "admin/chats.html", context)
+
+
+def delete_message(request, id):
+    message = Message.objects.get(id=id)
+    message.delete()
+    return redirect('chats')

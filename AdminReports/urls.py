@@ -2,22 +2,26 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Transactions
     path('transaction_list/', views.transaction_list, name='transaction_list'),
     path('pdf/', views.GeneratePdfTransactions.as_view(), name='generate-pdf'),
     path('excel/', views.ExportExcelTransactions.as_view(), name='export-excel'),
+    path('delete_transaction/delete/<int:id>/',
+         views.delete_transaction, name="delete_transaction"),
+
+    # Employers
     path('employers/', views.employers_list, name='employers_list'),
-    path('employers/<int:user_id>/delete/',
+    path('delete_employers/<int:id>/',
          views.delete_employer, name='delete_employer'),
-
-
     path('reports/employers/pdf/', views.generate_employer_report,
          name='generate_employers_pdf'),
 
+
+    # Nannies
     path('nannies/', views.nanny_list, name="nanny_list"),
     path('download-nanny-list/', views.generate_nanny_report,
          name='generate_nanny_report'),
-
-    path('reports/nanny-list/delete/<int:id>/',
+    path('nanny-list/delete/<int:id>/',
          views.delete_nanny, name='delete_nanny'),
 
     path('job_posts/', views.job_post_list, name='job_post_list'),
@@ -37,6 +41,9 @@ urlpatterns = [
          name='employer_payment_history_pdf'),
     path('user-activity-logs/', views.user_activity_logs,
          name='user_activity_logs'),
+
+    path('chats', views.messages, name="chats"),
+    path('chat/delete<int:id>/', views.delete_message, name="delete_message")
 
 
 ]

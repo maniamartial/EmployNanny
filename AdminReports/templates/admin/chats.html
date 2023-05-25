@@ -1,0 +1,43 @@
+<!-- Messages.html -->
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container bg-light" style="min-width: 90%;">
+    <h2 class="text-center">Messages </h2>
+  <table class="table table-striped">
+    <!-- Table headers with spacing -->
+    <thead>
+      <tr>
+        <!-- Adjusted width and spacing -->
+        <th style="width: 10%; padding: 8px; background-color: #f4f4f4">Sender</th>
+        <th style="width: 10%; padding: 8px; background-color: #f4f4f4">Receiver</th>
+        
+        <th style="width: 50%; padding: 8px; background-color: #f4f4f4" class="text-center">Text</th>
+        <th style="width: 10%; padding: 8px; background-color: #f4f4f4">Timestamp</th>
+        <th style="width: 10%; padding: 8px; background-color: #f4f4f4">Seen</th>
+        <th style="width: 5%; padding: 8px; background-color: #f4f4f4">Action</th>
+
+      </tr>
+    </thead>
+    <!-- Actual table content -->
+    <tbody>
+      {% for chat in chats %}
+        <tr>
+          <td><a href="#">{{ chat.sender.username }}</a></td>
+          <td><a href="#">{{ chat.receiver.username }}</a></td>
+        
+          <td>{{ chat.text }}</td>
+            <td>{{ chat.timestamp|date:"Y/m/d" }}</td>
+          <td>{% if chat.is_seen %}Yes{% else %}No{% endif %}</td>
+           <td><a href="{% url 'delete_message' chat.id %}" class="btn btn-danger">Delete</a></td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No conversations found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
+
