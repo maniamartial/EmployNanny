@@ -3,10 +3,12 @@
 <style>
   .carousel-height{
     max-height:600px;
+    
   }
   p{
     color:black;
   }
+
 </style>
 <div id="slider-home" class="carousel slide carousel-height" data-ride="carousel" data-interval="false">
   <ul class="carousel-indicators">
@@ -16,7 +18,6 @@
     <li data-target="#slider-home" data-slide-to="3"></li>
   </ul>
   <div class="carousel-inner">
-
     <div class="carousel-item active video-player">
       <video autoplay muted loop onended="nextSlide()">
         <source src="{% static 'videos/video1.mp4' %}" type="video/mp4" />

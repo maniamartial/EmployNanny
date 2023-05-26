@@ -7,9 +7,15 @@
   text-transform: capitalize;
 }
 
+@media (max-width: 767px) {
+    .header-top {
+      display: none;
+    }
+  }
+
 </style>
 <header>
-  <div class="header-top">
+  <div class="header-top hidden-xs">
     <div class="container">
       <div class="row">
        
@@ -43,8 +49,12 @@
         </div>
         <div id="head-mobile"></div>
         <div class="button"></div>
+        <!--List of header links-->
         <ul>
-          <li class="active"><a href="{% url 'home' %}">Home</a></li>
+
+          <!--Homepage link-->
+          <li class=""><a href="{% url 'home' %}">Home</a></li>
+          
           <li>
   <a href="#">Jobs</a>
   <ul style="background-color: #0275d8">
