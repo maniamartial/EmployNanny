@@ -90,7 +90,7 @@ def make_mpesa_payment(request):
                 payment.save()
 
     context = {'form': form}
-    return render(request, 'payments/mpesa_details.html', context)
+    return render(request, 'payments/home.html', context)
 
 
 # The last page
@@ -114,3 +114,59 @@ def payment_complete(request):
 @login_required
 def paypal_payment(request):
     return render(request, "payments/paypal_payments.html")
+
+
+def payment_select(request):
+    if request.user.is_authenticated:
+        # Get the employer (authenticated user)
+        employer = request.user
+    # Create an instance of PaymentForm
+    form = PaymentForm()
+    if request.method == 'POST':
+        # If the request method is POST, bind the form to the request data
+        form = PaymentForm(request.POST)
+        # If the form is valid, create a Payment object and save it to the database
+        if form.is_valid():
+            payment = form.save(commit=False)
+            # Set the Payment object's user field to the authenticated user
+            payment.user = request.user
+            payment.save()
+            # Format the phone number and amount
+            number = '254' + str(payment.phone_number)
+            amount = payment.amount
+            # Get the Mpesa access token
+            access_token = MpesaAccessToken.validated_mpesa_access_token
+            # Set the API URL for STK Push
+            api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+            # Set the headers for the request
+            headers = {"Authorization": "Bearer %s" % access_token}
+            # Set the payload for the request
+            payload = {
+                "BusinessShortCode": LipanaMpesaPpassword.Business_short_code,
+                "Password": LipanaMpesaPpassword.decode_password,
+                "Timestamp": LipanaMpesaPpassword.lipa_time,
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": amount,
+                "PartyA":  number,
+                "PartyB": LipanaMpesaPpassword.Business_short_code,
+                "PhoneNumber": number,
+                "CallBackURL": "https://sandbox.safaricom.co.ke/mpesa/",
+                "AccountReference": "Mania",
+                "TransactionDesc": "Payment for services"
+            }
+            # Make a POST request to the API URL with the headers and payload
+            response = requests.post(api_url, json=payload, headers=headers)
+            if response.status_code == 200 and response.json().get('ResponseCode') == '0':
+                payment.status = "success"
+                payment.save()
+
+                # Add a success message
+                messages.success(request, "Payment was successful!")
+
+                return redirect('payment_complete')
+            else:
+                payment.status = "failure"
+                payment.save()
+
+    context = {'form': form}
+    return render(request, 'payments/home.html', context)

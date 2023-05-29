@@ -73,11 +73,12 @@
       <a href="{% url 'nannies' %}">Nanies Available</a>
     </li>
     <li><a href="{% url 'view_all_contracts' %}" style="background-color: #0275d8">Contracts</a></li>
+        <li><a href="{% url 'payment' %}" style="background-color: #0275d8">Make Payments</a></li>
+
     {% else %}
     <li style="background-color: #0275d8">
-      <a href="{% url 'job_listing' %}">Jobs Available</a>
+      <a href="{% url 'job_listing' %}">Jobs Available</a></li>
       <li><a href="{% url 'view_all_contracts_nanny' %}" style="background-color: #0275d8">Contracts</a></li>
-    </li>
     {% endif %}
 
 

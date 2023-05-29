@@ -1,0 +1,74 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container min-height-450 d-flex align-items-center justify-content-center">
+  <div class="row">
+    <div class="col-md-6">
+      <a href="#" class="btn btn-primary btn-lg btn-block mpesa-button mt-2" data-toggle="modal" data-target="#mpesaModal">M-Pesa Payment</a>
+    </div>
+    <div class="col-md-6">
+      <a href="#" class="btn btn-primary btn-lg btn-block paypal-button mt-2" data-toggle="modal" data-target="#paypalModal">PayPal Payment</a>
+    </div>
+  </div>
+</div>
+
+<!-- M-Pesa Modal -->
+<div class="modal fade" id="mpesaModal" tabindex="-1" role="dialog" aria-labelledby="mpesaModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mpesaModalLabel">M-Pesa Payment Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% include "payments/mpesa_details.html" %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PayPal Modal -->
+<div class="modal fade" id="paypalModal" tabindex="-1" role="dialog" aria-labelledby="paypalModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paypalModalLabel">PayPal Payment Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% include "payments/paypal_payments.html" %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.min-height-450 {
+  min-height: 450px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.mpesa-button {
+  background-color: #3AA335; /* M-Pesa original color */
+}
+
+.paypal-button {
+  background-color: #003087; /* PayPal original color */
+}
+</style>
+{% endblock content %}

@@ -1,6 +1,4 @@
-{% extends 'jobapp/base.html' %}
 
-{% block content %}
 
 <style>
  <style>
@@ -22,11 +20,14 @@
 h1{
   color:white;
 }
+bg-green{
+  background: red;
+}
   </style>
 
   <div class="container mt-5">
     <div class="card text-black">
-      <div class="card-header text-center bg-success ">
+      <div class="card-header text-center bg-green" style="background: rgb(128, 167, 128);">
         <h1>Make Payment : Mpesa</h1>
       </div>
       <div class="card-body text-center">
@@ -46,9 +47,9 @@ h1{
             <label for="{{ form.description.id_for_label }}">Description</label>
             {{ form.description }}
           </div>
-          <button type="submit" class="btn btn-success btn-block">Submit</button>
+          <button type="submit" class="btn bg-green btn-block" style=" background: rgb(128, 167, 128);">Submit</button>
         </form>
       </div>
     </div>
   </div>
-{% endblock %}
+
