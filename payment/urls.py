@@ -9,5 +9,7 @@ urlpatterns = [
     path('payment_complete', views.payment_complete, name='payment_complete'),
 
     # make paypal payment
-    path("paypal_payments", views.paypal_payment, name="paypal_payment")
+    path("paypal_payments", views.paypal_payment, name="paypal_payment"),
+
+    path('payment', views.payment_select, name="payment")
 ]

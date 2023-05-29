@@ -1,4 +1,4 @@
-{% extends 'jobapp/base.html' %} {% block content %}
+
 
 <style>
   .payment-container {
@@ -38,15 +38,18 @@
 </style>
 
 <div class="container payment-container">
-  <div class="mpesa-button">
-    <a href="{% url 'pay' %}">Mpesa</a>
-  </div>
+
   <!-- PAYPAL BUTTON HERE  -->
-  <form id="paypal-form">
+  
+  <form id="paypal-form" class="form-block">
+  <div class="form-group">
     <label for="amount">Enter amount:</label>
-    <input type="number" name="amount" id="amount" required>
-    <button type="submit" id="paypal-button">Pay with PayPal</button>
-  </form>
+    <input type="number" name="amount" id="amount" class="form-control form-control-lg" required>
+  </div>
+  <button type="submit" id="paypal-button" class="btn btn-primary btn-lg btn-block mt-3 mb-2">Pay with PayPal</button>
+</form>
+
+
   <div id="paypal-button-container"></div>
   <!-- Include the PayPal JavaScript SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=AeOJOMsHiQrimk0kMO6XZwukWnS7N2X__0-ZTsa9IL-_-No3e9TJHeBuzCHKIV1T5yPXiIhkXldnF_tn&currency=USD"></script>
@@ -75,4 +78,3 @@
   </script>
 </div>
 
-{% endblock content %}
