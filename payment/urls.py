@@ -11,5 +11,8 @@ urlpatterns = [
     # make paypal payment
     path("paypal_payments", views.paypal_payment, name="paypal_payment"),
 
-    path('payment', views.payment_select, name="payment")
+    path('payment', views.payment_select, name="payment"),
+
+    path('pay_nanny', views.pay_nanny, name="pay_nanny"),
+    path('pay_nanny2', views.initiate_b2c_transaction, name="pay_nanny2")
 ]
