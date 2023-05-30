@@ -1,9 +1,11 @@
+from django.http import JsonResponse
+import base64
+from django_daraja.mpesa.core import MpesaClient
 from django.db.models import Sum
 from django.contrib import messages
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import Payment
-import math
 from datetime import datetime
 from .form import PaymentForm
 from django.http import HttpResponse
@@ -18,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 # A function to get Mpesa access token
 
 
-def getAccessToken(request):
+def getAccessToken():
     # Mpesa Consumer key and secret
     consumer_key = 'XjWEg9z1ihL9zoXO1JRaCOhfIJAgB8cu'
     consumer_secret = 'y48BAeDDA0AgXqI2'
@@ -170,3 +172,87 @@ def payment_select(request):
 
     context = {'form': form}
     return render(request, 'payments/home.html', context)
+
+
+# C2B
+def pay_nanny(request):
+    cl = MpesaClient()
+    phone_number = '0740743521'
+    amount = 1
+    transaction_desc = 'Description'
+    occassion = 'Occassion'
+    callback_url = 'https://api.darajambili.com/b2c/result'
+    response = cl.business_payment(
+        phone_number, amount, transaction_desc, callback_url, occassion)
+
+
+def generate_access_token(consumer_key, consumer_secret):
+    api_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    response = requests.get(api_url, auth=(consumer_key, consumer_secret))
+
+    if response.status_code == 200:
+        access_token = response.json().get('access_token')
+        return access_token
+
+    return None
+
+
+def initiate_b2c_transaction(request):
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
+    consumer_key = 'ShetFZbeG2YJSXIvUojmgGrzISPjJ4EQ'
+    consumer_secret = 'd8VqfDwpR6MExxAU'
+    access_token = generate_access_token(consumer_key, consumer_secret)
+    print(access_token)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    payload = {
+        "InitiatorName": "Mania",
+        "SecurityCredential": "EYbsRO2oqNqhjhO4Q1URRAUrfuNJkWlU27K5TnlJQL4TQPs003JMvBVky5BRRnCgYyjYuqzJNGAzCNMz4wqdleNEUNlqggV7bWN5uMdWLlthFtXo0pef31HeQBV3bgnPd1m3pGT6Otk02FuTWoW8aKeyJkMxwS1kjEW7B8bJp2veXiOYWEkml3ulmaicmjg57/XtH548HXUy4WTVDEp1/eMzQMkD98Y32Y3F+AbTr8YeMDBRuGrS6VN9QgPYTNGOw5cRFXdoIyLKTZkCbQWbxP5c6is5kD8IfvTmgWMpRHarQ6+gEtY2ChcbOc/Jk9aQR+69Y1eNG3FE6kKskc0AEQ==",
+        "CommandID": "SalaryPayment",
+        "Amount": 1,
+        "PartyA": 999001,
+        "PartyB": 254740743521,
+        "Remarks": "Hope its coming along",
+        "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
+        "ResultURL": "https://mydomain.com/b2c/result",
+        "Occassion": "Pesa",
+    }
+    response = requests.post(api_url, headers=headers, json=payload)
+    if response.status_code == 200:
+        try:
+            response_data = response.json()
+            return JsonResponse(response_data)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Failed to decode API response as JSON'}, status=500)
+    else:
+        error_message = response.json().get(
+            'errorMessage', 'Failed to initiate B2C transaction')
+        return JsonResponse({'error': error_message}, status=400)
+
+
+# Replace with your own credentials
+'''consumer_key = 'YOUR_CONSUMER_KEY'
+consumer_secret = 'YOUR_CONSUMER_SECRET'''
+
+# Replace with your own values
+#access_token = generate_access_token(consumer_key, consumer_secret)
+'''initiator_name = 'YOUR_INITIATOR_NAME'
+security_credential = 'YOUR_SECURITY_CREDENTIAL'
+command_id = 'SalaryPayment'
+amount = '1000'
+party_a = 'YOUR_ORGANIZATION_SHORTCODE'
+party_b = 'RECIPIENT_PHONE_NUMBER'
+remarks = 'Salary Payment'
+queue_timeout_url = 'YOUR_QUEUE_TIMEOUT_URL'
+result_url = 'YOUR_RESULT_URL'
+
+response = initiate_b2c_transaction(access_token, initiator_name, security_credential,
+                                    command_id, amount, party_a, party_b, remarks, queue_timeout_url, result_url)
+if response:
+    print(response)
+else:
+    print('Failed to initiate B2C transaction')'''

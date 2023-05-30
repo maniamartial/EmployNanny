@@ -9,9 +9,9 @@ import base64
 # This class stores the Mpesa credentials required for generating an access token.
 class MpesaC2bCredential:
     # The Consumer Key for the Mpesa API.
-    consumer_key = 'XjWEg9z1ihL9zoXO1JRaCOhfIJAgB8cu'
+    consumer_key = 'ShetFZbeG2YJSXIvUojmgGrzISPjJ4EQ'
     # The Consumer Secret for the Mpesa API.
-    consumer_secret = 'y48BAeDDA0AgXqI2'
+    consumer_secret = 'd8VqfDwpR6MExxAU'
     # The URL for generating the access token.
     api_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
 
