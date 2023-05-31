@@ -4,21 +4,21 @@
 
 {% load jobapp_tags %}
 
-
 <style>
-p{
-    color:black;
+p {
+  color: black;
 }
+
 .card-title {
-    font-weight: bold;
+  font-weight: bold;
 }
-</style><div class="container status-height">
+</style>
+<div class="container status-height">
   <div class="row justify-content-center">
     <div class="col-md-6">
       <h1 class="text-center mb-4">Contract Details</h1>
       <div class="card">
-<a href="{% url 'view_all_contracts_nanny' %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
-
+        <a href="{% url 'view_all_contracts_nanny' %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
 
         <div class="card-body">
           <p class="card-title">Job:</p>
@@ -43,35 +43,42 @@ p{
           </li>
           <li class="list-group-item">
             <p class="card-title">Duration:</p>
-            <p class="card-text">{{ contract.job.duration }} </p>
+            <p class="card-text">{{ contract.job.duration }}</p>
           </li>
           <li class="list-group-item">
             <p class="card-title">Status:</p>
             {% if status == "Terminated" %}
-              <p class="card-text text-danger">{{ status }}</p>
+            <p class="card-text text-danger">{{ status }}</p>
             {% elif status == "active" %}
-              <p class="card-text text-primary">{{ status }}</p>
+            <p class="card-text text-primary">{{ status }}</p>
             {% else %}
-              <p class="card-text">{{ status }}</p>
+            <p class="card-text">{{ status }}</p>
             {% endif %}
-
-          
           </li>
         </ul>
+
         {% if status == "Active" %}
         <div class="text-center mb-5">
-  <form method="POST" action="{% url 'end_contract' contract.id %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">End Contract</button>
-  </form>
-</div>
- {% elif status == "Accepted" %}
+          <form method="POST" action="{% url 'end_contract' contract.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">End Contract</button>
+          </form>
+          <form method="POST" action="{% url 'initiate_payment' contract.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Release Payment</button>
+          </form>
+        </div>
+        {% elif status == "Accepted" %}
         <div class="text-center mb-5">
-<form method="POST" action="{% url 'end_direct_contract' direct_contract.id %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">End Contract</button>
-  </form>
-</div>
+          <form method="POST" action="{% url 'end_direct_contract' direct_contract.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">End Contract</button>
+          </form>
+          <form method="POST" action="{% url 'initiate_payment' contract.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Release Payment</button>
+          </form>
+        </div>
         {% endif %}
       </div>
     </div>
