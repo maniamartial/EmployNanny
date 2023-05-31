@@ -13,6 +13,9 @@ urlpatterns = [
 
     path('payment', views.payment_select, name="payment"),
 
-    path('pay_nanny', views.pay_nanny, name="pay_nanny"),
-    path('pay_nanny2', views.initiate_b2c_transaction, name="pay_nanny2")
+
+    #path('pay_nanny', views.initiate_b2c_transaction, name="pay_nanny")
+    path('initiate-payment/<int:contract_id>/',
+         views.initiate_b2c_transaction, name='initiate_payment'),
+
 ]

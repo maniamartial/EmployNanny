@@ -1,6 +1,9 @@
+from .models import Payment, EmployerTransactions
+from .models import SalaryPayment
+import math
+from jobapp.models import ContractModel
 from django.http import JsonResponse
 import base64
-from django_daraja.mpesa.core import MpesaClient
 from django.db.models import Sum
 from django.contrib import messages
 from django.shortcuts import render
@@ -118,6 +121,7 @@ def paypal_payment(request):
     return render(request, "payments/paypal_payments.html")
 
 
+'''
 def payment_select(request):
     if request.user.is_authenticated:
         # Get the employer (authenticated user)
@@ -172,20 +176,82 @@ def payment_select(request):
 
     context = {'form': form}
     return render(request, 'payments/home.html', context)
+'''
 
 
-# C2B
-def pay_nanny(request):
-    cl = MpesaClient()
-    phone_number = '0740743521'
-    amount = 1
-    transaction_desc = 'Description'
-    occassion = 'Occassion'
-    callback_url = 'https://api.darajambili.com/b2c/result'
-    response = cl.business_payment(
-        phone_number, amount, transaction_desc, callback_url, occassion)
+def payment_select(request):
+    if request.user.is_authenticated:
+        # Get the employer (authenticated user)
+        employer = request.user
+
+        # Retrieve or create the EmployerTransactions object for the employer
+        employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+            employer=employer)
+
+    # Create an instance of PaymentForm
+    form = PaymentForm()
+    if request.method == 'POST':
+        # If the request method is POST, bind the form to the request data
+        form = PaymentForm(request.POST)
+        # If the form is valid, create a Payment object and save it to the database
+        if form.is_valid():
+            payment = form.save(commit=False)
+            # Set the Payment object's user field to the authenticated user
+            payment.user = request.user
+            payment.save()
+
+            # Update EmployerTransactions for the deposited amount
+            '''employer_transactions.total_deposited += payment.amount
+            employer_transactions.balance += payment.amount
+            employer_transactions.save()'''
+
+            # Format the phone number and amount
+            number = '254' + str(payment.phone_number)
+            amount = payment.amount
+            # Get the Mpesa access token
+            access_token = MpesaAccessToken.validated_mpesa_access_token
+            # Set the API URL for STK Push
+            api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+            # Set the headers for the request
+            headers = {"Authorization": "Bearer %s" % access_token}
+            # Set the payload for the request
+            payload = {
+                "BusinessShortCode": LipanaMpesaPpassword.Business_short_code,
+                "Password": LipanaMpesaPpassword.decode_password,
+                "Timestamp": LipanaMpesaPpassword.lipa_time,
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": amount,
+                "PartyA":  number,
+                "PartyB": LipanaMpesaPpassword.Business_short_code,
+                "PhoneNumber": number,
+                "CallBackURL": "https://sandbox.safaricom.co.ke/mpesa/",
+                "AccountReference": "Mania",
+                "TransactionDesc": "Payment for services"
+            }
+            # Make a POST request to the API URL with the headers and payload
+            response = requests.post(api_url, json=payload, headers=headers)
+            if response.status_code == 200 and response.json().get('ResponseCode') == '0':
+                payment.status = "success"
+                payment.save()
+
+                # Update EmployerTransactions for the withdrawn amount
+                employer_transactions.total_deposited += payment.amount
+                employer_transactions.balance += payment.amount
+                employer_transactions.save()
+
+                # Add a success message
+                messages.success(request, "Payment was successful!")
+
+                return redirect('payment_complete')
+            else:
+                payment.status = "failure"
+                payment.save()
+
+    context = {'form': form}
+    return render(request, 'payments/home.html', context)
 
 
+# generate access token for B2C
 def generate_access_token(consumer_key, consumer_secret):
     api_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
     response = requests.get(api_url, auth=(consumer_key, consumer_secret))
@@ -197,7 +263,19 @@ def generate_access_token(consumer_key, consumer_secret):
     return None
 
 
-def initiate_b2c_transaction(request):
+# Pay nanny after 30 days
+
+
+def initiate_b2c_transaction(request, contract_id):
+    employer = request.user
+    contract = ContractModel.objects.get(id=contract_id)
+    nanny = contract.nanny
+    amount = math.ceil(contract.amount)
+    phone_number = '254'+str(nanny.phone)
+
+    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+        employer=employer)
+
     api_url = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
     consumer_key = 'ShetFZbeG2YJSXIvUojmgGrzISPjJ4EQ'
     consumer_secret = 'd8VqfDwpR6MExxAU'
@@ -210,12 +288,12 @@ def initiate_b2c_transaction(request):
     }
 
     payload = {
-        "InitiatorName": "Mania",
+        "InitiatorName": "EmployNanny",
         "SecurityCredential": "EYbsRO2oqNqhjhO4Q1URRAUrfuNJkWlU27K5TnlJQL4TQPs003JMvBVky5BRRnCgYyjYuqzJNGAzCNMz4wqdleNEUNlqggV7bWN5uMdWLlthFtXo0pef31HeQBV3bgnPd1m3pGT6Otk02FuTWoW8aKeyJkMxwS1kjEW7B8bJp2veXiOYWEkml3ulmaicmjg57/XtH548HXUy4WTVDEp1/eMzQMkD98Y32Y3F+AbTr8YeMDBRuGrS6VN9QgPYTNGOw5cRFXdoIyLKTZkCbQWbxP5c6is5kD8IfvTmgWMpRHarQ6+gEtY2ChcbOc/Jk9aQR+69Y1eNG3FE6kKskc0AEQ==",
         "CommandID": "SalaryPayment",
-        "Amount": 1,
+        "Amount": amount,
         "PartyA": 999001,
-        "PartyB": 254740743521,
+        "PartyB": phone_number,
         "Remarks": "Hope its coming along",
         "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
         "ResultURL": "https://mydomain.com/b2c/result",
@@ -225,6 +303,18 @@ def initiate_b2c_transaction(request):
     if response.status_code == 200:
         try:
             response_data = response.json()
+            # save salary payment
+            payment = SalaryPayment.objects.create(
+                employer=employer,
+                nanny=nanny,
+                contract=contract,
+                amount=amount
+            )
+            # update the employer transaction
+            # Update EmployerTransactions for the withdrawn amount
+            employer_transactions.total_withdrawn += amount
+            employer_transactions.balance -= amount
+            employer_transactions.save()
             return JsonResponse(response_data)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Failed to decode API response as JSON'}, status=500)
@@ -232,27 +322,3 @@ def initiate_b2c_transaction(request):
         error_message = response.json().get(
             'errorMessage', 'Failed to initiate B2C transaction')
         return JsonResponse({'error': error_message}, status=400)
-
-
-# Replace with your own credentials
-'''consumer_key = 'YOUR_CONSUMER_KEY'
-consumer_secret = 'YOUR_CONSUMER_SECRET'''
-
-# Replace with your own values
-#access_token = generate_access_token(consumer_key, consumer_secret)
-'''initiator_name = 'YOUR_INITIATOR_NAME'
-security_credential = 'YOUR_SECURITY_CREDENTIAL'
-command_id = 'SalaryPayment'
-amount = '1000'
-party_a = 'YOUR_ORGANIZATION_SHORTCODE'
-party_b = 'RECIPIENT_PHONE_NUMBER'
-remarks = 'Salary Payment'
-queue_timeout_url = 'YOUR_QUEUE_TIMEOUT_URL'
-result_url = 'YOUR_RESULT_URL'
-
-response = initiate_b2c_transaction(access_token, initiator_name, security_credential,
-                                    command_id, amount, party_a, party_b, remarks, queue_timeout_url, result_url)
-if response:
-    print(response)
-else:
-    print('Failed to initiate B2C transaction')'''
