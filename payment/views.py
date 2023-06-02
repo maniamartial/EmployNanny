@@ -1,3 +1,9 @@
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from .models import Payment, SalaryPayment, EmployerTransactions
 from .models import Payment, EmployerTransactions
 from .models import SalaryPayment
 import math
@@ -315,10 +321,146 @@ def initiate_b2c_transaction(request, contract_id):
             employer_transactions.total_withdrawn += amount
             employer_transactions.balance -= amount
             employer_transactions.save()
-            return JsonResponse(response_data)
+            # return JsonResponse(response_data)
+            return redirect("employer_transaction_report")
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Failed to decode API response as JSON'}, status=500)
     else:
         error_message = response.json().get(
             'errorMessage', 'Failed to initiate B2C transaction')
         return JsonResponse({'error': error_message}, status=400)
+    
+# Printing employers details
+
+
+def employer_report(request):
+    if request.user.is_authenticated:
+        # Get the employer (authenticated user)
+        employer = request.user
+
+        # Retrieve employer transactions
+        employer_transactions = EmployerTransactions.objects.get(
+            employer=employer)
+
+        # Retrieve payments made by the employer
+        payments = Payment.objects.filter(user=employer)
+
+        # Retrieve salary payments made by the employer
+        salary_payments = SalaryPayment.objects.filter(employer=employer)
+
+        context = {
+            'employer': employer,
+            'employer_transactions': employer_transactions,
+            'payments': payments,
+            'salary_payments': salary_payments,
+        }
+        return render(request, 'payments/employer_transaction_report.html', context)
+    else:
+        # Redirect to login if user is not authenticated
+        return redirect('login')
+
+
+def generate_employer_transaction(request):
+    # Retrieve the necessary data for the report
+    payments = Payment.objects.filter(user=request.user)
+    salary_payments = SalaryPayment.objects.filter(employer=request.user)
+    employer_transactions = EmployerTransactions.objects.get(
+        employer=request.user)
+
+    # Create the PDF file
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="employer_transaction_report.pdf"'
+
+    # Create the document
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    # Define paragraph styles
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    heading_style = styles['Heading2']
+    normal_style = styles['Normal']
+
+    # Add the title
+    title = "Employer Transaction Report"
+    elements.append(Paragraph(title, title_style))
+
+    # Add the Payment Details table
+    payment_data = [
+        ["Phone Number", "Amount", "Status", "Timestamp"]
+    ]
+    for payment in payments:
+        payment_data.append([
+            payment.phone_number,
+            str(payment.amount),
+            payment.status,
+            payment.timestamp.date().strftime("%Y-%m-%d")
+        ])
+
+    payment_table = Table(payment_data, colWidths=[100, 100, 100, 100])
+    payment_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(Paragraph("Payment Details", heading_style))
+    elements.append(payment_table)
+
+    # Add the Salary Payment Details table
+    salary_payment_data = [
+        ["Nanny", "Contract", "Amount", "Payment Date"]
+    ]
+    for salary_payment in salary_payments:
+        salary_payment_data.append([
+            salary_payment.nanny.first_name,
+            salary_payment.contract.job.category,
+            str(salary_payment.amount),
+            salary_payment.payment_date.strftime("%Y-%m-%d")
+        ])
+
+    salary_payment_table = Table(
+        salary_payment_data, colWidths=[100, 100, 100, 100])
+    salary_payment_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(Paragraph("Salary Payment Details", heading_style))
+    elements.append(salary_payment_table)
+
+    # Add the Employer Transaction Details table
+    employer_transaction_data = [
+        ["Total Deposited", "Total Withdrawn", "Balance"],
+        [employer_transactions.total_deposited,
+            employer_transactions.total_withdrawn, employer_transactions.balance]
+    ]
+
+    employer_transaction_table = Table(
+        employer_transaction_data, colWidths=[150, 150, 150])
+    employer_transaction_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(Paragraph("Employer Transaction Details", heading_style))
+    elements.append(employer_transaction_table)
+
+    # Build the PDF document
+    doc.build(elements)
+
+    return response
