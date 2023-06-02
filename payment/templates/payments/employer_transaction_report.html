@@ -1,0 +1,73 @@
+{% extends 'jobapp/base.html' %}
+{% block content  %}
+
+<div class="container">
+    <h1>Employer Report</h1>
+    
+    <h2>Payment Details</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Phone Number</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.phone_number }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.status }}</td>
+                <td>{{ payment.description }}</td>
+                <td>{{ payment.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Salary Payment Details</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nanny</th>
+                <th>Contract</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for salary_payment in salary_payments %}
+            <tr>
+                <td>{{ salary_payment.nanny.first_name }}</td>
+                <td>{{ salary_payment.contract.job.category }}</td>
+                <td>{{ salary_payment.amount }}</td>
+                <td>{{ salary_payment.payment_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Employer Transaction Details</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Total Deposited</th>
+                <th>Total Withdrawn</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ employer_transactions.total_deposited }}</td>
+                <td>{{ employer_transactions.total_withdrawn }}</td>
+                <td><strong>{{ employer_transactions.balance }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="{% url 'generate_employer_transaction' %}" class="btn btn-primary" download>Download Report</a>
+
+</div>
+{% endblock content %}

@@ -18,4 +18,10 @@ urlpatterns = [
     path('initiate-payment/<int:contract_id>/',
          views.initiate_b2c_transaction, name='initiate_payment'),
 
+    path('employer_transaction_report',
+         views.employer_report, name="employer_transaction_report"),
+
+    path('generate_employer_transaction', views.generate_employer_transaction,
+         name="generate_employer_transaction")
+
 ]
