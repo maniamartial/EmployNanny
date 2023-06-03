@@ -22,6 +22,12 @@ urlpatterns = [
          views.employer_report, name="employer_transaction_report"),
 
     path('generate_employer_transaction', views.generate_employer_transaction,
-         name="generate_employer_transaction")
+         name="generate_employer_transaction"),
+
+    path('nanny_transaction_report', views.nanny_transaction_report,
+         name="nanny_transaction_report"),
+    path('generate_nanny_transaction/', views.generate_nanny_transaction,
+         name="generate_nanny_transaction"),
+
 
 ]

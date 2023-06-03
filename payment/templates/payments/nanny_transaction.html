@@ -1,0 +1,36 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <h2 class="mt-4">Transaction Details</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employer</th>
+                <th>Amount</th>
+                <th>Date of Payment</th>
+                <th>Contract Category</th>
+                <th>Contract Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in nanny_transaction %}
+                <tr>
+                    <td>{{ transaction.employer }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.payment_date }}</td>
+                    <td>{{ transaction.contract.job.category }}</td>
+                    <td>{{ transaction.contract.status }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: center; font-weight: bold;">Total Amount Received: {{ total_amount_paid }}</td>
+            </tr>
+        </tbody>
+    </table>
+<a href="{% url 'generate_nanny_transaction' %}" class="btn btn-primary" target="_blank" download>Download Report</a>
+
+</div>
+{% endblock content %}
+

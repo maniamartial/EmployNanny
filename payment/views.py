@@ -1,3 +1,5 @@
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from .models import NannyDetails
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
@@ -329,7 +331,7 @@ def initiate_b2c_transaction(request, contract_id):
         error_message = response.json().get(
             'errorMessage', 'Failed to initiate B2C transaction')
         return JsonResponse({'error': error_message}, status=400)
-    
+
 # Printing employers details
 
 
@@ -459,6 +461,86 @@ def generate_employer_transaction(request):
     ]))
     elements.append(Paragraph("Employer Transaction Details", heading_style))
     elements.append(employer_transaction_table)
+
+    # Build the PDF document
+    doc.build(elements)
+
+    return response
+
+
+def nanny_transaction_report(request):
+    nanny = NannyDetails.objects.get(user=request.user)
+    nanny_transactions = SalaryPayment.objects.filter(nanny=nanny)
+    total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
+        'total']
+
+    context = {
+        "nanny_transaction": nanny_transactions,
+        "total_amount_paid": total_amount_paid,
+    }
+    return render(request, "payments/nanny_transaction.html", context)
+
+
+# generate pdf nanny
+
+
+def generate_nanny_transaction(request):
+    # Retrieve the necessary data for the report
+    nanny = NannyDetails.objects.get(user=request.user)
+    nanny_transactions = SalaryPayment.objects.filter(nanny=nanny)
+    total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
+        'total']
+
+    # Create the PDF file
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="nanny_transaction_report.pdf"'
+
+    # Create the document
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    # Define paragraph styles
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    heading_style = styles['Heading2']
+    normal_style = styles['Normal']
+
+    # Add the title
+    title = "Nanny Transaction Report"
+    elements.append(Paragraph(title, title_style))
+
+    # Add the Transaction Details table
+    transaction_data = [
+        ["Employer", "Amount", "Date of Payment",
+            "Contract Category", "Contract Status"]
+    ]
+    for transaction in nanny_transactions:
+        transaction_data.append([
+            f"{transaction.employer.first_name} {transaction.employer.last_name}",
+            str(transaction.amount),
+            transaction.payment_date.strftime("%Y-%m-%d"),
+            transaction.contract.job.category,
+            transaction.contract.status
+        ])
+
+    transaction_table = Table(transaction_data, colWidths=[
+                              120, 80, 100, 120, 100])
+    transaction_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(Paragraph("Transaction Details", heading_style))
+    elements.append(transaction_table)
+
+    # Add the Total Amount Paid
+    elements.append(
+        Paragraph(f"Total Amount Paid: {total_amount_paid}", heading_style))
 
     # Build the PDF document
     doc.build(elements)
