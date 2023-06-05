@@ -6,7 +6,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>            EmployNanny
+    <title>            
+
+        EmployNanny
 </title>
 
     
@@ -34,8 +36,26 @@
 <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/nannyDetails.css' %}"/>
 <link rel="stylesheet" href="{% static 'css/chat.css' %}"/>
+<!-- Add this code inside the <head> tag of your base template -->
+<link rel="stylesheet" href="{% static 'css/loading.css' %}">
+
 </head>
 <body>
+    <!-- Add this code inside the <body> tag of your base template -->
+<div class="loading-overlay">
+  <div class="spinner-grow text-primary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+<div class="spinner-grow text-secondary" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+<div class="spinner-grow text-success" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
+</div>
+
+
+
    {% include 'jobapp/header.html'%}
    {% block content%} {% endblock content%}
    {% include 'jobapp/footer.html'%}
@@ -44,6 +64,17 @@
     <script src="{% static 'js/header.js' %}"></script>
     <script src="{% static 'js/register.js' %}"></script>
       <script src="{% static 'js/chat.js' %}"></script>
+<!-- Add this code at the bottom of your base template, before the closing </body> tag -->
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    var loadingOverlay = document.querySelector('.loading-overlay');
+    loadingOverlay.style.display = 'flex';
+
+    window.addEventListener('load', function() {
+      loadingOverlay.style.display = 'none';
+    });
+  });
+</script>
 
 </body>
 </html>
