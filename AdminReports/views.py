@@ -581,3 +581,7 @@ def delete_message(request, id):
     message = Message.objects.get(id=id)
     message.delete()
     return redirect('chats')
+
+
+def dashboard(request):
+    return render(request, "admin/home_base.html")

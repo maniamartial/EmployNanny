@@ -43,7 +43,9 @@ urlpatterns = [
          name='user_activity_logs'),
 
     path('chats', views.messages, name="chats"),
-    path('chat/delete<int:id>/', views.delete_message, name="delete_message")
+    path('chat/delete<int:id>/', views.delete_message, name="delete_message"),
+
+    path("dashboard", views.dashboard, name="dashboard")
 
 
 ]
