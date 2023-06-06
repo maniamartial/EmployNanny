@@ -1,3 +1,7 @@
+import math
+from django.db.models import Count, Sum
+from payment.models import Payment, SalaryPayment, EmployerTransactions
+from jobapp.models import jobModel, JobApplication, ContractModel
 from django.urls import reverse_lazy
 from django.views import generic
 from messaging.models import Message
@@ -583,5 +587,83 @@ def delete_message(request, id):
     return redirect('chats')
 
 
+'''def dashboard(request):
+    # Retrieve the numbers from the database
+    job_count = jobModel.objects.count()
+    job_applications_count = JobApplication.objects.count()
+    website_visitors_count = 500  # Replace with your actual count logic
+    contracts_count = ContractModel.objects.filter(status='active').count()
+
+    context = {
+        'job_count': job_count,
+        'job_applications_count': job_applications_count,
+        'website_visitors_count': website_visitors_count,
+        'contracts_count': contracts_count
+    }
+
+    return render(request, "admin/home_base.html", context)'''
+
+
+'''def dashboard(request):
+    total_deposited = Payment.objects.filter(
+        status='success').aggregate(Sum('amount'))['amount__sum']
+    total_salary_paid = SalaryPayment.objects.aggregate(Sum('amount'))[
+        'amount__sum']
+    # Assuming commission is 10% of total salary paid
+    total_commission = total_deposited * 0.1
+    top_employers = EmployerTransactions.objects.order_by(
+        '-total_deposited')[:6]
+
+    context = {
+        'total_deposited': total_deposited,
+        'total_salary_paid': total_salary_paid,
+        'total_commission': total_commission,
+        'top_employers': top_employers,
+    }
+    return render(request, "admin/base_home.html", context)'''
+
+
 def dashboard(request):
-    return render(request, "admin/home_base.html")
+    total_deposited = Payment.objects.filter(
+        status='success').aggregate(Sum('amount'))['amount__sum']
+    total_salary_paid = SalaryPayment.objects.aggregate(Sum('amount'))[
+        'amount__sum']
+    total_commission = total_deposited * 0.1
+    top_employers = EmployerTransactions.objects.order_by(
+        '-total_deposited')[:6]
+    top_nannies = NannyDetails.objects.annotate(contracts_count=Count('contractmodel')).annotate(
+        job_applications_count=Count('jobapplication'))[:6]
+    for nanny in top_nannies:
+        try:
+            salary_payments = SalaryPayment.objects.filter(nanny=nanny)
+            # Print the salary payment objects for debugging
+
+            nanny.total_salary_paid = salary_payments.aggregate(
+                total_salary=Sum('amount'))['total_salary']
+            if nanny.total_salary_paid is None:
+                nanny.total_salary_paid = 0
+            else:
+                nanny.total_salary_paid = math.ceil(nanny.total_salary_paid)
+        except TypeError:
+            nanny.total_salary_paid = 0
+
+    context = {
+        'total_deposited': total_deposited,
+        'total_salary_paid': total_salary_paid,
+        'total_commission': total_commission,
+        'top_employers': top_employers,
+        'top_nannies': top_nannies,
+    }
+    return render(request, "admin/base_home.html", context)
+
+
+'''top_nannies = NannyDetails.objects.annotate(contracts_count=Count('contractmodel')).annotate(
+        job_applications_count=Count('jobapplication'))[:6]
+
+    context = {
+        'total_deposited': total_deposited,
+        'total_salary_paid': total_salary_paid,
+        'total_commission': total_commission,
+        'top_employers': top_employers,
+        'top_nannies': top_nannies,
+    }'''
