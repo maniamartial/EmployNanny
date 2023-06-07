@@ -32,7 +32,7 @@ class SalaryPayment(models.Model):
     payment_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"Payment #{self.pk} - Employer: {self.employer.username}, Nanny: {self.nanny.first_name}"
+        return self.amount
 
 
 # Total deposit and total withdrawn(balance)

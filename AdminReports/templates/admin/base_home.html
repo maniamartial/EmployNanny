@@ -1,5 +1,6 @@
 
 {% load static%}
+{% load custom_filters %}
 <!doctype html>
 <html lang="en">
 
@@ -118,10 +119,10 @@
                                 </div>
                                 <div class="widget-content-left  ml-3 header-user-info">
                                     <div class="widget-heading">
-                                        Alina Mclourd
+                                       Mania Joseph
                                     </div>
                                     <div class="widget-subheading">
-                                        VP People Manager
+                                        EmployNanny Manager
                                     </div>
                                 </div>
                                 <div class="widget-content-right header-user-info ml-3">
@@ -604,9 +605,7 @@
                         <div class="font-size-xlg text-muted">
                             <small class="opacity-5 pr-1">$</small>
                             <span>{{ employer.total_deposited }}</span>
-                            <small class="text-danger pl-2">
-                                <i class="fa fa-angle-down"></i>
-                            </small>
+                            
                         </div>
                     </div>
                 </div>
@@ -653,7 +652,7 @@
                     <div class="widget-content-right">
                         <div class="font-size-xlg text-muted">
                             <small class="opacity-5 pr-1">Ksh.</small>
-                        <span>{{ nanny.total_salary_paid }}</span>
+                        <span>{{ nanny_total_salaries|get_value_from_dict:nanny.id }}</span>
                             
                         </div>
                     </div>
