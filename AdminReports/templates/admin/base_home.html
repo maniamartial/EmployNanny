@@ -603,7 +603,7 @@
                     </div>
                     <div class="widget-content-right">
                         <div class="font-size-xlg text-muted">
-                            <small class="opacity-5 pr-1">$</small>
+                            <small class="opacity-5 pr-1">Ksh.</small>
                             <span>{{ employer.total_deposited }}</span>
                             
                         </div>
@@ -664,6 +664,8 @@
 
 
                                                </div>
+
+
                                                 <div class="widget-chart-content text-center mt-5">
                                                     <div class="widget-description mt-0 text-warning">
                                                         <i class="fa fa-arrow-left"></i>
@@ -671,7 +673,10 @@
                                                         <span class="text-muted opacity-8 pl-1">increased server resources</span>
                                                     </div>
                                                 </div>
+
                                             </div>
+
+                                            <!--hapa-->
                                             <div class="pt-2 card-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -682,7 +687,7 @@
                                                                         <div class="widget-numbers fsize-3 text-muted">63%</div>
                                                                     </div>
                                                                     <div class="widget-content-right">
-                                                                        <div class="text-muted opacity-6">Generated Leads</div>
+                                                                        <div class="text-muted opacity-6">Terminated Contracts</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="widget-progress-wrapper mt-1">
@@ -701,7 +706,7 @@
                                                                         <div class="widget-numbers fsize-3 text-muted">32%</div>
                                                                     </div>
                                                                     <div class="widget-content-right">
-                                                                        <div class="text-muted opacity-6">Submitted Tickers</div>
+                                                                        <div class="text-muted opacity-6">Job applications</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="widget-progress-wrapper mt-1">
@@ -720,7 +725,7 @@
                                                                         <div class="widget-numbers fsize-3 text-muted">71%</div>
                                                                     </div>
                                                                     <div class="widget-content-right">
-                                                                        <div class="text-muted opacity-6">Server Allocation</div>
+                                                                        <div class="text-muted opacity-6">Active Contract</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="widget-progress-wrapper mt-1">
@@ -739,7 +744,7 @@
                                                                         <div class="widget-numbers fsize-3 text-muted">41%</div>
                                                                     </div>
                                                                     <div class="widget-content-right">
-                                                                        <div class="text-muted opacity-6">Generated Leads</div>
+                                                                        <div class="text-muted opacity-6">Page Visist This Week</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="widget-progress-wrapper mt-1">
@@ -750,6 +755,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
+<!--hapa-->
+
                                                 </div>
                                             </div>
                                         </div>
@@ -757,32 +764,18 @@
                                 </div>
                             </div>
                         </div>
+
+
                         <div class="row">
                             <div class="col-md-6 col-xl-4">
                                 <div class="card mb-3 widget-content">
                                     <div class="widget-content-outer">
                                         <div class="widget-content-wrapper">
                                             <div class="widget-content-left">
-                                                <div class="widget-heading">Total Orders</div>
-                                                <div class="widget-subheading">Last year expenses</div>
+                                                <div class="widget-heading">Contracts</div>
                                             </div>
-                                            <div class="widget-content-right">
-                                                <div class="widget-numbers text-success">1896</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card mb-3 widget-content">
-                                    <div class="widget-content-outer">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left">
-                                                <div class="widget-heading">Products Sold</div>
-                                                <div class="widget-subheading">Revenue streams</div>
-                                            </div>
-                                            <div class="widget-content-right">
-                                                <div class="widget-numbers text-warning">$3M</div>
+                                            <div class="widget-content-right ml-3">
+                                                <div class="widget-numbers text-success">{{contract_count}}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -793,11 +786,24 @@
                                     <div class="widget-content-outer">
                                         <div class="widget-content-wrapper">
                                             <div class="widget-content-left">
-                                                <div class="widget-heading">Followers</div>
-                                                <div class="widget-subheading">People Interested</div>
+                                                <div class="widget-heading">Jobs Posted</div>
                                             </div>
-                                            <div class="widget-content-right">
-                                                <div class="widget-numbers text-danger">45,9%</div>
+                                            <div class="widget-content-right ml-3">
+                                                <div class="widget-numbers text-warning">{{jobs_count}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-xl-4">
+                                <div class="card mb-3 widget-content">
+                                    <div class="widget-content-outer">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-content-left">
+                                                <div class="widget-heading">Applications Made</div>
+                                            </div>
+                                            <div class="widget-content-right ml-3">
+                                                <div class="widget-numbers text-danger">{{ job_application_count }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -828,6 +834,9 @@
                                 </div>
                             </div>
                         </div>
+
+
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="main-card mb-3 card">

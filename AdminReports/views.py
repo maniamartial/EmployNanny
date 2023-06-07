@@ -617,6 +617,11 @@ def dashboard(request):
     sorted_nannies = sorted(
         top_nannies, key=lambda nanny: nanny_total_salaries.get(nanny.id), reverse=True)[:5]
 
+    contract_count = ContractModel.objects.count()
+    jobs_count = jobModel.objects.count()
+    job_application_count = JobApplication.objects.aggregate(total=Count('id'))[
+        'total']
+
     context = {
         'total_deposited': total_deposited,
         'total_salary_paid': total_salary_paid,
@@ -624,24 +629,9 @@ def dashboard(request):
         'top_employers': top_employers,
         'top_nannies': sorted_nannies,
         'nanny_total_salaries': nanny_total_salaries,
+        'contract_count': contract_count,
+        'jobs_count': jobs_count,
+        'job_application_count': job_application_count,
     }
 
     return render(request, "admin/base_home.html", context)
-
-
-'''
-
- for nanny in top_nannies:
-        try:
-            salary_payments = SalaryPayment.objects.filter(nanny=nanny)
-            # Print the salary payment objects for debugging
-            for salary_payment in salary_payments:
-                print(salary_payment.amount)
-            nanny.total_salary_paid = salary_payments.aggregate(
-                total_salary=Sum('amount'))['total_salary']
-            if nanny.total_salary_paid is None:
-                nanny.total_salary_paid = 0
-            else:
-                nanny.total_salary_paid = math.ceil(nanny.total_salary_paid)
-        except TypeError:
-            nanny.total_salary_paid = 0'''
