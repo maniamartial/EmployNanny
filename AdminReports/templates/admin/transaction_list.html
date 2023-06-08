@@ -1,8 +1,9 @@
-{% extends 'jobapp/base.html'%}
+  {% extends 'admin/baseadmin.html' %}
 
 {% block content %}
-
-<div class="container">
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
 <h2 class="text-center">Transactions </h2>
   <table class="table table-striped table-hover">
     <thead>
@@ -41,5 +42,5 @@
 <a href="{% url 'generate-pdf' %}" class="btn btn-primary">Download PDF</a>
 <a href="{% url 'export-excel' %}" class="btn btn-success">Download Excel</a>
 </div>
-
+</div>
 {% endblock content %}

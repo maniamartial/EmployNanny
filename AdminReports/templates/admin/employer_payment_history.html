@@ -1,7 +1,9 @@
-{% extends 'jobapp/base.html' %}
+  {% extends 'admin/baseadmin.html' %}
 
 {% block content %}
-<div class="container">
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
   <h2 class="text-center">{{request.user}} Transaction History</h2>
   <table class="table table-striped">
     <thead>
@@ -30,5 +32,6 @@
     </tbody>
   </table>
 <a href="{% url 'employer_payment_history_pdf' %}" class="btn btn-primary" download>Download Payment History</a>
+</div>
 </div>
 {% endblock %}

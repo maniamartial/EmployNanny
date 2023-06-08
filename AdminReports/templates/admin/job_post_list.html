@@ -1,7 +1,9 @@
-{% extends 'jobapp/base.html' %}
+  {% extends 'admin/baseadmin.html' %}
 
 {% block content %}
-<div class="container">
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
   <h2 class="text-center">Job Postings</h2>
   <table class="table table-stripped">
     <thead style="background-color: rgb(128, 167, 128);">
@@ -31,5 +33,6 @@
   </table>
 <a href="{% url 'generate_nanny_report' %}" class="btn btn-primary">Download PDF</a>
 
+</div>
 </div>
 {% endblock %}

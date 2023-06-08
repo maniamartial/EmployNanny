@@ -1,8 +1,12 @@
-{% extends "jobapp/base.html" %}
-{% load humanize %}
 
+
+
+  {% extends 'admin/baseadmin.html' %}
+{% load humanize %}
 {% block content %}
-<div class="container" style="min-width:97%">
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
@@ -33,6 +37,7 @@
             </table>
         </div>
     </div>
+</div>
 </div>
 </div>
 {% endblock %}

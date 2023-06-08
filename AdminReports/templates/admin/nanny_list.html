@@ -1,7 +1,9 @@
-{% extends 'jobapp/base.html' %}
+  {% extends 'admin/baseadmin.html' %}
 
 {% block content %}
-<div class="container">
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
     <h1 class="mb-4">Nanny List</h1>
 
     <table class="table table-striped">
@@ -24,7 +26,7 @@
                     <td class="text-center">{{ nanny.jobs_applied_for }}</td>
                     <td class="text-center">{{ nanny.contract_exists }}</td>
                         
-<td><a href="{% url 'delete_nanny' nanny.user.id %}" class="btn btn-danger">Delete</a></td>
+<td><a href="#" class="btn btn-danger">Delete</a></td>
 
                         
                 </tr>
@@ -33,5 +35,7 @@
     </table>
 <a href="{% url 'generate_nanny_report' %}" class="btn btn-primary">Download PDF</a>
 
+</div>
+</div>
 </div>
 {% endblock %}
