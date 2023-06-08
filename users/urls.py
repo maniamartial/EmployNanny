@@ -10,7 +10,7 @@ urlpatterns = [
     path('employerRegister', views.employRegister, name="employerRegister"),
 
     # URL for the user login form
-    path('login', views.user_login, name="login"),
+    path('login/', views.user_login, name="login"),
 
     # URL for the nanny verification form
     path('nannyDetails', views.nanny_verification_details, name="nannyDetails"),

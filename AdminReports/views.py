@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import user_passes_test
 import math
 from django.db.models import Count, Sum
 from payment.models import Payment, SalaryPayment, EmployerTransactions
@@ -587,7 +588,9 @@ def delete_message(request, id):
     return redirect('chats')
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def dashboard(request):
+    admin = request.user
     total_deposited = Payment.objects.filter(
         status='success').aggregate(Sum('amount'))['amount__sum']
     total_salary_paid = SalaryPayment.objects.aggregate(Sum('amount'))[
@@ -623,6 +626,7 @@ def dashboard(request):
         'total']
 
     context = {
+        'admin': admin,
         'total_deposited': total_deposited,
         'total_salary_paid': total_salary_paid,
         'total_commission': total_commission,

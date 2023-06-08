@@ -38,19 +38,8 @@
     </style>
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow" style="background:white;">
-            <div class="app-header__logo">
-                <div class="logo-src">
-                </div>
-                <div class="header__pane ml-auto">
-                    <div>
-                        <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
-                            <span class="hamburger-box">
-                                <span class="hamburger-inner"></span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            
+
             <div class="app-header__mobile-menu">
                 <div>
                     <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
@@ -107,24 +96,21 @@
                                             <button type="button" tabindex="0" class="dropdown-item">Settings</button>
                                             <h6 tabindex="-1" class="dropdown-header">Header</h6>
                                             <button type="button" tabindex="0" class="dropdown-item">Actions</button>
-                                            <div tabindex="-1" class="dropdown-divider"></div>
-                                            <button type="button" tabindex="0" class="dropdown-item">Dividers</button>
+                                           
                                         </div>
                                     </div>
                                 </div>
                                 <div class="widget-content-left  ml-3 header-user-info">
                                     <div class="widget-heading">
-                                       Mania Joseph
+                                       {% if user.is_authenticated %}
+                {{ user.username }}
+                {% endif %}
                                     </div>
                                     <div class="widget-subheading">
                                         EmployNanny Manager
                                     </div>
                                 </div>
-                                <div class="widget-content-right header-user-info ml-3">
-                                    <button type="button" class="btn-shadow p-1 btn btn-primary btn-sm show-toastr-example">
-                                        <i class="fa text-white fa-calendar pr-1 pl-1"></i>
-                                    </button>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>        </div>
