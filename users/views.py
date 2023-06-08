@@ -1,3 +1,6 @@
+
+from django.urls import reverse
+from django.shortcuts import render, redirect
 from jobapp.models import Rating
 from django.shortcuts import redirect
 from django.contrib.auth import logout
@@ -53,7 +56,7 @@ def employRegister(request):
 
 
 # nanny & employer login functionality
-def user_login(request):
+'''def user_login(request):
     # check if the http request is POST
     if request.method == 'POST':
         # get the username and password
@@ -65,13 +68,33 @@ def user_login(request):
         # if the user has been found, redirect to homepage
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect(request.POST.get('next', 'home'))
         # user not found, pop a message
         else:
             messages.info(request, ' Username or Password is incorrect')
     context = {}
-    return render(request, "users/login.html", context)
+    return render(request, "users/login.html", context)'''
 
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)
+            else:
+                # Replace 'home' with the desired URL name
+                return redirect(reverse('home'))
+        else:
+            messages.info(request, 'Username or Password is incorrect')
+
+    context = {'next': request.GET.get('next')}
+    return render(request, "users/login.html", context)
 
 # nanny to fill in more details
 @login_required

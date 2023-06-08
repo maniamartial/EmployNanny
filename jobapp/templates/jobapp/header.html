@@ -74,11 +74,13 @@
     </li>
     <li><a href="{% url 'view_all_contracts' %}" style="background-color: #0275d8">Contracts</a></li>
         <li><a href="{% url 'payment' %}" style="background-color: #0275d8">Make Payments</a></li>
-
+{% elif  request.user|has_group:'nanny'%}
+  <li style="background-color: #0275d8">
+      <a href="{% url 'job_listing' %}">Jobs Available</a></li>
+      <li><a href="{% url 'view_all_contracts_nanny' %}" style="background-color: #0275d8">Contracts</a></li>
     {% else %}
     <li style="background-color: #0275d8">
       <a href="{% url 'job_listing' %}">Jobs Available</a></li>
-      <li><a href="{% url 'view_all_contracts_nanny' %}" style="background-color: #0275d8">Contracts</a></li>
     {% endif %}
 
 

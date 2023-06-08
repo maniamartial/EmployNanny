@@ -767,7 +767,7 @@ def post_review_nanny(request, contract_id):
 # display ratings and feedback
 
 
-@login_required
+@login_required(login_url='login')
 def display_reviews(request):
     ratings = Rating.objects.filter(receiver=request.user)
     total_stars = 0

@@ -5,8 +5,10 @@
 ">
         <div class="center">
             <!--------------------------------------------------------------------------Login form-->
-            <form method="POST" action="">
+<form method="post" action="{% url 'login' %}?next={{ request.path }}">
                 {%csrf_token%}
+                <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+
             <table class="login-table">
          
                    
