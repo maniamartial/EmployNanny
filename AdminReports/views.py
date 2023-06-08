@@ -634,4 +634,4 @@ def dashboard(request):
         'job_application_count': job_application_count,
     }
 
-    return render(request, "admin/base_home.html", context)
+    return render(request, "admin/home.html", context)

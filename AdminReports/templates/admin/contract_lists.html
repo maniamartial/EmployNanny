@@ -1,7 +1,9 @@
-{% extends 'jobapp/base.html' %}
-{% block content%}
+  {% extends 'admin/baseadmin.html' %}
 
-<div class="container">
+{% block content %}
+</div>
+                <div class="app-main__outer">
+<div class="app-main__inner">
 
 <h2 class="text-center">Contract</h2>
     <table class="table table-striped">
@@ -65,5 +67,6 @@
         </tbody>
     </table>
     <a href="{% url 'generate_contract_pdf' %}" class="btn btn-primary">Download</a>
+</div>
 </div>
     {% endblock content%}
