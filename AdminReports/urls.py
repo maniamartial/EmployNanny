@@ -4,10 +4,12 @@ from . import views
 urlpatterns = [
     # Transactions
     path('transaction_list/', views.transaction_list, name='transaction_list'),
-    path('pdf/', views.GeneratePdfTransactions.as_view(), name='generate-pdf'),
     path('excel/', views.ExportExcelTransactions.as_view(), name='export-excel'),
     path('delete_transaction/delete/<int:id>/',
          views.delete_transaction, name="delete_transaction"),
+
+    path('generate_transaction_pdf/', views.generate_transaction_pdf,
+         name="generate_transaction_pdf"),
 
     # Employers
     path('employers/', views.employers_list, name='employers_list'),

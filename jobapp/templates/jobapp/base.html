@@ -12,10 +12,14 @@
 <link rel="stylesheet" href="{% static 'css/chat.css' %}"/>
 <!-- Add this code inside the <head> tag of your base template -->
 <link rel="stylesheet" href="{% static 'css/loading.css' %}">
-
+<link rel="stylesheet" href="{% static 'css/aboutus.css' %}">
+<link rel="stylesheet" href="{% static 'css/nanny.css' %}">
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+<link rel="stylesheet" href="{% static 'css/jobs.css' %}">
+<link rel="stylesheet" href="{% static 'css/payment_home.css'%}">
 </head>
 <body>
-    <!-- Add this code inside the <body> tag of your base template -->
+    <!-- -->
 <div class="loading-overlay">
   <div class="spinner-grow text-primary" role="status">
   <span class="sr-only">Loading...</span>
@@ -38,17 +42,8 @@
     <script src="{% static 'js/header.js' %}"></script>
     <script src="{% static 'js/register.js' %}"></script>
       <script src="{% static 'js/chat.js' %}"></script>
-<!-- Add this code at the bottom of your base template, before the closing </body> tag -->
-<script>
-  window.addEventListener('DOMContentLoaded', function() {
-    var loadingOverlay = document.querySelector('.loading-overlay');
-    loadingOverlay.style.display = 'flex';
-
-    window.addEventListener('load', function() {
-      loadingOverlay.style.display = 'none';
-    });
-  });
-</script>
+      <script src="{% static 'js/post_review.js' %}"></script>
+      <script src="{% static 'js/base.js' %}"></script>
 
 </body>
 </html>

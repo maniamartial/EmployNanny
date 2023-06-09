@@ -1,3 +1,4 @@
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.contrib.admin.views.decorators import user_passes_test
 import math
 from django.db.models import Count, Sum
@@ -55,32 +56,74 @@ def transaction_list(request):
     return render(request, 'admin/transaction_list.html', context)
 
 
-# Generate a pdf to the transactions
-class GeneratePdfTransactions(View):
-    def get(self, request, *args, **kwargs):
-        template = 'admin/transaction_list_table.html'
-        payments = Payment.objects.all()
-        for payment in payments:
-            payment.company_commission = round(payment.amount * 0.1, 2)
-            payment.salary = round(
-                payment.amount - payment.company_commission, 2)
-            payment.save()
-        total_amount = payments.aggregate(Sum('amount'))['amount__sum']
-        total_commission = round(total_amount * 0.1, 2)
-        total_salary = round(total_amount*0.9, 2)
-        context = {'payments': payments,
-                   'total_amount': total_amount,
-                   'total_commission': total_commission,
-                   'total_salary': total_salary}
+def generate_transaction_pdf(request):
+    # Retrieve the data for the report
+    payments = Payment.objects.all()
+    total_amount = payments.aggregate(Sum('amount'))['amount__sum']
+    total_commission = round(total_amount * 0.1, 2)
+    total_salary = round(total_amount * 0.9, 2)
 
-        html = render_to_string(template, context=context, request=request)
-        pdf_file = open('transactions.pdf', 'w+b')
-        pisa.CreatePDF(html.encode('utf-8'), pdf_file)
-        pdf_file.seek(0)
-        response = HttpResponse(pdf_file, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="transactions.pdf"'
-        pdf_file.close()
-        return response
+    # Create the response object
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="transaction_report.pdf"'
+
+    # Create the PDF document
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    # Create the table data
+    data = [['Employer Name', 'Amount', 'Company Commission', 'Salary']]
+    for payment in payments:
+        payment_data = [
+            payment.user,  # Replace payment ID with employer's name
+            payment.amount,
+            round(payment.amount * 0.1, 2),
+            round(payment.amount * 0.9, 2)
+        ]
+        data.append(payment_data)
+
+    # Define the table style
+    table_style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.lightgrey),
+        ('BACKGROUND', (0, 1), (-1, 1), colors.grey),
+        # Add striped row backgrounds
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),  # Add table border
+    ])
+
+    # Create the table object
+    # Adjust column widths as needed
+    table = Table(data, style=table_style, colWidths=[200, 80, 120, 120])
+
+    # Add spaces between rows
+    for i in range(len(data)):
+        if i % 2 == 0:
+            table.setStyle(TableStyle(
+                [('BEFORE', (0, i), (-1, i), 0, colors.white)]))
+
+    # Add the table to the document
+    elements.append(table)
+
+    # Build the document
+    doc.build(elements)
+
+    # Get the value of the BytesIO buffer and write it to the response
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
+
+# Generate a pdf to the transactions
 
 
 # Generate an excell spreadsheet for transactions
@@ -93,9 +136,8 @@ class ExportExcelTransactions(View):
         response['Content-Disposition'] = 'attachment; filename="payments.xls"'
         return response
 
+
 # Delete any transactions that took place maybe wrongly
-
-
 def delete_transaction(request, id):
     transaction = Payment.objects.get(id=id)
     transaction.delete()
@@ -132,13 +174,6 @@ def delete_employer(request, id):
     user = User.objects.get(id=id)
     user.delete()
     return redirect('employer_list')
-
-
-'''class DeleteEmployer(SuccessMessageMixin, generic.DeleteView):
-    model = 'user'
-    template_name = 'admin/delete_employer_confirm.html'
-    success_message = "Employer has been deleted"
-    success_url = reverse_lazy('employer_list')'''
 
 
 # download pdf
@@ -356,8 +391,6 @@ def generate_job_post_report(request):
 
 
 # Display all the contracts available
-
-
 def display_contracts(request):
     contracts = ContractModel.objects.all()
     direct_contracts = DirectContract.objects.all()
@@ -369,8 +402,6 @@ def display_contracts(request):
 
 
 # download pdf
-
-
 def generate_contract_pdf(request):
     # Create a file object to write the PDF to
     response = HttpResponse(content_type='application/pdf')
@@ -479,8 +510,6 @@ def delete_direct_contract(request, id):
 
 
 # Create employer details about contract
-
-
 @login_required
 def employer_payments(request):
     payments = Payment.objects.filter(user=request.user, status='success')
@@ -493,8 +522,6 @@ def employer_payments(request):
 
 
 # Download teh employer pdf payments history
-
-
 @login_required
 def employer_payment_history_pdf(request):
     # Retrieve the payments of the logged-in user

@@ -1,0 +1,48 @@
+.about-container {
+    margin-top: 50px;
+}
+
+.about-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.about-content {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+
+.contact-container {
+    margin-top: 50px;
+}
+
+.contact-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.contact-info {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.map-container {
+    margin-top: 50px;
+    height: 500px;
+    width: 100%;
+
+}
+
+.map {
+    height: 100%;
+    width: 100%;
+}
+
+p {
+    text-align: justify;
+    color: black
+}
