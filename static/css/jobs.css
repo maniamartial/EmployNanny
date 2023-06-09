@@ -1,0 +1,105 @@
+.recent-jobs {
+    width: 95%;
+    margin: 0 auto;
+    padding: 30px 0;
+    justify-content: center;
+}
+
+.recent-jobs h2 {
+    align-self: center;
+}
+
+.jobs-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.job-card {
+    width: 30%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.job-card h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.job-card p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.job-card a {
+    display: block;
+    margin-top: 10px;
+    font-size: 18px;
+    text-decoration: none;
+    color: #333;
+}
+
+.view-more-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.view-more-link {
+    display: inline-block;
+    font-size: 18px;
+    text-decoration: none;
+    color: #333;
+}
+
+.view-more-link i {
+    margin-left: 5px;
+}
+
+.recent-jobs-heading {
+    text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+    .jobs-container {
+        display: block;
+    }
+
+    .job-card {
+        margin-bottom: 20px;
+    }
+}
+
+/*Jobs applications*/
+.status-height {
+    min-height: 550px;
+}
+
+.applicant-row {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.applicant-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.applicant-info p {
+    margin: 0;
+    margin-right: 20px;
+    color: black;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.action-buttons button {
+    margin-right: 10px;
+}

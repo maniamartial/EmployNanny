@@ -275,6 +275,16 @@ def application_status(request):
     return render(request, 'jobapp/application_status.html', context)
 
 
+# employer able to view applicants for specific job he/she posted
+'''@ login_required
+def job_applications(request, job_id):
+    job = jobModel.objects.get(id=job_id)
+    # filter the applicants only for the specified job ID
+    job_applications = JobApplication.objects.filter(job=job)
+    context = {'job': job, 'job_applications': job_applications}
+    return render(request, 'jobapp/job_applications.html', context)'''
+
+
 @login_required
 def job_applications(request, job_id):
     job = jobModel.objects.get(id=job_id)
@@ -546,6 +556,10 @@ def end_contract(request, contract_id):
     notification.save()
     return redirect('post_review', contract_id=contract_id)
 
+   # return redirect('job_detail', job_id=job_id)
+    #messages.success(request, "Contract has been terminated successfully")
+    # return redirect("view_all_contracts")
+
 
 # Employers to send a direct contract from the nannies available
 @login_required
@@ -657,8 +671,7 @@ def end_direct_contract(request, contract_id):
     direct_contract.status = "terminated"
     direct_contract.save()
 
-    messages.success(
-        request, "Direct contract has been terminated successfully")
+    messages.success(request, "Direct contract has been terminated successfully")
     # Send an email notification to the nanny
     subject = "Contract Ended"
     message = f"Hello {nanny_details.first_name},\n\nThe contract with {direct_contract.employer.first_name} has ended. Please contact the employer to settle any outstanding payments and to discuss future opportunities.\n\nBest regards,\nEmployNanny"
@@ -669,11 +682,11 @@ def end_direct_contract(request, contract_id):
         [nanny_user.email],
         fail_silently=False,
     )
-    notification = Notification(
-        user=nanny_user, title=subject, message=message)
+    notification = Notification(user=nanny_user, title=subject, message=message)
     notification.save()
 
     return redirect("view_all_contracts")
+
 
 
 # Review

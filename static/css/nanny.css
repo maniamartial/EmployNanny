@@ -1,0 +1,14 @@
+  .nanny {
+      font-size: 1.2rem;
+      font-family: Arial, sans-serif;
+      text-transform: capitalize;
+  }
+
+  .nanny-image {
+      object-fit: cover;
+      width: 70%;
+      height: 40%;
+      border-radius: 50%;
+      margin-left: auto;
+      margin-right: auto;
+  }

@@ -1,14 +1,12 @@
-  {% extends 'admin/baseadmin.html' %}
-
+{% extends 'admin/baseadmin.html' %}
 {% block content %}
 </div>
-                <div class="app-main__outer">
-<div class="app-main__inner">
-<form action="" metod="POST">
-{% csrf_token %}
-<button type="button" class="btn btn-danger">Delete employer</button>
-</form>
-
-</div>
+<div class="app-main__outer">
+   <div class="app-main__inner">
+      <form action="" metod="POST">
+         {% csrf_token %}
+         <button type="button" class="btn btn-danger">Delete employer</button>
+      </form>
+   </div>
 </div>
 {% endblock content%}

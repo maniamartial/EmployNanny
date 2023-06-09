@@ -1,4 +1,3 @@
-
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from jobapp.models import Rating
@@ -55,27 +54,6 @@ def employRegister(request):
     return render(request, "users/employerRegistration.html", context)
 
 
-# nanny & employer login functionality
-'''def user_login(request):
-    # check if the http request is POST
-    if request.method == 'POST':
-        # get the username and password
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # compared the username and password entered with the details in teh database
-        user = authenticate(request, username=username, password=password)
-
-        # if the user has been found, redirect to homepage
-        if user is not None:
-            login(request, user)
-            return redirect(request.POST.get('next', 'home'))
-        # user not found, pop a message
-        else:
-            messages.info(request, ' Username or Password is incorrect')
-    context = {}
-    return render(request, "users/login.html", context)'''
-
-
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -97,6 +75,8 @@ def user_login(request):
     return render(request, "users/login.html", context)
 
 # nanny to fill in more details
+
+
 @login_required
 def nanny_verification_details(request):
     # check first if the nanny has already filled the details

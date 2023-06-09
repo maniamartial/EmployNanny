@@ -14,6 +14,7 @@
 </div>
    
   <div class="row">
+    {% if ratings %}
     {% for rating in ratings %}
       <div class="col-md-4">
         <div class="card mb-4 box-shadow">
@@ -31,6 +32,9 @@
         </div>
       </div>
     {% endfor %}
+    {% else%}
+    <div><h5 class="text-center">No reviews</h5></div>
+    {% endif %}
   </div>
  
 </div>

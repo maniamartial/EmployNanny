@@ -1,0 +1,16 @@
+    .rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fa-star {
+        font-size: 24px;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+    .checked,
+    .hover {
+        color: #fcd800;
+    }
