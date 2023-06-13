@@ -45,6 +45,9 @@
               <li class="list-group-item">Address: {{ nanny.address }}</li>
               <li class="list-group-item">ID Number: {{ nanny.id_number }}</li>
               <li class="list-group-item">Level of Education: {{ nanny.level_of_education }}</li>
+              <li class="list-group-item">Certificate of Good Conduct: 
+                <a href="{{ nanny.good_conduct_certificate.url }}" class="btn btn-sm btn-primary">View Document</a>
+              </li>
             </ul>
           </div>
           <div class="col-md-6">
@@ -60,6 +63,12 @@
                 {% else %}
                 No document uploaded
                 {% endif %}
+              </li>
+                <li class="list-group-item">ID: 
+
+                  <a href="{{ nanny.id_front_image.url }}" class="btn btn-sm btn-primary">View Document</a>
+                                <a href="{{ nanny.id_back_image.url }}" class="btn btn-sm btn-primary">View Document</a>
+               
               </li>
             </ul>
           </div>

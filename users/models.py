@@ -6,10 +6,11 @@ AVAILABILITY_CHOICES = (
     ('yes', 'Yes'),
     ('no', 'No'),
 )
+
 HIGHEST_LEVEL_EDUCATION = (
-    ('College', 'college'),
-    ('High School', 'high school'),
-    ('Primary School', 'primary school')
+    ('College', 'College'),
+    ('High School', 'High School'),
+    ('Primary School', 'Primary School')
 )
 
 AGE_GROUP_CHOICES = (
@@ -20,8 +21,24 @@ AGE_GROUP_CHOICES = (
     ('N/A', 'N/A'),
 )
 
-
+LANGUAGE_CHOICES = (
+    ('Kamba', 'Kamba'),
+    ('Kikuyu', 'Kikuyu'),
+    ('Luhya', 'Luhya'),
+    ('Kiswahili', 'Kiswahili'),
+    ('English', 'English')
+)
+NATIONALITY_CHOICES = [
+    ('kenyan', 'Kenyan'),
+    ('nigerian', 'Nigerian'),
+    ('south_african', 'South African'),
+    ('ethiopian', 'Ethiopian'),
+    ('egyptian', 'Egyptian'),
+    # Add more nationalities as needed
+]
 # this creates a table for nanny details in the db
+
+
 class NannyDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
@@ -33,9 +50,14 @@ class NannyDetails(models.Model):
     level_of_education = models.CharField(
         max_length=100, choices=HIGHEST_LEVEL_EDUCATION)
     recommendation_letter = models.FileField(
-        upload_to='recommendations/', null=True)
-
-    nationality = models.CharField(max_length=100)
+        upload_to='recommendations/', null=True, blank=True)
+    id_front_image = models.ImageField(
+        upload_to='id_images/', default=0)
+    id_back_image = models.ImageField(
+        upload_to='id_images/', default=0)
+    good_conduct_certificate = models.FileField(
+        upload_to='good_conduct/', null=True, blank=True)
+    nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
     availability = models.CharField(
         max_length=100, choices=AVAILABILITY_CHOICES)
     language = models.CharField(max_length=200)
@@ -44,15 +66,30 @@ class NannyDetails(models.Model):
     age_bracket = models.CharField(
         max_length=100, choices=AGE_GROUP_CHOICES, default="N/A")
     description = models.TextField(blank=True)
-    image = models.ImageField(default='default.jpg',
-                              upload_to='nanny_profile_pics')
+    image = models.ImageField(
+        default='default.jpg', upload_to='nanny_profile_pics')
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
-# To add an image, yu have to shape it and reduce the size
 
+    # To resize and optimize the images
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+        img_id_front = Image.open(self.id_front_image.path)
+        img_id_back = Image.open(self.id_back_image.path)
+
+        # Resize ID front image
+        if img_id_front.height > 500 or img_id_front.width > 500:
+            output_size = (500, 500)
+            img_id_front.thumbnail(output_size)
+            img_id_front.save(self.id_front_image.path)
+
+        # Resize ID back image
+        if img_id_back.height > 500 or img_id_back.width > 500:
+            output_size = (500, 500)
+            img_id_back.thumbnail(output_size)
+            img_id_back.save(self.id_back_image.path)
 
         img = Image.open(self.image.path)
 

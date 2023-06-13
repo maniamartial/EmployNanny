@@ -131,6 +131,7 @@ def paypal_payment(request):
 # mpesa
 
 
+@login_required
 def payment_select(request):
     if request.user.is_authenticated:
         # Get the employer (authenticated user)

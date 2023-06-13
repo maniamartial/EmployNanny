@@ -2,6 +2,13 @@
 {% block content %}
 {% load static %}
 
+<style>
+  .wide-input {
+    width: 100%;
+  }
+
+</style>
+
 <div class="nanny_details">
   <h2 class="nanny_details_h2" style="text-align: center">
     Nanny Details Form
@@ -10,68 +17,91 @@
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
-        <div class="form-group">
-          <label for="{{ form.first_name.id_for_label }}">First Name:</label>
-          {{ form.first_name }}
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+            {{ form.first_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+            {{ form.last_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone:</label>
+            {{ form.phone }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.id_number.id_for_label }}">ID Number:</label>
+            {{ form.id_number }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.city.id_for_label }}">City:</label>
+            {{ form.city }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.address.id_for_label }}">Address:</label>
+            {{ form.address }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.level_of_education.id_for_label }}">Level of Education:</label>
+            {{ form.level_of_education }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.recommendation_letter.id_for_label }}">Recommendation Letter:</label>
+            {{ form.recommendation_letter }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.id_front.id_for_label }}">ID Front:</label>
+            {{ form.id_front_image }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.id_back.id_for_label }}">ID Back:</label>
+            {{ form.id_back_image }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.good_conduct.id_for_label }}">Certificate of Good Conduct:</label>
+            {{ form.good_conduct_certificate }}
+          </div>
         </div>
-        <div class="form-group">
-          <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
-          {{ form.last_name }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.phone.id_for_label }}">Phone:</label>
-          {{ form.phone }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.id_number.id_for_label }}">ID Number:</label>
-          {{ form.id_number }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.city.id_for_label }}">City:</label>
-          {{ form.city }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.address.id_for_label }}">Address:</label>
-          {{ form.address }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.level_of_education.id_for_label }}">Level of Education:</label>
-          {{ form.level_of_education }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.recommendation_letter.id_for_label }}">Recommendation Letter:</label>
-          {{ form.recommendation_letter }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.nationality.id_for_label }}">Nationality:</label>
-          {{ form.nationality }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.availability.id_for_label }}">Availability:</label>
-          {{ form.availability }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.language.id_for_label }}">Language:</label>
-          {{ form.language }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.years_of_experience.id_for_label }}">Years of Experience:</label>
-          {{ form.years_of_experience }}
-        </div>
-         <div class="form-group">
-          <label for="{{ form.age_bracket.id_for_label }}">Age :</label>
-          {{ form.age_bracket }}
-        </div>
-        <div class="form-group full-width">
-          <label for="{{ form.description.id_for_label }}">Description:</label>
-          {{ form.description }}
-        </div>
-        <div class="form-group">
-          <label for="{{ form.image.id_for_label }}">Image:</label>
-          {{ form.image }}
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.nationality.id_for_label }}">Nationality:</label>
+            {{ form.nationality }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.availability.id_for_label }}">Availability:</label>
+            {{ form.availability }}
+          </div>
+          <div class="form-group">
+  <label for="{{ form.language.id_for_label }}">Language:</label>
+<input type="text" id="language-input" name="language" list="language-options">
+<datalist id="language-options">
+  {% for choice in form.language.field.choices %}
+    <option value="{{ choice.0 }}"></option>
+  {% endfor %}
+</datalist>
+
+</div>
+
+          <div class="form-group">
+            <label for="{{ form.years_of_experience.id_for_label }}">Years of Experience:</label>
+            {{ form.years_of_experience }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.age_bracket.id_for_label }}">Age:</label>
+            {{ form.age_bracket }}
+          </div>
+          <div class="form-group full-width">
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {{ form.description }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Image:</label>
+            {{ form.image }}
+          </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" style=" width: 200px; margin-bottom: 50px;">
+      <button type="submit" class="btn btn-primary" style="width: 200px; margin-bottom: 50px;">
         Submit
       </button>
     </form>

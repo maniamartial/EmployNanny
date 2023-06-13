@@ -207,10 +207,12 @@ def delete_job(request, pk):
 def apply_for_job(request, job_id):
     job = get_object_or_404(jobModel, id=job_id)
     # get the nanny_details from the logged-in nanny
-    nanny_details = request.user.nannydetails
+    user = request.user
 
-    if nanny_details is None:
-        # Redirect to a page that explains that the user needs to have a NannyDetails object
+    try:
+        nanny_details = user.nannydetails
+    except NannyDetails.DoesNotExist:
+        # Redirect to the nannyDetails page
         return redirect('nannyDetails')
 
     # Check if the nanny has already applied for the job
