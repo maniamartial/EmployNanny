@@ -1,4 +1,4 @@
-from jobapp.models import ContractModel
+from jobapp.models import ContractModel, DirectContract
 from django.db import models
 from django.contrib.auth.models import User
 from users.models import NannyDetails
@@ -27,7 +27,11 @@ class Payment(models.Model):
 class SalaryPayment(models.Model):
     employer = models.ForeignKey(User, on_delete=models.CASCADE)
     nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
-    contract = models.ForeignKey(ContractModel, on_delete=models.CASCADE)
+    #contract = models.ForeignKey(ContractModel, on_delete=models.CASCADE)
+    contract = models.ForeignKey(
+        ContractModel, on_delete=models.CASCADE, null=True)
+    direct_contract = models.ForeignKey(
+        DirectContract, on_delete=models.CASCADE, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField(auto_now_add=True)
 

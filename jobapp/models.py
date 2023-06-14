@@ -54,6 +54,7 @@ class jobModel(models.Model):
     duration = models.CharField(max_length=100, choices=CONTRACT_DURATION)
     date_posted = models.DateTimeField(auto_now_add=True)
     job_description = models.TextField(blank=True)
+    
 
     def __str__(self):
         return self.category

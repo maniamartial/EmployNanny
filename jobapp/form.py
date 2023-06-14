@@ -1,4 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+
 from .models import Rating
 from .models import DirectContract
 from django import forms
@@ -8,6 +10,15 @@ from .models import jobModel, ContractModel
 class jobPostingForm(forms.ModelForm):
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        salary = cleaned_data.get('salary')
+
+        if salary and int(salary) < 10000:
+            raise ValidationError("Salary cannot be less than 10,000.")
+
+        return cleaned_data
 
     class Meta:
         model = jobModel

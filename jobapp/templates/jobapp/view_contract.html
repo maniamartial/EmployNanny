@@ -1,88 +1,130 @@
 {% extends 'jobapp/base.html' %}
-
 {% block content %}
-
 {% load jobapp_tags %}
-
 <style>
-p {
-  color: black;
-}
-
-.card-title {
-  font-weight: bold;
-}
+   p {
+   color: black;
+   }
+   .card-title {
+   font-weight: bold;
+   }
 </style>
 <div class="container status-height">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h1 class="text-center mb-4">Contract Details</h1>
-      <div class="card">
-        <a href="{% url 'view_all_contracts_nanny' %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
+   <div class="row justify-content-center">
+      <div class="col-md-6">
+         {% if direct_contract %}
+  <h1 class="text-center mb-4">Direct Contract Details</h1>
+{% else %}
+  <h1 class="text-center mb-4">Contract Details</h1>
+{% endif %}
 
-        <div class="card-body">
-          <p class="card-title">Job:</p>
-          <p class="card-text">{{ contract.job }}</p>
-          <p class="card-text">{{ direct_contract.job_category }}</p>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <p class="card-title">Nanny:</p>
-            <p class="card-text">{{ contract.nanny }}</p>
-            <p class="card-text">{{ direct_contract.nanny }}</p>
-          </li>
-          <li class="list-group-item">
-            <p class="card-title">Employer:</p>
-            <p class="card-text">{{ contract.employer }}</p>
-            <p class="card-text">{{ direct_contract.employer }}</p>
-          </li>
-          <li class="list-group-item">
-            <p class="card-title">Start Date:</p>
-            <p class="card-text">{{ contract.start_date }}</p>
-            <p class="card-text">{{ direct_contract.start_date }}</p>
-          </li>
-          <li class="list-group-item">
-            <p class="card-title">Duration:</p>
-            <p class="card-text">{{ contract.job.duration }}</p>
-          </li>
-          <li class="list-group-item">
-            <p class="card-title">Status:</p>
-            {% if status == "Terminated" %}
-            <p class="card-text text-danger">{{ status }}</p>
-            {% elif status == "active" %}
-            <p class="card-text text-primary">{{ status }}</p>
-            {% else %}
-            <p class="card-text">{{ status }}</p>
+         {% if messages %}
+         <div class="alert alert-warning">
+            {% for message in messages %} {{ message }} {% endfor %}
+         </div>
+         {% endif %}
+         <div class="card">
+            <a href="{% url 'view_all_contracts_nanny' %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
+            <div class="card-body">
+               <p class="card-title">Job:</p>
+               <p class="card-text">{{ contract.job }}</p>
+               <p class="card-text">{{ direct_contract.job_category }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+               <li class="list-group-item">
+                  <p class="card-title">Nanny:</p>
+                  <p class="card-text">{{ contract.nanny }}</p>
+                  <p class="card-text">{{ direct_contract.nanny }}</p>
+               </li>
+               <li class="list-group-item">
+                  <p class="card-title">Employer:</p>
+                  <p class="card-text">{{ contract.employer }}</p>
+                  <p class="card-text">{{ direct_contract.employer }}</p>
+               </li>
+               <li class="list-group-item">
+                  <p class="card-title">Start Date:</p>
+                  <p class="card-text">{{ contract.start_date }}</p>
+                  <p class="card-text">{{ direct_contract.start_date }}</p>
+               </li>
+               <li class="list-group-item">
+                  <p class="card-title">Duration:</p>
+                  <p class="card-text">{{ contract.job.duration }}</p>
+               </li>
+               <li class="list-group-item">
+                  <p class="card-title">Status:</p>
+                  {% if status == "Terminated" %}
+                  <p class="card-text text-danger">{{ status }}</p>
+                  {% elif status == "active" %}
+                  <p class="card-text text-primary">{{ status }}</p>
+                  {% else %}
+                  <p class="card-text">{{ status }}</p>
+                  {% endif %}
+               </li>
+            </ul>
+            {% if status == "Active" %}
+            <div class="text-center">
+               <!-- Button to open the payment modal -->
+               <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#paymentModal">
+               Release Payment
+               </button>
+            </div>
+            <div class="text-center mb-2">
+               <form method="POST" action="{% url 'end_contract' contract.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">End Contract</button>
+               </form>
+            </div>
+            {% elif status == "Accepted" %}
+            <div class="text-center">
+               <!-- Button to open the payment modal -->
+               <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#paymentModal">
+               Release Payment
+               </button>
+            </div>
+            <div class="text-center mb-5">
+               <form method="POST" action="{% url 'end_direct_contract' direct_contract.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">End Contract</button>
+               </form>
+            </div>
             {% endif %}
-          </li>
-        </ul>
-
-        {% if status == "Active" %}
-        <div class="text-center mb-5">
-          <form method="POST" action="{% url 'end_contract' contract.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">End Contract</button>
-          </form>
-          <form method="POST" action="{% url 'initiate_payment' contract.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Release Payment</button>
-          </form>
-        </div>
-        {% elif status == "Accepted" %}
-        <div class="text-center mb-5">
-          <form method="POST" action="{% url 'end_direct_contract' direct_contract.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">End Contract</button>
-          </form>
-          <form method="POST" action="{% url 'initiate_payment' contract.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Release Payment</button>
-          </form>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+         </div>
+         <!-- Payment Modal -->
+         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="paymentModalLabel">Release Payment</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+<form method="POST" action="{% if direct_contract %}{% url 'initiate_payment' direct_contract.id %}{% else %}{% url 'initiate_payment' contract.id %}{% endif %}">
+                        {% csrf_token %}
+                       <div class="form-group">
+  <label for="paymentAmount">Payment Amount:</label>
+  {% if direct_contract %}
+    <input type="text" class="form-control" id="paymentAmount" value="{{ direct_contract.amount_to_receive }}" readonly>
+  {% else %}
+    <input type="text" class="form-control" id="paymentAmount" value="{{ contract.job.salary }}" readonly>
+  {% endif %}
 </div>
-
+                        <div class="form-group">
+                           <label for="increaseSalary">Increase Salary:</label>
+                           <input type="checkbox" class="form-control" id="increaseSalary" name="increase_salary">
+                        </div>
+                        <div class="form-group">
+                           <label for="extraAmount">Extra Amount:</label>
+                           <input type="number" class="form-control" id="extraAmount" name="extra_amount">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
 {% endblock %}
