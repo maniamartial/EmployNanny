@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+from decimal import Decimal
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
 from .models import NannyDetails
 from reportlab.lib.styles import getSampleStyleSheet
@@ -9,7 +11,7 @@ from .models import Payment, SalaryPayment, EmployerTransactions
 from .models import Payment, EmployerTransactions
 from .models import SalaryPayment
 import math
-from jobapp.models import ContractModel
+from jobapp.models import ContractModel, DirectContract
 from django.http import JsonResponse
 import base64
 from django.db.models import Sum
@@ -220,11 +222,26 @@ def generate_access_token(consumer_key, consumer_secret):
 # Pay nanny after 30 days
 
 
-def initiate_b2c_transaction(request, contract_id):
+'''def initiate_b2c_transaction(request, contract_id):
     employer = request.user
     contract = ContractModel.objects.get(id=contract_id)
+    if request.method == 'POST':
+        increase_salary = request.POST.get('increase_salary', False)
+        extra_amount = Decimal(request.POST.get('extra_amount', '0'))
+
+        # Update job salary if the employer wants to increase it
+        if increase_salary:
+            job = contract.job
+            salary = int(contract.amount)
+            salary += math.ceil(extra_amount)
+            contract.amount = salary
+            job.salary = salary
+            job.save()
+            contract.save()
+
     nanny = contract.nanny
     amount = math.ceil(contract.amount)
+    
     phone_number = '254'+str(nanny.phone)
 
     employer_transactions, _ = EmployerTransactions.objects.get_or_create(
@@ -276,9 +293,225 @@ def initiate_b2c_transaction(request, contract_id):
     else:
         error_message = response.json().get(
             'errorMessage', 'Failed to initiate B2C transaction')
-        return JsonResponse({'error': error_message}, status=400)
+        return JsonResponse({'error': error_message}, status=400)'''
+
+
+'''def initiate_b2c_transaction(request, contract_id):
+    employer = request.user
+    contract = get_object_or_404(ContractModel, id=contract_id)
+    direct_contract = get_object_or_404(DirectContract, id=contract_id)
+
+    if request.method == 'POST':
+        increase_salary = request.POST.get('increase_salary', False)
+        extra_amount = Decimal(request.POST.get('extra_amount', '0'))
+
+        # Update job salary if the employer wants to increase it
+        if increase_salary:
+            if isinstance(contract, ContractModel):
+                job = contract.job
+                salary = int(contract.amount)
+                salary += math.ceil(extra_amount)
+                contract.amount = salary
+                job.salary = salary
+                job.save()
+                contract.save()
+            elif isinstance(direct_contract, DirectContract):
+                job = direct_contract.job
+                salary = int(direct_contract.amount)
+                salary += math.ceil(extra_amount)
+                direct_contract.amount = salary
+                job.salary = salary
+                job.save()
+                direct_contract.save()
+
+    if isinstance(contract, ContractModel):
+        nanny = contract.nanny
+        amount = math.ceil(contract.amount)
+    elif isinstance(direct_contract, DirectContract):
+        nanny = direct_contract.nanny
+        amount = math.ceil(direct_contract.amount)
+    else:
+        return JsonResponse({'error': 'Contract not found'}, status=404)
+
+    phone_number = '254' + str(nanny.phone)
+
+    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+        employer=employer)
+
+    # Check if the employer's balance is sufficient
+    if employer_transactions.balance < amount:
+        messages.warning(
+            request, 'Your balance is too low to make the payment, kindly deposit amount.')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
+    consumer_key = 'ShetFZbeG2YJSXIvUojmgGrzISPjJ4EQ'
+    consumer_secret = 'd8VqfDwpR6MExxAU'
+    access_token = generate_access_token(consumer_key, consumer_secret)
+    print(access_token)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    payload = {
+        "InitiatorName": "EmployNanny",
+        "SecurityCredential": "EYbsRO2oqNqhjhO4Q1URRAUrfuNJkWlU27K5TnlJQL4TQPs003JMvBVky5BRRnCgYyjYuqzJNGAzCNMz4wqdleNEUNlqggV7bWN5uMdWLlthFtXo0pef31HeQBV3bgnPd1m3pGT6Otk02FuTWoW8aKeyJkMxwS1kjEW7B8bJp2veXiOYWEkml3ulmaicmjg57/XtH548HXUy4WTVDEp1/eMzQMkD98Y32Y3F+AbTr8YeMDBRuGrS6VN9QgPYTNGOw5cRFXdoIyLKTZkCbQWbxP5c6is5kD8IfvTmgWMpRHarQ6+gEtY2ChcbOc/Jk9aQR+69Y1eNG3FE6kKskc0AEQ==",
+        "CommandID": "SalaryPayment",
+        "Amount": amount,
+        "PartyA": 999001,
+        "PartyB": phone_number,
+        "Remarks": "Hope its coming along",
+        "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
+        "ResultURL": "https://mydomain.com/b2c/result",
+        "Occassion": "Pesa",
+    }
+
+    response = requests.post(api_url, headers=headers, json=payload)
+    if response.status_code == 200:
+        try:
+            response_data = response.json()
+            # save salary payment
+            payment = SalaryPayment.objects.create(
+                employer=employer,
+                nanny=nanny,
+                contract=contract,
+                amount=amount
+            )
+            # update the employer transaction
+            # Update EmployerTransactions for the withdrawn amount
+            employer_transactions.total_withdrawn += amount
+            employer_transactions.balance -= amount
+            employer_transactions.save()
+            return redirect("employer_transaction_report")
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Failed to decode API response as JSON'}, status=500)
+    else:
+        error_message = response.json().get(
+            'errorMessage', 'Failed to initiate B2C transaction')
+        return JsonResponse({'error': error_message}, status=400)'''
 
 # Printing employers details
+
+
+def initiate_b2c_transaction(request, contract_id):
+    employer = request.user
+
+    try:
+        contract = ContractModel.objects.get(id=contract_id)
+        direct_contract = None
+    except ContractModel.DoesNotExist:
+        try:
+            direct_contract = DirectContract.objects.get(id=contract_id)
+            contract = None
+        except DirectContract.DoesNotExist:
+            return JsonResponse({'error': 'Invalid contract ID'}, status=400)
+
+    if request.method == 'POST':
+        increase_salary = request.POST.get('increase_salary', False)
+        extra_amount = Decimal(request.POST.get('extra_amount', '0'))
+
+        # Update job salary if the employer wants to increase it
+        if increase_salary:
+            if contract:
+                job = contract.job
+                salary = int(contract.amount)
+                salary += math.ceil(extra_amount)
+                contract.amount = salary
+                job.salary = salary
+                job.save()
+                contract.save()
+            elif direct_contract:
+
+                salary = int(direct_contract.amount_to_receive)
+                salary += math.ceil(extra_amount)
+                direct_contract.amount_to_receive = salary
+                direct_contract.save()
+
+    if contract:
+        nanny = contract.nanny
+        amount = math.ceil(contract.amount)
+    elif direct_contract:
+        nanny = direct_contract.nanny
+        amount = math.ceil(direct_contract.amount_to_receive)
+    else:
+        return JsonResponse({'error': 'Contract not found'}, status=404)
+
+    phone_number = '254' + str(nanny.phone)
+
+    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+        employer=employer)
+    print(phone_number)
+
+    # Check if the employer's balance is sufficient
+    if employer_transactions.balance < amount:
+        print(employer_transactions.balance)
+        messages.warning(
+            request, 'Your balance is too low to make the payment, kindly deposit amount.')
+        return redirect(request.META.get('HTTP_REFERER'))
+    amount = str(amount)
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
+    consumer_key = 'ShetFZbeG2YJSXIvUojmgGrzISPjJ4EQ'
+    consumer_secret = 'd8VqfDwpR6MExxAU'
+    access_token = generate_access_token(consumer_key, consumer_secret)
+    print(access_token)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    payload = {
+        "InitiatorName": "EmployNanny",
+        "SecurityCredential": "EYbsRO2oqNqhjhO4Q1URRAUrfuNJkWlU27K5TnlJQL4TQPs003JMvBVky5BRRnCgYyjYuqzJNGAzCNMz4wqdleNEUNlqggV7bWN5uMdWLlthFtXo0pef31HeQBV3bgnPd1m3pGT6Otk02FuTWoW8aKeyJkMxwS1kjEW7B8bJp2veXiOYWEkml3ulmaicmjg57/XtH548HXUy4WTVDEp1/eMzQMkD98Y32Y3F+AbTr8YeMDBRuGrS6VN9QgPYTNGOw5cRFXdoIyLKTZkCbQWbxP5c6is5kD8IfvTmgWMpRHarQ6+gEtY2ChcbOc/Jk9aQR+69Y1eNG3FE6kKskc0AEQ==",
+        "CommandID": "SalaryPayment",
+        "Amount": amount,
+        "PartyA": 999001,
+        "PartyB": phone_number,
+        "Remarks": "Hope its coming along",
+        "QueueTimeOutURL": "https://mydomain.com/b2c/queue",
+        "ResultURL": "https://mydomain.com/b2c/result",
+        "Occasion": "Pesa",
+    }
+
+    response = requests.post(api_url, headers=headers, json=payload)
+    if response.status_code == 200:
+        try:
+            response_data = response.json()
+            amount = Decimal(amount)
+            # save salary payment
+            if contract:
+                payment = SalaryPayment.objects.create(
+                    employer=employer,
+                    nanny=nanny,
+                    contract=contract,
+                    amount=amount
+                )
+            elif direct_contract:
+                payment = SalaryPayment.objects.create(
+                    employer=employer,
+                    nanny=nanny,
+                    direct_contract=direct_contract,
+                    amount=amount
+                )
+            else:
+                return JsonResponse({'error': 'Invalid contract'}, status=400)
+
+            # update the employer transaction
+            # Update EmployerTransactions for the withdrawn amount
+            employer_transactions.total_withdrawn += amount
+            employer_transactions.balance -= amount
+            employer_transactions.save()
+
+            return redirect("employer_transaction_report")
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Failed to decode API response as JSON'}, status=500)
+
+    else:
+        error_message = response.json().get(
+            'errorMessage', 'Failed to initiate B2C transaction')
+        return JsonResponse({'error': error_message}, status=400)
 
 
 def employer_report(request):
