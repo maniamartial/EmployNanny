@@ -91,9 +91,32 @@
             </div>
           </div>
         </div>
-        <div class="form-group full-width">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label for="{{ form.days_off.id_for_label }}">Days Off:</label>
+              {{ form.days_off }}
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label for="{{ form.leave_available.id_for_label }}">Leave Available:</label>
+              {{ form.leave_available }}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label for="{{ form.vacation_days_per_year.id_for_label }}">Vacation Per Year:</label>
+              {{ form.vacation_days_per_year }}
+            </div>
+          </div>
+         
+           <div class="form-group full-width">
           <label for="{{ form.job_description.id_for_label }}">Job Description:</label>
           {{ form.job_description }}
+        </div>
         </div>
 
         <button type="submit" class="btn btn-primary btn-block mt-4">Post Job</button>
@@ -102,4 +125,7 @@
   </div>
 </div>
 
+
+
 {% endblock %}
+

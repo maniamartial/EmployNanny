@@ -25,6 +25,9 @@ class jobPostingForm(forms.ModelForm):
         fields = '__all__'
 
         exclude = ('employer', 'date_posted')
+        widgets = {
+            'job_description': forms.Textarea(attrs={'placeholder': 'Include all the tasks, number of children (if available), etc.'})
+        }
 
 
 class JobForm(jobPostingForm):
