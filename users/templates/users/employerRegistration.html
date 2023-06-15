@@ -1,128 +1,250 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
-{%load static%}
-<section class="signup" style=" background-color: rgb(237, 247, 236);
-">
-    <div class="center">
-       
-      <style>
-        .alert{
-          color: rgb(126, 5, 5);
-        }
-      </style>
-        <form method="POST" action="">
-            {%csrf_token%}
-            <table>
-                <tr>
-                    <td style="width: 33.33%;">
-                        <div class="dash"></div>
-                    </td>
-                    <td style="padding: 0 6px;">
-                        <h1 style="color: rgb(110, 132, 248)">Employer Registration</h1>
-                    </td>
-                    <td style="width: 33.33%;">
-                        <div class="dash"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <p>Create your account. It's free and only takes a minute.</p>
-                    </td>
-                </tr>
-              
-                <tr>
-                    <td colspan="3">
-                        <div>
-                            {{form.username}}
-                            {% if form.errors %} <p>{{form.username.errors}}</p> {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <div>
-                            {{form.email}}
-                            {% if form.errors %} <p role="alert">{{form.email.errors}}</p> {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                                <tr>
-    <td colspan="3">
-        <div>
-            {{ form.password1.label_tag }}
-            {{ form.password1 }}
-            {% for error in form.password1.errors %}
-                <p class="alert">{{ error }}</p>
-            {% endfor %}
+{% load static %}
+<!-- Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Terms and Conditions for Nannies</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         <ul>
+            <li><strong>Platform Usage:</strong></li>
+            <ul>
+              <li>All chats and communication should take place on the platform.</li>
+            </ul>
+            <li><strong>Account and Payments:</strong></li>
+            <ul>
+              <li>Creating an account is free, but once you post a job, you need to make payments for your job.</li>
+            </ul>
+            <li><strong>Payment Verified Jobs:</strong></li>
+            <ul>
+              <li>Jobs that have a "payment verified" badge tend to receive more applications.</li>
+            </ul>
+            <li><strong>Client Details and Valid IDs:</strong></li>
+            <ul>
+              <li>Check the details of clients and ensure their IDs are valid.</li>
+            </ul>
+            <li><strong>Contract Terms:</strong></li>
+            <ul>
+              <li>While giving a contract, ensure that you have agreed on various aspects such as leave, vacation, and
+                payment terms.</li>
+              <li>You can also include salary increments while renegotiating payment.</li>
+            </ul>
+            <li><strong>Multiple Nannies or Jobs:</strong></li>
+            <ul>
+              <li>You can have more than one nanny per job or post multiple jobs, but ensure that the payment is above
+                the minimum.</li>
+            </ul>
+            <li><strong>Account Balance:</strong></li>
+            <ul>
+              <li>Always check your balance, and if it's low, you may receive frequent messages to add more money.</li>
+            </ul>
+            <li><strong>Contract Termination and Feedback:</strong></li>
+            <ul>
+              <li>In case of contract termination, provide a reason and leave feedback.</li>
+            </ul>
+            <li><strong>Platform Communication and Reporting:</strong></li>
+            <ul>
+              <li>All conversations and transactions must happen on the platform. In case of any issues, report them
+                immediately to the nearest police (we can always help).</li>
+            </ul>
+          </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="signup" style="background-color: rgb(237, 247, 236);">
+  <div class="center">
+    <style>
+      .alert {
+        color: rgb(126, 5, 5);
+      }
+    </style>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <td style="width: 33.33%;">
+            <div class="dash"></div>
+          </td>
+          <td style="padding: 0 6px;">
+            <h1 style="color: rgb(110, 132, 248)">Employer Registration</h1>
+          </td>
+          <td style="width: 33.33%;">
+            <div class="dash"></div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <p>Create your account. It's free and only takes a minute.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="3">
+            <div>
+              {{ form.username }}
+              {% if form.errors %} <p>{{ form.username.errors }}</p> {% endif %}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div>
+              {{ form.email }}
+              {% if form.errors %} <p role="alert">{{ form.email.errors }}</p> {% endif %}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div>
+              {{ form.password1.label_tag }}
+              {{ form.password1 }}
+              {% for error in form.password1.errors %}
+              <p class="alert">{{ error }}</p>
+              {% endfor %}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div>
+              {{ form.password2.label_tag }}
+              {{ form.password2 }}
+              {% for error in form.password2.errors %}
+              <p class="alert">{{ error }}</p>
+              {% endfor %}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div>
+              {{ form.phone }}
+              {% if form.errors %} <p role="alert">{{ form.phone.errors }}</p> {% endif %}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <tr>
+  <td colspan="3">
+  <div class="terms">
+    <label for="checkid2" class="check2" style="display: flex; align-items: center;">
+      <input id="checkid2" class="check1" type="checkbox" value="test" style="margin-right: 5px;"> 
+      I accept the <a href="#" data-toggle="modal" data-target="#termsModal">Terms of Use</a> & 
+      <a href="#" data-toggle="modal" data-target="#termsModal">Privacy Policy</a>.
+    </label>
+  </div>
+</td>
+
+
+
+          </tr>
+
+          <tr>
+            <td colspan="3">
+              <div style="background-color: lightblue;">
+                <input style="background-color: lightblue;" type="submit" value="Register Now">
+              </div>
+              <p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
+            </td>
+          </tr>
+      </table>
+    </form>  </div>
+
+    <script>
+      var form_fields = document.getElementsByTagName('input');
+      form_fields[1].placeholder = 'Username...';
+      form_fields[2].placeholder = 'Email...';
+      form_fields[3].placeholder = 'Password...';
+      form_fields[4].placeholder = 'Confirm Password...';
+      form_fields[5].placeholder = 'Phone (Optional)...';
+
+      for (var field in form_fields) {
+        form_fields[field].className += ' form-control';
+      }
+    </script>
+
+    <style>
+      form table {
+        background-color: red;
+        padding-top: 20%;
+      }
+    </style>
+
+
+<!-- Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Terms and Conditions for Nannies</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <ul>
+            <li><strong>Platform Usage:</strong></li>
+            <ul>
+              <li>All chats and communication should take place on the platform.</li>
+            </ul>
+            <li><strong>Account and Payments:</strong></li>
+            <ul>
+              <li>Creating an account is free, but once you post a job, you need to make payments for your job.</li>
+            </ul>
+            <li><strong>Payment Verified Jobs:</strong></li>
+            <ul>
+              <li>Jobs that have a "payment verified" badge tend to receive more applications.</li>
+            </ul>
+            <li><strong>Client Details and Valid IDs:</strong></li>
+            <ul>
+              <li>Check the details of clients and ensure their IDs are valid.</li>
+            </ul>
+            <li><strong>Contract Terms:</strong></li>
+            <ul>
+              <li>While giving a contract, ensure that you have agreed on various aspects such as leave, vacation, and
+                payment terms.</li>
+              <li>You can also include salary increments while renegotiating payment.</li>
+            </ul>
+            <li><strong>Multiple Nannies or Jobs:</strong></li>
+            <ul>
+              <li>You can have more than one nanny per job or post multiple jobs, but ensure that the payment is above
+                the minimum.</li>
+            </ul>
+            <li><strong>Account Balance:</strong></li>
+            <ul>
+              <li>Always check your balance, and if it's low, you may receive frequent messages to add more money.</li>
+            </ul>
+            <li><strong>Contract Termination and Feedback:</strong></li>
+            <ul>
+              <li>In case of contract termination, provide a reason and leave feedback.</li>
+            </ul>
+            <li><strong>Platform Communication and Reporting:</strong></li>
+            <ul>
+              <li>All conversations and transactions must happen on the platform. In case of any issues, report them
+                immediately to the nearest police (we can always help).</li>
+            </ul>
+          </ul>
         </div>
-    </td>
-</tr>
-<tr>
-    <td colspan="3">
-        <div>
-            {{ form.password2.label_tag }}
-            {{ form.password2 }}
-            {% for error in form.password2.errors %}
-                <p class="alert">{{ error }}</p>
-            {% endfor %}
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
-    </td>
-</tr>
-                <tr>
-                    <td colspan="3">
-                        <div>
-                            {{form.phone}}
-                            {% if form.errors %} <p role="alert">{{form.phone.errors}}</p> {% endif %}
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                          
-                        <tr>
-                    <td colspan="3">
-                        <div class="terms">
-                            <input id="checkid2" class="check1" type="checkbox" value="test"> <label for="checkid2" class="check2">I accept the <a
-                                    href="https://www.google.com/">Terms of Use</a> & <a
-                                    href="https://www.google.com/">Privacy Policy.</a></label>
-                        </div>
-                    </td>
-                </tr>
-    
-                <tr>
-                    <td colspan="3">
-                        <div style="background-color: lightblue;">
-                            <input style="background-color: lightblue;" type="submit" value="Register Now" >
-                        </div>
-                        <p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
-                    </td>
-                </tr>
-
-            </table>
-        </form>
-    
-<script>
-   
-       var form_fields = document.getElementsByTagName('input');
-       
-        form_fields[1].placeholder = 'Username...';
-        form_fields[2].placeholder = 'Email...';
-        form_fields[3].placeholder = 'Password...';
-        form_fields[4].placeholder = 'Confirm Password...';
-         form_fields[5].placeholder = 'Phone(Optional)...';
-
-        for (var field in form_fields) {
-            form_fields[field].className += 'form-control'
-        }
-        
-      
-</script>
-
-<style>
-    form table{
-    background-color: red;
-    padding-top: 20%;
-    }
-</style>
+      </div>
+    </div>
+  </div>
 </section>
-{% endblock content%}
+{% endblock content %}
