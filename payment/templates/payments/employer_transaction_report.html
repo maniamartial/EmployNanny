@@ -42,7 +42,11 @@
             {% for salary_payment in salary_payments %}
             <tr>
                 <td>{{ salary_payment.nanny.first_name }}</td>
-                <td>{{ salary_payment.contract.job.category }}</td>
+                {% if salary_payment.contract %}
+  <td>{{ salary_payment.contract.job.category }}</td>
+{% elif salary_payment.direct_contract %}
+  <td>{{ salary_payment.direct_contract.job_category }}</td>
+{% endif %}
                 <td>{{ salary_payment.amount }}</td>
                 <td>{{ salary_payment.payment_date }}</td>
             </tr>

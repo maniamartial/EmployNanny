@@ -36,7 +36,7 @@ class SalaryPayment(models.Model):
     payment_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.amount
+        return str(self.amount)
 
 
 # Total deposit and total withdrawn(balance)

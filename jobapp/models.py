@@ -39,6 +39,31 @@ AGE_GROUP_CHOICES = (
     ('No preference', 'No preference'),
 )
 
+DAYS_OFF_CHOICES = (
+    ('Every weekend', 'Every weekend'),
+    ('Every Saturday', 'Every Saturday'),
+    ('Every Sunday', 'Every Sunday'),
+    ('Second Saturday every month', 'Second Saturday every month'),
+    ('Second Sunday every month', 'Second Sunday every month'),
+    ('Last Saturday every month', 'Last Saturday every month'),
+    ('Last Sunday every month', 'Last Sunday every month'),
+    ('Others', 'Others'),
+)
+
+LEAVE_CHOICES = (
+    (True, 'Yes'),
+    (False, 'No'),
+)
+
+
+VACATION_CHOICES = (
+    ('1 month', '1 month'),
+    ('3 weeks', '3 weeks'),
+    ('2 weeks', '2 weeks'),
+    ('1 week', '1 week'),
+    ('Others', 'Others'),
+)
+
 
 class jobModel(models.Model):
     employer = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -54,7 +79,11 @@ class jobModel(models.Model):
     duration = models.CharField(max_length=100, choices=CONTRACT_DURATION)
     date_posted = models.DateTimeField(auto_now_add=True)
     job_description = models.TextField(blank=True)
-    
+    days_off = models.CharField(
+        max_length=100, choices=DAYS_OFF_CHOICES, default='Every weekend')
+    leave_available = models.BooleanField(choices=LEAVE_CHOICES, default=False)
+    vacation_days_per_year = models.CharField(
+        max_length=100, choices=VACATION_CHOICES, default='Two weeks')
 
     def __str__(self):
         return self.category

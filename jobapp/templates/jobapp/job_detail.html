@@ -8,12 +8,42 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-group mb-4">
-          <li class="list-group-item">City: {{ job.city }}</li>
-          <li class="list-group-item">Address: {{ job.addresss }}</li>
-          <li class="list-group-item">Salary: {{ job.salary }}</li>
-          <li class="list-group-item">Duration: {{ job.duration }}</li>
-          <li class="list-group-item">Start Date: {{ job.start_date }}</li>
-          <li class="list-group-item">Language: {{ job.language }}</li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">City:</span>
+            <span class="ml-2">{{ job.city }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Address:</span>
+            <span class="ml-2">{{ job.addresss }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Salary:</span>
+            <span class="ml-2">{{ job.salary }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Duration:</span>
+            <span class="ml-2">{{ job.duration }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Start Date:</span>
+            <span class="ml-2">{{ job.start_date }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Language:</span>
+            <span class="ml-2">{{ job.language }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Leave Available:</span>
+            <span class="ml-2">{{ job.leave_available }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Days Off:</span>
+            <span class="ml-2">{{ job.days_off }}</span>
+          </li>
+          <li class="list-group-item">
+            <span class="font-weight-bold">Vacation Days per Year:</span>
+            <span class="ml-2">{{ job.vacation_days_per_year }}</span>
+          </li>
         </ul>
       </div>
       <div class="col-md-4">
@@ -23,13 +53,12 @@
             <h6 class="card-subtitle mb-2 text-muted">Posted by <span class="employer">{{ job.employer.username }}</span></h6>
             {% if request.user|has_group:'employer' %}
              <div class="card-body">
-<a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt; Back</a>
+              <a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt; Back</a>
             </div>
             {% else%}
             <div class="card-body">
-<a href="{% url 'apply_for_job' job_id=job.id %}" class="card-link btn btn-primary">Apply</a>
-<a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt;&lt;</a>
-
+              <a href="{% url 'apply_for_job' job_id=job.id %}" class="card-link btn btn-primary">Apply</a>
+              <a href="{% url 'job_listing' %}" class="card-link btn btn-outline-primary">&lt;&lt;&lt;</a>
             </div>
             {% endif %}
           </div>
@@ -44,5 +73,3 @@
     </div>
   </div>
 {% endblock %}
-
-
