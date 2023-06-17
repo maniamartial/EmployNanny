@@ -4,7 +4,13 @@
 </div>
                 <div class="app-main__outer">
 <div class="app-main__inner">
+
   <h2 class="text-center">Job Postings</h2>
+  {% if messages %}
+<div class="alert alert-success">
+  {% for message in messages %} {{ message }} {% endfor %}
+</div>
+{% endif %}
   <table class="table table-stripped">
     <thead style="background-color: rgb(128, 167, 128);">
       <tr>
@@ -26,7 +32,9 @@
           <td class="text-center">{{ job_post.salary }}</td>
           <td class="text-center">{{ job_post.num_applicants }}</td>
           <td class="text-center">{% if job_post.contract_exists %}Yes{% else %}No{% endif %}</td>
-          <td><a href="#" class="btn btn-danger">Delete</a></td>
+          <td><a href="{% url 'edit_job' job_post.id%}" class="btn btn-primary">Update</a>
+          <a href="{% url 'delete_job' job_post.id %}" class="btn btn-danger">Delete</a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>

@@ -1,0 +1,17 @@
+{% extends 'admin/baseadmin.html' %}
+
+{% block content %}
+<div class="app-main__outer">
+    <div class="app-main__inner">
+        <div class="container text-center">
+            <h2>Delete Employer</h2>
+            <p>Are you sure you want to delete the employer '{{ employer.username }}'?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="{% url 'employers_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

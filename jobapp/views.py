@@ -176,7 +176,10 @@ def edit_job(request, job_id):
         # if form is valid, save the modified data to teh database
         if form.is_valid():
             form.save()
-            return redirect('job_detail', job_id=job_id)
+            if request.user.is_superuser:
+                return redirect('job_post_list')
+            else:
+                return redirect('job_detail', job_id=job_id)
 
         # if form is invalid, print our errors for easy debugging
         else:
@@ -191,10 +194,13 @@ def edit_job(request, job_id):
 def delete_job(request, pk):
     job = get_object_or_404(jobModel, pk=pk)
 
-    if request.method == 'POST' and request.user == job.employer:
+    if request.method == 'POST' and request.user == job.employer or request.user.is_superuser:
         job.delete()
         messages.success(request, 'Job deleted successfully.')
-        return redirect('job_listing')
+        if request.user.is_superuser:
+            return redirect('job_post_list')
+        else:
+            return redirect('job_listing')
 
     context = {
         'job': job,

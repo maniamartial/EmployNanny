@@ -29,7 +29,9 @@
         <td>{{ contract.end_date|date:"n/j/Y" }}</td>
         <td>{{ contract.job.salary }}</td>
         <td{% if contract.status == 'terminated' %} style="color: red;"{% elif contract.status == 'active' %} style="color: blue;"{% endif %}>{{ contract.status }}</td>
-    <td><a href="{% url 'delete_contract' contract.id %}" class="btn btn-danger">Delete</a></td>
+    <td>
+        <a href="{% url 'edit_contract' contract.id %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'delete_contract' contract.id %}" class="btn btn-danger">Delete</a></td>
 
     </tr>
 {% endfor %}
@@ -61,7 +63,10 @@
                 <td>{{ direct_contract.end_date|date:"n/j/Y" }}</td>
                 <td>{{ direct_contract.salary }}</td>
         <td{% if direct_contract.status == 'terminated' %} style="color: red;"{% elif direct_contract.status == 'active' %} style="color: blue;" {% elif direct_contract.status == 'accepted' %} style="color: blue;"{% endif %}>{{ direct_contract.status }}</td>
-    <td><a href="{% url 'delete_direct_contract' direct_contract.id %}" class="btn btn-danger">Delete</a></td>
+    
+        <td>
+            <a href="{% url 'edit_direct_contract' direct_contract.id %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'delete_direct_contract' direct_contract.id %}" class="btn btn-danger">Delete</a></td>
     </tr>
             {% endfor %}
         </tbody>

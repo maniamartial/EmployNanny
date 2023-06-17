@@ -47,7 +47,14 @@ urlpatterns = [
     path('chats', views.messages, name="chats"),
     path('chat/delete<int:id>/', views.delete_message, name="delete_message"),
 
-    path("dashboard", views.dashboard, name="dashboard")
+    path("dashboard", views.dashboard, name="dashboard"),
+    path('edit-contract/<int:contract_id>/',
+         views.edit_contract, name='edit_contract'),
+    path('edit-direct-contract/<int:direct_contract_id>/',
+         views.edit_direct_contract, name='edit_direct_contract'),
+
+    path('delete_employer/<int:employer_id>/',
+         views.delete_employer, name='delete_employer'),
 
 
 ]
