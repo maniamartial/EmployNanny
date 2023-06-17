@@ -1,41 +1,36 @@
-   {% extends 'admin/baseadmin.html' %}
+{% extends 'admin/baseadmin.html' %}
 
 {% block content %}
 </div>
-                <div class="app-main__outer">
-<div class="app-main__inner">
-    <h1 class="mb-4">Employer List</h1>
+<div class="app-main__outer">
+    <div class="app-main__inner">
+        <h1 class="mb-4">Employer List</h1>
 
-    <table class="table table-striped">
-        <thead class="thead-ligt" style="background-color: rgb(128, 167, 128);">
-            <tr>
-                <th scope="col">Username</th>
-                <th scope="col">Jobs Posted</th>
-                <th scope="col">Active Contracts</th>
-                <th scope="col">Done Payments</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employer in employers %}
+        <table class="table table-striped">
+            <thead class="thead-ligt" style="background-color: rgb(128, 167, 128);">
                 <tr>
-                    <td>{{ employer.username }}</td>
-                    <td>{{ employer.jobs_posted }}</td>
-                    <td>{{ employer.active_contracts }}</td>
-                    <td>{{ employer.payment_made }}</td>
-                    <td>
-                       
-<a href="#" class="btn btn-danger"> Delete</a>
-                        
-                    </td>
+                    <th scope="col">Username</th>
+                    <th scope="col">Jobs Posted</th>
+                    <th scope="col">Active Contracts</th>
+                    <th scope="col">Done Payments</th>
+                    <th scope="col">Actions</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'generate_employers_pdf' %}" class="btn btn-primary">Download PDF</a>
-
-</div>
+            </thead>
+            <tbody>
+                {% for employer in employers %}
+                    <tr>
+                        <td>{{ employer.username }}</td>
+                        <td>{{ employer.jobs_posted }}</td>
+                        <td>{{ employer.active_contracts }}</td>
+                        <td>{{ employer.payment_made }}</td>
+                        <td>
+                            <a href="#" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'generate_employers_pdf' %}" class="btn btn-primary">Download PDF</a>
+    </div>
 </div>
 {% endblock %}
-
-

@@ -8,9 +8,9 @@
   max-width: 1200px; /* Optional: Set a maximum width to prevent the container from becoming too wide on large screens */
   margin: 0 auto; /* Optional: Center the container horizontally */
 }
-form input {
-  width: 100%;
-  max-width: 400px;
+form input, form select {
+  width: 300px;
+  height:35px;
 }
 
 
@@ -38,6 +38,14 @@ form input {
             <label for="salary">Salary:</label>
             {{ form.salary }}
           </div>
+            <div class="form-group">
+            <label for="leave">Leave Available:</label>
+            {{ form.leave_available }}
+          </div>
+            <div class="form-group">
+            <label for="days_off">Days Off:</label>
+            {{ form.days_off }}
+          </div>
         </div>
         <div class="col-lg-6">
           <div class="form-group">
@@ -64,10 +72,14 @@ form input {
             <label for="duration">Duration:</label>
             {{ form.duration }}
           </div>
+            <div class="form-group">
+            <label for="vacation">Vacation:</label>
+            {{ form.vacation_days_per_year }}
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group full-width">
         <label for="job_description">Job Description:</label>
         {{ form.job_description }}
       </div>

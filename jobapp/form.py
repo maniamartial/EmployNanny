@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from django import forms
 
 from .models import Rating
 from .models import DirectContract
@@ -39,9 +40,9 @@ class JobForm(jobPostingForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if self.instance.pk and self.user != self.instance.employer:
+        if self.instance.pk and self.user != self.instance.employer and not self.user.is_superuser:
             raise forms.ValidationError(
-                "Only the creator can edit/delete this job.")
+                "Only the creator or an admin can edit/delete this job.")
         return cleaned_data
 
 

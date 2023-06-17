@@ -1,3 +1,5 @@
+from django.urls import reverse
+from .form import ContractForm, DirectContractForm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from django.contrib.admin.views.decorators import user_passes_test
 import math
@@ -37,8 +39,9 @@ from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.contrib.messages.views import SuccessMessageMixin
 
-
 # display all the transaction that took place
+
+
 def transaction_list(request):
     payments = Payment.objects.all()
     total_amount = payments.aggregate(Sum('amount'))['amount__sum']
@@ -145,10 +148,10 @@ def delete_transaction(request, id):
 
 
 # Display the employer list
+
+
 def employers_list(request):
     employers = User.objects.filter(groups__name='employer')
-    for emp in employers:
-        print(emp.id)
     employer_info = []
 
     for employer in employers:
@@ -163,20 +166,36 @@ def employers_list(request):
             'jobs_posted': jobs_posted,
             'active_contracts': active_contracts,
             'payment_made': payment_made,
+            'delete_url': reverse('delete_employer', args=[employer.id]),
         })
 
     context = {'employers': employer_info}
     return render(request, 'admin/employers_list.html', context)
 
 
+
 # will revisit
-def delete_employer(request, id):
+'''def delete_employer(request, id):
     user = User.objects.get(id=id)
     user.delete()
     return redirect('employer_list')
+'''
 
+
+def delete_employer(request, employer_id):
+    employer = get_object_or_404(User, id=employer_id, groups__name='employer')
+
+    if request.method == 'POST':
+        # Delete the employer
+        employer.delete()
+        return redirect('employers_list')
+
+    context = {'employer': employer}
+    return render(request, 'admin/delete_employer.html', context)
 
 # download pdf
+
+
 def generate_employer_report(request):
     # Get the employer data
     employers = User.objects.filter(groups__name='employer')
@@ -618,11 +637,11 @@ def delete_message(request, id):
 @user_passes_test(lambda u: u.is_superuser)
 def dashboard(request):
     admin = request.user
-    total_deposited = Payment.objects.filter(
-        status='success').aggregate(Sum('amount'))['amount__sum']
-    total_salary_paid = SalaryPayment.objects.aggregate(Sum('amount'))[
-        'amount__sum']
-    total_commission = total_deposited * 0.1
+    total_deposited = int(Payment.objects.filter(
+        status='success').aggregate(Sum('amount'))['amount__sum'])
+    total_salary_paid = int(SalaryPayment.objects.aggregate(Sum('amount'))[
+        'amount__sum'])
+    total_commission = int(total_deposited * 0.1)
     top_employers = EmployerTransactions.objects.order_by(
         '-total_deposited')[:6]
     top_nannies = NannyDetails.objects.annotate(contracts_count=Count('contractmodel')).annotate(
@@ -666,3 +685,33 @@ def dashboard(request):
     }
 
     return render(request, "admin/home.html", context)
+
+
+@login_required
+def edit_contract(request, contract_id):
+    contract = get_object_or_404(ContractModel, pk=contract_id)
+    form = ContractForm(instance=contract)
+    if request.method == 'POST':
+        form = ContractForm(request.POST, instance=contract)
+        if form.is_valid():
+            form.save()
+            return redirect('display_contracts')
+    else:
+        print(form.errors)
+
+    return render(request, 'admin/edit_contract.html', {'form': form})
+
+
+@login_required
+def edit_direct_contract(request, direct_contract_id):
+    direct_contract = get_object_or_404(DirectContract, pk=direct_contract_id)
+    form = DirectContractForm(instance=direct_contract)
+    if request.method == 'POST':
+        form = DirectContractForm(request.POST, instance=direct_contract)
+        if form.is_valid():
+            form.save()
+            return redirect('display_contracts')
+        else:
+            print(form.errors)  # Print the form errors if the form is invalid
+
+    return render(request, 'admin/edit_direct_contract.html', {'form': form})
