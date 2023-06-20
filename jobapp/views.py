@@ -1,3 +1,5 @@
+import base64
+from django.core.files.base import ContentFile
 import math
 from .form import ReviewForm
 from .models import Rating
@@ -367,6 +369,7 @@ def create_contract_and_start_duration(request, application_id):
     return render(request, 'jobapp/create_contract.html', context)
 
 
+'''
 @login_required
 def accept_contract(request, contract_id):
     contract = get_object_or_404(ContractModel, id=contract_id)
@@ -404,6 +407,170 @@ def accept_contract(request, contract_id):
                 job=contract.job, nanny=contract.nanny)
             job_application.status = 'rejected'
             job_application.save()
+            # Notify the employer of the nanny's rejection
+            subject = 'Contract rejected'
+            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
+            Notification.objects.create(
+                user=contract.job.employer, message=message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract rejected successfully.')
+
+        # Redirect to the contract details page
+        return redirect('job_application_status')
+
+    context = {
+        'contract': contract,
+    }
+
+    return render(request, 'jobapp/accept_contract.html', context)'''
+
+# new
+
+'''
+@login_required
+def accept_contract(request, contract_id):
+    contract = get_object_or_404(ContractModel, id=contract_id)
+    employer_email = contract.job.employer.email
+
+    if request.method == 'POST':
+        if 'accept' in request.POST:
+            # Handle contract acceptance
+            contract.status = 'active'
+
+            # Get the signature image data from the hidden input field
+            signature_data = request.POST.get('nanny_signature_image', None)
+
+            # Save the signature image as a file
+            if signature_data:
+                format, imgstr = signature_data.split(';base64,')
+                ext = format.split('/')[-1]
+                signature_image = ContentFile(base64.b64decode(
+                    imgstr), name=f'nanny_signature.{ext}')
+                contract.nanny_signature_image = signature_image
+
+            contract.save()
+
+            job_application = JobApplication.objects.get(
+                job=contract.job, nanny=contract.nanny)
+            job_application.status = 'accepted'
+            job_application.save()
+
+            # Notify the employer of the nanny's acceptance
+            subject = 'Contract created'
+            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
+            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
+
+            Notification.objects.create(
+                user=contract.job.employer, message=notification_message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract accepted successfully.')
+
+        elif 'reject' in request.POST:
+            # Handle contract rejection
+            contract.status = 'terminated'
+            contract.save()
+
+            job_application = JobApplication.objects.get(
+                job=contract.job, nanny=contract.nanny)
+            job_application.status = 'rejected'
+            job_application.save()
+
+            # Notify the employer of the nanny's rejection
+            subject = 'Contract rejected'
+            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
+            Notification.objects.create(
+                user=contract.job.employer, message=message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract rejected successfully.')
+
+        # Redirect to the contract details page
+        return redirect('job_application_status')
+
+    context = {
+        'contract': contract,
+    }
+
+    return render(request, 'jobapp/accept_contract.html', context)'''
+
+
+@login_required
+def accept_contract(request, contract_id):
+    contract = get_object_or_404(ContractModel, id=contract_id)
+    employer_email = contract.job.employer.email
+
+    if request.method == 'POST':
+        print("Mania")
+        if 'accept' in request.POST:
+            # Handle contract acceptance
+            print("Maniac")
+            contract.status = 'active'
+            print(contract.status)
+
+            # Get the signature image data from the hidden input field
+            signature_data = request.POST.get('nanny_signature_image', None)
+            print("No", signature_data)
+            # Save the signature image as a file
+            if signature_data:
+                format, imgstr = signature_data.split(';base64,')
+                ext = format.split('/')[-1]
+                signature_image = ContentFile(base64.b64decode(
+                    imgstr), name=f'nanny_signature.{ext}')
+                # Save the signature image to the contract object
+                contract.nanny_signature_image.save(
+                    f'nanny_signature.{ext}', signature_image, save=True)
+                print("Iko ama haiko: ", signature_image)
+
+            contract.save()
+
+            job_application = JobApplication.objects.get(
+                job=contract.job, nanny=contract.nanny)
+            job_application.status = 'accepted'
+            job_application.save()
+
+            # Notify the employer of the nanny's acceptance
+            subject = 'Contract created'
+            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
+            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
+
+            Notification.objects.create(
+                user=contract.job.employer, message=notification_message, title=subject)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='from@example.com',
+                recipient_list=[employer_email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Contract accepted successfully.')
+
+        elif 'reject' in request.POST:
+            # Handle contract rejection
+            contract.status = 'terminated'
+            contract.save()
+
+            job_application = JobApplication.objects.get(
+                job=contract.job, nanny=contract.nanny)
+            job_application.status = 'rejected'
+            job_application.save()
+
             # Notify the employer of the nanny's rejection
             subject = 'Contract rejected'
             message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'

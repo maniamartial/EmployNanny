@@ -16,8 +16,8 @@ class jobPostingForm(forms.ModelForm):
         cleaned_data = super().clean()
         salary = cleaned_data.get('salary')
 
-        if salary and int(salary) < 10000:
-            raise ValidationError("Salary cannot be less than 10,000.")
+        if salary and int(salary) < 15120:
+            raise ValidationError("Salary cannot be less than Ksh. 15,120.")
 
         return cleaned_data
 
