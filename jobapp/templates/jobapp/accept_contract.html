@@ -2,20 +2,35 @@
 
 {% block content %}
 <style>
-p{
-  color:black;
+p {
+  color: black;
 }
 
+.signature-pad {
+  border: 2px dashed #ddd;
+  background-color: #f8f8f8;
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+  height: 150px; /* Increase the height to allow space for the signature */
+}
+
+.signature-pad canvas {
+  width: 100% !important;
+  height: 100%;
+  border: 1px solid #ccc;
+}
 </style>
 <div class="container status-height">
   <div class="row justify-content-center">
     <div class="col-md-6">
       <h1 class="text-center mb-4">Contract Details</h1>
-{% if messages %}
-<div class="alert alert-success">
-  {% for message in messages %} {{ message }} {% endfor %}
-</div>
-{% endif %}
+      {% if messages %}
+      <div class="alert alert-success">
+        {% for message in messages %} {{ message }} {% endfor %}
+      </div>
+      {% endif %}
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Job</h5>
@@ -39,17 +54,76 @@ p{
             <p class="card-text">{{ contract.job.duration }} days</p>
           </li>
         </ul>
-     <div class="card-body">
-  <form method="post">
-    {% csrf_token %}
-    <div class="btn-group" role="group">
-      <button type="submit" name="accept" class="btn btn-success mr-2">Accept</button>
-      <button type="submit" name="reject" class="btn btn-danger ml-auto">Reject</button>
-    </div>
-  </form>
-</div>
+        <div class="card-body">
+          <h5 class="card-title">Terms and Conditions</h5>
+          <a href="#" data-toggle="modal" data-target="#termsModal">View Terms and Conditions</a>
+        </div>
+
+        <!-- Modal for Terms and Conditions -->
+        <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- Add your terms and conditions content here -->
+                <p>Terms and conditions text goes here...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+<form method="post" id="acceptForm">
+  {% csrf_token %}
+            {% csrf_token %}
+            <!-- Add a hidden input field to store the signature data -->
+            <div class="btn-group" role="group">
+              <button type="submit" name="accept" class="btn btn-success mr-2">Accept</button>
+              <button type="submit" name="reject" class="btn btn-danger ml-auto">Reject</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Include the SignaturePad library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Add the JavaScript code for signature capture -->
+<script>
+  $(document).ready(function () {
+    
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'signatureCanvas');
+    document.getElementById('signature-pad').appendChild(canvas);
+
+    var signaturePad = new SignaturePad(canvas);
+
+    // Handle form submission
+    $('#acceptForm').on('submit', function (e) {
+      e.preventDefault();
+
+      // Get the signature image as data URL
+      var signatureData = signaturePad.toDataURL();
+
+      // Set the data URL value to the hidden input field
+      $('#nanny_signature_image').val(signatureData);
+
+      // Submit the form
+      this.submit();
+    });
+  });
+</script>
+
 {% endblock %}
+
+<!--            <div id="signature-pad" class="signature-pad"></div>
+-->

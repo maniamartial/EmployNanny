@@ -124,6 +124,8 @@ class ContractModel(models.Model):
         max_length=100, choices=CONTRACT_STATUS, default=CONTRACT_STATUS[0][0])
     company_commission = models.DecimalField(
         max_digits=10, decimal_places=2, default=0)
+    nanny_signature_image = models.ImageField(
+        upload_to='nanny_signatures/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # calculate contract amount as 90% of job salary
@@ -203,3 +205,27 @@ class Rating(models.Model):
     def __str__(self):
         return str(self.reviewer)
         #abstract = True
+
+
+# nanny signature
+class SignedContract(models.Model):
+    contract = models.ForeignKey(ContractModel, on_delete=models.CASCADE)
+    nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
+    signature_image = models.ImageField(upload_to='signatures/')
+    date_signed = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nanny.first_name
+
+
+# Employer signature
+class EmployerSignature(models.Model):
+    contract = models.ForeignKey(ContractModel, on_delete=models.CASCADE)
+    signature_image = models.ImageField(upload_to='employer_signatures/')
+    employer = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_signed = models.DateTimeField(auto_now_add=True)
+
+    # Additional fields as per your requirements
+
+    def __str__(self):
+        return f"Employer: {self.contract.employer.username}"
