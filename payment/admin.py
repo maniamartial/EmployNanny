@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Payment, SalaryPayment, EmployerTransactions
+from .models import Payment, SalaryPayment, EmployerTransactions, AdvancePayment
 # Register your models here.
 
 
@@ -16,9 +16,15 @@ class EmployerTransactionAdmin(admin.ModelAdmin):
                     'total_withdrawn', 'balance')
 
 
+class AdvancePaymentAdmin(admin.ModelAdmin):
+    list_display = ('nanny', 'employer', 'amount', 'timestamp')
+
+
 admin.site.register(Payment, PaymentAdmin)
 
 
 admin.site.register(SalaryPayment, SalaryPaymentAdmin)
 
 admin.site.register(EmployerTransactions, EmployerTransactionAdmin)
+
+admin.site.register(AdvancePayment, AdvancePaymentAdmin)

@@ -1220,3 +1220,4 @@ def display_reviews(request):
 # help page
 def help(request):
     return render(request, "jobapp/help.html")
+

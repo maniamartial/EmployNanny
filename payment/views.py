@@ -1,3 +1,8 @@
+from datetime import date, timedelta
+from datetime import datetime, timedelta
+from .models import AdvancePayment
+from .models import ContractModel
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from decimal import Decimal, InvalidOperation
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
@@ -20,7 +25,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import Payment
 from datetime import datetime
-from .form import PaymentForm
+from .form import PaymentForm, AdvancePaymentForm
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import requests
@@ -554,3 +559,112 @@ def generate_nanny_transaction(request):
     doc.build(elements)
 
     return response
+
+
+'''
+@login_required
+def advance_payment(request, contract_id):
+    contract = ContractModel.objects.get(id=contract_id)
+    employer = contract.employer
+    nanny = contract.nanny
+    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+        employer=employer)
+
+    if request.method == 'POST':
+        form = AdvancePaymentForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            description = form.cleaned_data['description']
+
+            # Check if the requested amount is greater than the employer's balance
+            if amount > employer_transactions.balance:
+                messages.error(
+                    request, "You have insufficient balance to complete the payment.")
+                return redirect('advance_payment', contract.id)
+
+            # Check if 15 days have passed since the last salary payment
+            last_salary_payment = SalaryPayment.objects.filter(
+                employer=employer).order_by('-payment_date').first()
+            if last_salary_payment and (date.today() - last_salary_payment.payment_date) < timedelta(days=15):
+                messages.error(
+                    request, "You must wait at least 15 days after the last salary payment to make an advance payment.")
+                return redirect('advance_payment', contract.id)
+
+            # Subtract the amount from the employer's balance
+            employer_transactions.balance -= amount
+            employer_transactions.total_withdrawn += amount
+            employer_transactions.save()
+
+            # Deposit the amount to the nanny
+            # Save the advance payment
+            advance_payment = AdvancePayment(
+                employer=employer, nanny=nanny, contract=contract, amount=amount, description=description)
+            advance_payment.save()
+
+            return redirect('view_contract', contract.id)
+    else:
+        form = AdvancePaymentForm()
+
+    return render(request, 'payments/advance_payment.html', {'contract': contract, 'form': form})
+'''
+
+
+@login_required
+def advance_payment(request, contract_id):
+    try:
+        contract = ContractModel.objects.get(id=contract_id)
+        employer = contract.employer
+        nanny = contract.nanny
+        direct_contract = None
+    except ContractModel.DoesNotExist:
+        try:
+            direct_contract = DirectContract.objects.get(id=contract_id)
+            employer = direct_contract.employer
+            nanny = direct_contract.nanny
+            contract = None
+        except DirectContract.DoesNotExist:
+            raise Http404("Contract does not exist.")
+
+    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
+        employer=employer)
+
+    if request.method == 'POST':
+        form = AdvancePaymentForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            description = form.cleaned_data['description']
+
+            # Check if the requested amount is greater than the employer's balance
+            if amount > employer_transactions.balance:
+                messages.error(
+                    request, "You have insufficient balance to complete the payment.")
+                return redirect('advance_payment', contract_id=contract_id)
+
+            # Check if 15 days have passed since the last salary payment
+            last_salary_payment = SalaryPayment.objects.filter(
+                employer=employer).order_by('-payment_date').first()
+            if last_salary_payment and (date.today() - last_salary_payment.payment_date) < timedelta(days=15):
+                messages.error(
+                    request, "You must wait at least 15 days after the last salary payment to make an advance payment.")
+                return redirect('advance_payment', contract_id=contract_id)
+
+            # Subtract the amount from the employer's balance
+            employer_transactions.balance -= amount
+            employer_transactions.total_withdrawn += amount
+            employer_transactions.save()
+
+            # Deposit the amount to the nanny
+            # Save the advance payment
+            if contract:
+                advance_payment = AdvancePayment(
+                    employer=employer, nanny=nanny, contract=contract, amount=amount, description=description)
+            else:
+                advance_payment = AdvancePayment(
+                    employer=employer, nanny=nanny, direct_contract=direct_contract, amount=amount, description=description)
+            advance_payment.save()
+
+            return redirect('view_contract', contract_id=contract_id)
+    else:
+        form = AdvancePaymentForm()
+
+    return render(request, 'payments/advance_payment.html', {'contract': contract, 'direct_contract': direct_contract, 'form': form})

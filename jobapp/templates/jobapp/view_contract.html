@@ -100,6 +100,10 @@
                      </button>
                   </div>
                   <div class="modal-body">
+                     <!--this willlead to advance payments-->
+                     
+
+                     <!--end of advance payment button-->
 <form method="POST" action="{% if direct_contract %}{% url 'initiate_payment' direct_contract.id %}{% else %}{% url 'initiate_payment' contract.id %}{% endif %}">
                         {% csrf_token %}
                        <div class="form-group">
@@ -120,6 +124,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                      </form>
+                     <div>
+                        <div><p>Or</p>
+{% if contract %}
+   <a href="{% url 'advance_payment' contract.id %}" class="btn" style="background:rgb(128, 167, 128); color:white">Advance Payment</a>
+{% elif direct_contract %}
+   <a href="{% url 'advance_payment' direct_contract.id %}" class="btn" style="background:rgb(128, 167, 128); color:white">Advance Payment</a>
+{% endif %}
+                        </div>
+                     </div>
                   </div>
                </div>
             </div>

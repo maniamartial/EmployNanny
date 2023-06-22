@@ -1,0 +1,60 @@
+{% extends 'jobapp/base.html' %}
+{% block content %}
+<style>
+   p {
+      color: black;
+   }
+   .card-title {
+      font-weight: bold;
+   }
+   .full-width {
+      width: 100%;
+   }
+   .form-container {
+      margin: 3%;
+   }
+   bg-succes{
+    min-height:600px;
+   }
+</style>
+<div class="container bg-succes">
+   <h1 class="text-center mb-4">Advance Payment</h1>
+   {% if messages %}
+<div class="alert alert-warning">
+  {% for message in messages %} {{ message }} {% endfor %}
+</div>
+{% endif %}
+
+   <div class="row justify-content-center ">
+      <div class="col-md-6 ">
+         <div class="card">
+            {% if contract%}
+            <a href="{% url 'view_contract' contract.id %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
+            {% else %}
+            <a href="{% url 'view_contract' direct_contract.id %}" class="btn btn-outline-primary mb-3 btn-sm">&lt;&lt; Back</a>
+{% endif %}
+            <div class="card-body">
+               <div class="form-container">
+                  {% if contract %}
+                  <form method="post" action="{% url 'advance_payment' contract.id %}" class="full-width">
+                     {% else %}
+                       <form method="post" action="{% url 'advance_payment' direct_contract.id %}" class="full-width">
+                        {% endif %}
+                     {% csrf_token %}
+                     <div class="form-group full-width">
+                        <label for="amount">Amount:</label>
+                        <input type="number" class="form-control full-width" id="amount" name="amount" required>
+                     </div>
+                     <div class="form-group full-width">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control full-width" id="description" name="description" required></textarea>
+                     </div>
+                     <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

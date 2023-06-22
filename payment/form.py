@@ -21,3 +21,8 @@ class PaypalPaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
         fields = ('amount', 'description')
+
+
+class AdvancePaymentForm(forms.Form):
+    amount = forms.DecimalField(label='Amount')
+    description = forms.CharField(label='Description', widget=forms.Textarea)
