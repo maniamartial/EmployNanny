@@ -38,7 +38,6 @@ class SalaryPayment(models.Model):
     def __str__(self):
         return str(self.amount)
 
-
 # Total deposit and total withdrawn(balance)
 
 
@@ -66,3 +65,19 @@ class EmployerTransactions(models.Model):
         self.total_withdrawn = total_withdrawn
         self.balance = total_deposited - total_withdrawn
         self.save()
+
+
+# Advance payments
+class AdvancePayment(models.Model):
+    employer = models.ForeignKey(User, on_delete=models.CASCADE)
+    nanny = models.ForeignKey(NannyDetails, on_delete=models.CASCADE)
+    contract = models.ForeignKey(
+        ContractModel, on_delete=models.CASCADE, null=True)
+    direct_contract = models.ForeignKey(
+        DirectContract, on_delete=models.CASCADE, null=True)
+    amount = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return f"{self.user}'s Advance Payment of {self.amount}"

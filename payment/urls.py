@@ -29,5 +29,8 @@ urlpatterns = [
     path('generate_nanny_transaction/', views.generate_nanny_transaction,
          name="generate_nanny_transaction"),
 
+    # Dealing with advance payment
+    path('advance-payment/<int:contract_id>/',
+         views.advance_payment, name='advance_payment'),
 
 ]
