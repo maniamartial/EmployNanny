@@ -65,6 +65,7 @@
       <a href="{% url 'nannies' %}">Nanies Available</a>
     </li>
     <li><a href="{% url 'view_all_contracts' %}" style="background-color: #0275d8">Contracts</a></li>
+    <li><a href="{% url 'employer_transaction_report' %}">Transactions</a></li>
         <li><a href="{% url 'payment' %}" style="background-color: #0275d8">Make Payments</a></li>
 {% elif  request.user|has_group:'nanny'%}
   <li style="background-color: #0275d8">

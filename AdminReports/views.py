@@ -1,6 +1,9 @@
+from django.contrib.staticfiles import finders
+from payment import views as payment_view
 from django.urls import reverse
 from .form import ContractForm, DirectContractForm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Image
+from reportlab.lib.styles import getSampleStyleSheet
 from django.contrib.admin.views.decorators import user_passes_test
 import math
 from django.db.models import Count, Sum
@@ -42,6 +45,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 # display all the transaction that took place
 
 
+def image_logo_canvas():
+    # Add the logo image
+    logo_path = finders.find('images/logo.png')
+    logo = Image(logo_path, width=50, height=50)
+    logo.drawHeight = 50
+    logo.drawWidth = 70
+    return logo_path
+
+
 def transaction_list(request):
     payments = Payment.objects.all()
     total_amount = payments.aggregate(Sum('amount'))['amount__sum']
@@ -59,6 +71,7 @@ def transaction_list(request):
     return render(request, 'admin/transaction_list.html', context)
 
 
+@login_required
 def generate_transaction_pdf(request):
     # Retrieve the data for the report
     payments = Payment.objects.all()
@@ -75,6 +88,13 @@ def generate_transaction_pdf(request):
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
+    logo = payment_view.image_logo()
+    elements.append(logo)
+    # Add the title
+    title = "All Transactions within the Platform"
+    title_style = getSampleStyleSheet()['Title']
+    elements.append(Paragraph(title, title_style))
+
     # Create the table data
     data = [['Employer Name', 'Amount', 'Company Commission', 'Salary']]
     for payment in payments:
@@ -85,6 +105,10 @@ def generate_transaction_pdf(request):
             round(payment.amount * 0.9, 2)
         ]
         data.append(payment_data)
+
+    # Append the total row
+    total_row = ['Total', total_amount, total_commission, total_salary]
+    data.append(total_row)
 
     # Define the table style
     table_style = TableStyle([
@@ -104,7 +128,6 @@ def generate_transaction_pdf(request):
     ])
 
     # Create the table object
-    # Adjust column widths as needed
     table = Table(data, style=table_style, colWidths=[200, 80, 120, 120])
 
     # Add spaces between rows
@@ -116,6 +139,8 @@ def generate_transaction_pdf(request):
     # Add the table to the document
     elements.append(table)
 
+    # Add the logo image
+
     # Build the document
     doc.build(elements)
 
@@ -125,8 +150,6 @@ def generate_transaction_pdf(request):
     response.write(pdf)
 
     return response
-
-# Generate a pdf to the transactions
 
 
 # Generate an excell spreadsheet for transactions
@@ -171,7 +194,6 @@ def employers_list(request):
 
     context = {'employers': employer_info}
     return render(request, 'admin/employers_list.html', context)
-
 
 
 # will revisit
@@ -223,6 +245,8 @@ def generate_employer_report(request):
     # Create the canvas
     p = canvas.Canvas(response)
 
+    logo_path = image_logo_canvas()
+    p.drawImage(logo_path, 1 * inch, 10.2 * inch, width=50, height=50)
     # Set up the document
     p.setTitle("Employers Report")
 
@@ -298,7 +322,8 @@ def generate_nanny_report(request):
 
     # Create the canvas
     p = canvas.Canvas(response)
-
+    logo_path = image_logo_canvas()
+    p.drawImage(logo_path, 1 * inch, 10.2 * inch, width=50, height=50)
     # Set up the document
     p.setTitle("Nanny List")
 
@@ -375,7 +400,8 @@ def generate_job_post_report(request):
 
     # Create the canvas
     p = canvas.Canvas(response)
-
+    logo_path = image_logo_canvas()
+    p.drawImage(logo_path, 1 * inch, 10.2 * inch, width=50, height=50)
     # Set up the document
     p.setTitle("Job Post List")
 
@@ -433,7 +459,10 @@ def generate_contract_pdf(request):
     table_header_style = ('Helvetica-Bold', 12)
     table_row_style = ('Helvetica', 10)
 
+    logo_path = image_logo_canvas()
+    pdf_canvas.drawImage(logo_path, 1 * inch, 10.2 * inch, width=50, height=50)
     # Draw the contracts table
+    pdf_canvas.setTitle("Contracts")
     pdf_canvas.setFont(*table_header_style)
     pdf_canvas.drawString(1*inch, 10*inch, 'Contracts')
     pdf_canvas.setFont(*table_row_style)
@@ -554,7 +583,8 @@ def employer_payment_history_pdf(request):
 
     # Create the PDF object, using the BytesIO object as its "file."
     p = canvas.Canvas(buffer)
-
+    logo_path = image_logo_canvas()
+    p.drawImage(logo_path, 1 * inch, 10.2 * inch, width=50, height=50)
     # Set up the PDF document
     p.setPageSize((612, 792))
     p.setTitle("Employer Payment History")

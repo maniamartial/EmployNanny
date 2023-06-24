@@ -1,3 +1,7 @@
+from reportlab.lib.utils import ImageReader
+from django.contrib.staticfiles import finders
+from reportlab.lib.units import inch
+from django.templatetags.static import static
 from datetime import date, timedelta
 from datetime import datetime, timedelta
 from .models import AdvancePayment
@@ -5,7 +9,7 @@ from .models import ContractModel
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from decimal import Decimal, InvalidOperation
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Image
 from .models import NannyDetails
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
@@ -17,7 +21,7 @@ from .models import Payment, EmployerTransactions
 from .models import SalaryPayment
 import math
 from jobapp.models import ContractModel, DirectContract
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 import base64
 from django.db.models import Sum
 from django.contrib import messages
@@ -159,11 +163,6 @@ def payment_select(request):
             # Set the Payment object's user field to the authenticated user
             payment.user = request.user
             payment.save()
-
-            # Update EmployerTransactions for the deposited amount
-            '''employer_transactions.total_deposited += payment.amount
-            employer_transactions.balance += payment.amount
-            employer_transactions.save()'''
 
             # Format the phone number and amount
             number = '254' + str(payment.phone_number)
@@ -377,6 +376,15 @@ def employer_report(request):
         return redirect('login')
 
 
+def image_logo():
+    # Add the logo image
+    logo_path = finders.find('images/logo.png')
+    logo = Image(logo_path, width=50, height=50)
+    logo.drawHeight = 50
+    logo.drawWidth = 70
+    return logo
+
+
 def generate_employer_transaction(request):
     # Retrieve the necessary data for the report
     payments = Payment.objects.filter(user=request.user)
@@ -398,6 +406,7 @@ def generate_employer_transaction(request):
     heading_style = styles['Heading2']
     normal_style = styles['Normal']
 
+    elements.append(image_logo())
     # Add the title
     title = "Employer Transaction Report"
     elements.append(Paragraph(title, title_style))
@@ -517,6 +526,7 @@ def generate_nanny_transaction(request):
     title_style = styles['Title']
     heading_style = styles['Heading2']
     normal_style = styles['Normal']
+    elements.append(image_logo())
 
     # Add the title
     title = "Nanny Transaction Report"
@@ -559,54 +569,6 @@ def generate_nanny_transaction(request):
     doc.build(elements)
 
     return response
-
-
-'''
-@login_required
-def advance_payment(request, contract_id):
-    contract = ContractModel.objects.get(id=contract_id)
-    employer = contract.employer
-    nanny = contract.nanny
-    employer_transactions, _ = EmployerTransactions.objects.get_or_create(
-        employer=employer)
-
-    if request.method == 'POST':
-        form = AdvancePaymentForm(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            description = form.cleaned_data['description']
-
-            # Check if the requested amount is greater than the employer's balance
-            if amount > employer_transactions.balance:
-                messages.error(
-                    request, "You have insufficient balance to complete the payment.")
-                return redirect('advance_payment', contract.id)
-
-            # Check if 15 days have passed since the last salary payment
-            last_salary_payment = SalaryPayment.objects.filter(
-                employer=employer).order_by('-payment_date').first()
-            if last_salary_payment and (date.today() - last_salary_payment.payment_date) < timedelta(days=15):
-                messages.error(
-                    request, "You must wait at least 15 days after the last salary payment to make an advance payment.")
-                return redirect('advance_payment', contract.id)
-
-            # Subtract the amount from the employer's balance
-            employer_transactions.balance -= amount
-            employer_transactions.total_withdrawn += amount
-            employer_transactions.save()
-
-            # Deposit the amount to the nanny
-            # Save the advance payment
-            advance_payment = AdvancePayment(
-                employer=employer, nanny=nanny, contract=contract, amount=amount, description=description)
-            advance_payment.save()
-
-            return redirect('view_contract', contract.id)
-    else:
-        form = AdvancePaymentForm()
-
-    return render(request, 'payments/advance_payment.html', {'contract': contract, 'form': form})
-'''
 
 
 @login_required
