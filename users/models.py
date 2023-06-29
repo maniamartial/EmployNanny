@@ -76,20 +76,23 @@ class NannyDetails(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        img_id_front = Image.open(self.id_front_image.path)
-        img_id_back = Image.open(self.id_back_image.path)
+        if self.id_front_image:
+            img_id_front = Image.open(self.id_front_image.path)
 
-        # Resize ID front image
-        if img_id_front.height > 500 or img_id_front.width > 500:
-            output_size = (500, 500)
-            img_id_front.thumbnail(output_size)
-            img_id_front.save(self.id_front_image.path)
+            # Resize ID front image
+            if img_id_front.height > 500 or img_id_front.width > 500:
+                output_size = (500, 500)
+                img_id_front.thumbnail(output_size)
+                img_id_front.save(self.id_front_image.path)
 
-        # Resize ID back image
-        if img_id_back.height > 500 or img_id_back.width > 500:
-            output_size = (500, 500)
-            img_id_back.thumbnail(output_size)
-            img_id_back.save(self.id_back_image.path)
+        if self.id_back_image:
+            img_id_back = Image.open(self.id_back_image.path)
+
+            # Resize ID back image
+            if img_id_back.height > 500 or img_id_back.width > 500:
+                output_size = (500, 500)
+                img_id_back.thumbnail(output_size)
+                img_id_back.save(self.id_back_image.path)
 
         img = Image.open(self.image.path)
 
@@ -99,7 +102,7 @@ class NannyDetails(models.Model):
             img.save(self.image.path)
 
 
-# this creates a table in teh database called EmployerProfile
+# this creates a table in the database called EmployerProfile
 class EmployerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)

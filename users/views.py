@@ -27,6 +27,8 @@ def nannyRegister(request):
             username = form.cleaned_data.get('username')
             group = Group.objects.get(name='nanny')
             user.groups.add(group)
+            nanny_details = NannyDetails.objects.create(user=user)
+
             messages.success(request, "Account created successful "+username)
             return redirect('login')
     context = {'form': form}
