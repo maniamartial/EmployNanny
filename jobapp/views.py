@@ -174,12 +174,13 @@ def job_detail(request, job_id):
 # employer who created the job can also delete the job
 @login_required
 def edit_job(request, job_id):
-    # retrieve the job with given id, if its not available then raise 4040 error
+    # Retrieve the job with the given id, if it's not available then raise a 404 error
     job = get_object_or_404(jobModel, id=job_id)
+
     if request.method == 'POST':
         form = JobForm(request.POST, instance=job, user=request.user)
 
-        # if form is valid, save the modified data to teh database
+        # If the form is valid, save the modified data to the database
         if form.is_valid():
             form.save()
             if request.user.is_superuser:
@@ -187,15 +188,17 @@ def edit_job(request, job_id):
             else:
                 return redirect('job_detail', job_id=job_id)
 
-        # if form is invalid, print our errors for easy debugging
+        # If the form is invalid, print out the errors for easy debugging
         else:
             print(form.errors)
     else:
-        form = JobForm(instance=job, user=request.user)
+        form = JobForm(instance=job)
+
+    # Pass the user attribute to the form
+    form.user = request.user
     return render(request, 'jobapp/update_job.html', {'form': form, 'job': job})
 
 
-# employer who created the job, can also delete it
 @login_required
 def delete_job(request, pk):
     job = get_object_or_404(jobModel, pk=pk)
@@ -211,6 +214,9 @@ def delete_job(request, pk):
     context = {
         'job': job,
     }
+    # Add this line
+    messages.warning(
+        request, 'You need to be logged in to perform this action.')
 
     return render(request, 'jobapp/update_job.html', context)
 
@@ -380,315 +386,6 @@ def create_contract_and_start_duration(request, application_id):
     return render(request, 'jobapp/create_contract.html', context)
 
 
-'''
-@login_required
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-    employer_email = contract.job.employer.email
-
-    if request.method == 'POST':
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            contract.status = 'active'
-            contract.save()
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'accepted'
-            job_application.save()
-            # Notify the employer of the nanny's acceptance
-            subject = 'Contract created'
-            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
-            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
-
-            Notification.objects.create(
-                user=contract.job.employer, message=notification_message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract accepted successfully.')
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'terminated'
-            contract.save()
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'rejected'
-            job_application.save()
-            # Notify the employer of the nanny's rejection
-            subject = 'Contract rejected'
-            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
-            Notification.objects.create(
-                user=contract.job.employer, message=message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract rejected successfully.')
-
-        # Redirect to the contract details page
-        return redirect('job_application_status')
-
-    context = {
-        'contract': contract,
-    }
-
-    return render(request, 'jobapp/accept_contract.html', context)'''
-
-# new
-
-'''
-@login_required
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-    employer_email = contract.job.employer.email
-
-    if request.method == 'POST':
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            contract.status = 'active'
-
-            # Get the signature image data from the hidden input field
-            signature_data = request.POST.get('nanny_signature_image', None)
-
-            # Save the signature image as a file
-            if signature_data:
-                format, imgstr = signature_data.split(';base64,')
-                ext = format.split('/')[-1]
-                signature_image = ContentFile(base64.b64decode(
-                    imgstr), name=f'nanny_signature.{ext}')
-                contract.nanny_signature_image = signature_image
-
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'accepted'
-            job_application.save()
-
-            # Notify the employer of the nanny's acceptance
-            subject = 'Contract created'
-            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
-            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
-
-            Notification.objects.create(
-                user=contract.job.employer, message=notification_message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract accepted successfully.')
-
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'terminated'
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'rejected'
-            job_application.save()
-
-            # Notify the employer of the nanny's rejection
-            subject = 'Contract rejected'
-            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
-            Notification.objects.create(
-                user=contract.job.employer, message=message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract rejected successfully.')
-
-        # Redirect to the contract details page
-        return redirect('job_application_status')
-
-    context = {
-        'contract': contract,
-    }
-
-    return render(request, 'jobapp/accept_contract.html', context)'''
-
-'''
-@login_required
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-    employer_email = contract.job.employer.email
-
-    if request.method == 'POST':
-        print("Mania")
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            print("Maniac")
-            contract.status = 'active'
-            print(contract.status)
-
-            # Get the signature image data from the hidden input field
-            signature_data = request.POST.get('nanny_signature_image', None)
-            print("No", signature_data)
-            # Save the signature image as a file
-            if signature_data:
-                format, imgstr = signature_data.split(';base64,')
-                ext = format.split('/')[-1]
-                signature_image = ContentFile(base64.b64decode(
-                    imgstr), name=f'nanny_signature.{ext}')
-                # Save the signature image to the contract object
-                contract.nanny_signature_image.save(
-                    f'nanny_signature.{ext}', signature_image, save=True)
-                print("Iko ama haiko: ", signature_image)
-
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'accepted'
-            job_application.save()
-
-            # Notify the employer of the nanny's acceptance
-            subject = 'Contract created'
-            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
-            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
-
-            Notification.objects.create(
-                user=contract.job.employer, message=notification_message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract accepted successfully.')
-
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'terminated'
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'rejected'
-            job_application.save()
-
-            # Notify the employer of the nanny's rejection
-            subject = 'Contract rejected'
-            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
-            Notification.objects.create(
-                user=contract.job.employer, message=message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract rejected successfully.')
-
-        # Redirect to the contract details page
-        return redirect('job_application_status')
-
-    context = {
-        'contract': contract,
-    }
-
-    return render(request, 'jobapp/accept_contract.html', context)
-'''
-
-'''
-@login_required
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-    employer_email = contract.job.employer.email
-
-    if request.method == 'POST':
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            contract.status = 'active'
-
-            # Get the signature image data from the hidden input field
-            signature_data = request.POST.get('signature_data', None)
-            print("My ", signature_data)
-            # Save the signature image as a file
-            if signature_data:
-                format, imgstr = signature_data.split(';base64,')
-                ext = format.split('/')[-1]
-                signature_image = ContentFile(base64.b64decode(
-                    imgstr), name=f'nanny_signature.{ext}')
-                print(signature_image)
-
-                # Save the signature image to the contract object
-                contract.nanny_signature_image.save(
-                    f'nanny_signature.{ext}', signature_image, save=True)
-
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'accepted'
-            job_application.save()
-
-            # Notify the employer of the nanny's acceptance
-            subject = 'Contract created'
-            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
-            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
-
-            Notification.objects.create(
-                user=contract.job.employer, message=notification_message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract accepted successfully.')
-
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'terminated'
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'rejected'
-            job_application.save()
-
-            # Notify the employer of the nanny's rejection
-            subject = 'Contract rejected'
-            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
-            Notification.objects.create(
-                user=contract.job.employer, message=message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract rejected successfully.')
-
-        # Redirect to the contract details page
-        return redirect('job_application_status')
-
-    context = {
-        'contract': contract,
-    }
-
-    return render(request, 'jobapp/accept_contract.html', context)'''
-
-
 @login_required
 def accept_contract(request, contract_id):
     contract = get_object_or_404(ContractModel, id=contract_id)
@@ -767,106 +464,6 @@ def accept_contract(request, contract_id):
     }
 
     return render(request, 'jobapp/accept_contract.html', context)
-
-'''
-@login_required
-def accept_contract(request, contract_id):
-    contract = get_object_or_404(ContractModel, id=contract_id)
-    employer_email = contract.job.employer.email
-
-    if request.method == 'POST':
-        if 'accept' in request.POST:
-            # Handle contract acceptance
-            contract.status = 'active'
-
-            # Get the signature image data from the hidden input field
-            signature_data = request.POST.get('signature_data', None)
-
-            if not signature_data:
-                messages.error(
-                    request, 'You cannot proceed to accept without reading the terms and signing.')
-                return redirect('job_application_status')
-
-            format, imgstr = signature_data.split(';base64,')
-            ext = format.split('/')[-1]
-
-            # Create a PIL Image object from the base64-encoded data
-            image_data = base64.b64decode(imgstr)
-            image = Image.open(BytesIO(image_data))
-
-            # Apply edge detection using a filter
-            edges = image.filter(ImageFilter.FIND_EDGES)
-
-            # Calculate the dimensions of the image
-            width, height = image.size
-
-            # Define the minimum required non-blank pixels
-            min_non_blank_pixels = width * height * 0.1  # Minimum 10% non-blank pixels
-
-            # Check if the image is mostly blank based on dimensions and edge detection
-            if width < 10 or height < 10 or edges.getextrema() == (0, 0) or edges.getextrema() == (255, 255) or edges.histogram()[0] < min_non_blank_pixels:
-                messages.error(
-                    request, 'You cannot proceed to accept with a blank signature.')
-                return redirect('accept_contract', contract_id=contract_id)
-
-            # Save the signature image
-            signature_image = ContentFile(
-                image_data, name=f'nanny_signature.{ext}')
-            contract.nanny_signature_image.save(
-                f'nanny_signature.{ext}', signature_image, save=True)
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'accepted'
-            job_application.save()
-
-            # Notify the employer of the nanny's acceptance
-            subject = 'Contract created'
-            message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: \n\n<a href="http://127.0.0.1:8000/contracts/{contract.id}/">View contract</a>'
-            notification_message = f'Hello {contract.employer.username}, \nYour contract for {contract.job.category} with {contract.nanny.user.username} has started. Please click on the following link to view the contract: View contract'
-
-            Notification.objects.create(
-                user=contract.job.employer, message=notification_message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract accepted successfully.')
-
-        elif 'reject' in request.POST:
-            # Handle contract rejection
-            contract.status = 'terminated'
-            contract.save()
-
-            job_application = JobApplication.objects.get(
-                job=contract.job, nanny=contract.nanny)
-            job_application.status = 'rejected'
-            job_application.save()
-
-            # Notify the employer of the nanny's rejection
-            subject = 'Contract rejected'
-            message = f'Hello {contract.employer.username}\n\n Your contract for {contract.job.title} with {contract.nanny.user.username} has been rejected.'
-            Notification.objects.create(
-                user=contract.job.employer, message=message, title=subject)
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email='from@example.com',
-                recipient_list=[employer_email],
-                fail_silently=False,
-            )
-            messages.success(request, 'Contract rejected successfully.')
-
-        # Redirect to the contract details page
-        return redirect('job_application_status')
-
-    context = {'contract': contract}
-
-    return render(request, 'jobapp/accept_contract.html', context)'''
 
 
 def view_contract(request, contract_id):
@@ -1220,4 +817,3 @@ def display_reviews(request):
 # help page
 def help(request):
     return render(request, "jobapp/help.html")
-

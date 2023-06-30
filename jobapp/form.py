@@ -8,7 +8,7 @@ from django import forms
 from .models import jobModel, ContractModel
 
 
-class jobPostingForm(forms.ModelForm):
+'''class jobPostingForm(forms.ModelForm):
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
 
@@ -28,21 +28,61 @@ class jobPostingForm(forms.ModelForm):
         exclude = ('employer', 'date_posted')
         widgets = {
             'job_description': forms.Textarea(attrs={'placeholder': 'Include all the tasks, number of children (if available), etc.'})
+        }'''
+
+
+class jobPostingForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def __init__(self, *args, **kwargs):
+        # Remove 'user' from kwargs and assign it to the 'user' variable
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        salary = cleaned_data.get('salary')
+
+        if salary and int(salary) < 15120:
+            raise forms.ValidationError(
+                "Salary cannot be less than Ksh. 15,120.")
+
+        return cleaned_data
+
+    class Meta:
+        model = jobModel
+        fields = '__all__'
+        exclude = ('employer', 'date_posted')
+        widgets = {
+            'job_description': forms.Textarea(attrs={'placeholder': 'Include all the tasks, number of children (if available), etc.'})
         }
+
+    def save(self, commit=True):
+        job_posting = super().save(commit=False)
+        job_posting.employer = self.user
+        if commit:
+            job_posting.save()
+        return job_posting
 
 
 class JobForm(jobPostingForm):
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user')
+        # Retrieve the user attribute from kwargs
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        # Disable editing of category field
         self.fields['category'].disabled = True
+
+        # Set the user attribute on the form instance
+        self.user = user
 
     def clean(self):
         cleaned_data = super().clean()
         if self.instance.pk and self.user != self.instance.employer and not self.user.is_superuser:
             raise forms.ValidationError(
-                "Only the creator or an admin can edit/delete this job.")
+                "Only the creator or an admin can edit/delete this job."
+            )
         return cleaned_data
 
 
