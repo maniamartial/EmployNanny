@@ -24,12 +24,12 @@ HIGHEST_LEVEL_EDUCATION = (
     ('Primary School', 'primary school')
 )
 
-CONTRACT_DURATION = (
+CONTRACT_DURATION = [
     ('Less than 6 months', "less than 6 months"),
     ('1 - 2 Years', '1 - 2 years'),
     ('3 -6 years', '3 - 6 years'),
     ('More than 7 years', 'more than 7 years')
-)
+]
 
 AGE_GROUP_CHOICES = (
     ('18-25', '18-25'),
@@ -70,13 +70,14 @@ class jobModel(models.Model):
     category = models.CharField(max_length=100, choices=CATEGORIES)
     city = models.CharField(max_length=100)
     addresss = models.CharField(max_length=100)
-    salary = models.CharField(max_length=100)
+    salary = models.IntegerField()
     language = models.CharField(max_length=100)
     nanny_age = models.CharField(max_length=100, choices=AGE_GROUP_CHOICES)
     hours_per_day = models.IntegerField(default=2)
     start_date = models.DateField()
     years_of_experience = models.IntegerField(default=0)
-    duration = models.CharField(max_length=100, choices=CONTRACT_DURATION)
+    duration = models.CharField(
+        max_length=100, choices=CONTRACT_DURATION, default="1 - 2 years")
     date_posted = models.DateTimeField(auto_now_add=True)
     job_description = models.TextField(blank=True)
     days_off = models.CharField(
