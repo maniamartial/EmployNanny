@@ -102,6 +102,9 @@
                   <a href="{% url 'nannyDetails' %}" style="background-color: #0275d8">My Profile</a>
                 </li>
                 {% endif %}
+                <li> 
+                  <a href="{% url 'employer_profile' employer_id=request.user.id %}" style="background-color: #0275d8">Profile</a>
+                </li>
                      <li>
                   <a href="{% url 'logout' %}" style="background-color: #0275d8">Logout</a>
                 </li>
