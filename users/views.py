@@ -7,10 +7,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
 from .form import CreateUserForm, nannyDetailsForm, EmployerProfileForm
 from django.contrib.auth.models import Group
-#from users.decorators import unauthenticated_user
+# from users.decorators import unauthenticated_user
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
-#from django.forms.widgets import EmailInput
+# from django.forms.widgets import EmailInput
 from .import form
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -127,10 +127,31 @@ def nanny_profile(request, nanny_id):
     return render(request, 'users/nannyProfile.html', context)
 
 
+# create employer profile
+@login_required
+def create_employer_profile(request):
+    if request.method == 'POST':
+        form = EmployerProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user  # Assuming the current user is authenticated
+            profile.save()
+            # Replace 'profile' with the URL or name of the profile view
+            return redirect('employer_profile', employer_id=profile.id)
+    else:
+        form = EmployerProfileForm()
+
+    return render(request, 'users/create_employer_profile.html', {'form': form})
+
+
 # show the employer details
 def employer_profile(request, employer_id):
-    # get the specified employer
-    employer = EmployerProfile.objects.get(id=employer_id)
+    # check if employer exists
+    try:
+        # get the specified employer
+        employer = EmployerProfile.objects.get(id=employer_id)
+    except EmployerProfile.DoesNotExist:
+        return redirect('create_employer_profile')
     # display the details
     context = {
         "employer": employer
@@ -139,13 +160,13 @@ def employer_profile(request, employer_id):
 
 
 # employer can view his/her profile
-@login_required
+@ login_required
 def update_employer_profile(request):
     # check if the logged-in employer has details
     try:
         profile = EmployerProfile.objects.get(user=request.user)
     except EmployerProfile.DoesNotExist:
-        profile = None
+        return redirect('create_employer_profile')
 
 # change/modify some details
     if request.method == 'POST':
@@ -156,7 +177,7 @@ def update_employer_profile(request):
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()
-            return redirect('employer_profile')
+            return redirect('employer_profile', employer_id=profile.id)
         else:
             print(form.errors)
     else:

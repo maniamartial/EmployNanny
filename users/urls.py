@@ -20,6 +20,10 @@ urlpatterns = [
     path('nanny_profile/<int:nanny_id>/',
          views.nanny_profile, name='nanny_profile'),
 
+    # create employer profile
+    path('create_employer_profile', views.create_employer_profile,
+         name="create_employer_profile"),
+
     # URL for the employer profile update form
     path('update_employer_profile', views.update_employer_profile,
          name="update_employer_profile"),
@@ -34,6 +38,5 @@ urlpatterns = [
 
     # URL for handling 404 errors
     path('handler404', views.handler404, name="handler404")
-
 
 ]

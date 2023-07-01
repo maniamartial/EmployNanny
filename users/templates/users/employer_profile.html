@@ -28,7 +28,9 @@
       <h5 class="card-title">{{ employer.first_name }} {{ employer.last_name }}</h5>
       <img src="{{ employer.image.url }}" class="img-fluid rounded-circle profile-image" alt="{{ employer.first_name }}'s Profile Picture">
       <div class="d-flex justify-content-between align-items-end">
-        <a href="#" class="btn btn-primary btn-margin">Message</a>
+       {% if user == employer.user %}
+                            <a href="{% url 'update_employer_profile' %}" class="btn btn-primary btn-margin mt-3">Update Information</a>
+                        {% endif %}
       </div>
     </div>
   </div>

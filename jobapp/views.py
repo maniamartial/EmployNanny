@@ -326,7 +326,7 @@ def help(request):
     return render(request, "jobapp/help.html")
 
 
-# The employer can create contract from teh applications received
+# The employer can create contract from the applications received
 def create_contract_and_start_duration(request, application_id):
     # Get the job application object
     application = JobApplication.objects.get(id=application_id)
@@ -334,7 +334,6 @@ def create_contract_and_start_duration(request, application_id):
     # Get the nanny and employer objects from the application object
     nanny = application.nanny
     employer = application.job.employer
-
     # Check if the contract has already been created
     try:
         contract = ContractModel.objects.get(
@@ -545,7 +544,7 @@ def delete_job_application(request, job_application_id):
         subject,
         message,
         'noreply@nannyagency.com',
-        [job_application.job.employer.user.email],
+        [job_application.job.employer.email],
         fail_silently=False,
     )
     notification = Notification(
@@ -587,9 +586,13 @@ def end_contract(request, contract_id):
     )
 
     # Save a notification for the nanny
+
     notification = Notification(
         user=contract.nanny.user, title=subject, message=message)
     notification.save()
+
+    messages.success(request, 'Contract terminated successfully.')
+
     return redirect('post_review', contract_id=contract_id)
 
 

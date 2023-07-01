@@ -1,0 +1,43 @@
+{% extends 'jobapp/base.html' %}
+
+{% block content %}
+  {% load static %}
+
+  <div class="employer_profile">
+    <h2 class="employer_profile_h2" style="text-align: center">
+      Employer Profile
+    </h2>
+    <div class="container my-4 employer_profile">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+            {{ form.first_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+            {{ form.last_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone:</label>
+            {{ form.phone }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.id_number.id_for_label }}">ID Number:</label>
+            {{ form.id_number }}
+          </div>
+                
+          <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Image:</label>
+            {{ form.image }}
+          </div>
+        </div>
+        <button type="submit" class="btn submit_btn" style="background-color: rgb(110, 132, 248); width: 200px; margin-bottom: 50px;">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
