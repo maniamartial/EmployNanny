@@ -60,47 +60,15 @@ p {
         </ul>
         <div class="card-body">
           <h5 class="card-title">Terms and Conditions</h5>
-          <p>Before proceedng, Click on the link to read the </p>
+          <p>Before proceeding, click on the link to read the Terms and Conditions.</p>
           <a href="#" data-toggle="modal" data-target="#termsModal">Terms and Conditions</a>
-          <p>Sign in the box below if you agree </span>
+          <p>Sign in the box below if you agree.</p>
         </div>
 
-      <!-- Modal for Terms and Conditions -->
-<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <h6><strong>1. Communication and Discussion</strong></h6>
-        <p>All discussions and communication related to the job must be conducted through the platform. This ensures transparency and provides a record of important information exchanged between the nanny and the employer.</p>
-        
-        <h6><strong>2. Payment Arrangements</strong></h6>
-        <p>Only payments arranged and processed through the platform are accepted. Nannies should not engage in off-platform transactions. This helps maintain the security and reliability of the payment process.</p>
-        
-        <h6><strong>3. Work Site Authorization</strong></h6>
-        <p>Nannies are required to remain within the designated work site specified in the contract. Leaving the work site without prior authorization may limit the platform's ability to provide follow-up support in case of any issues or emergencies.</p>
-        
-        <h6><strong>4. Verified Payment</strong></h6>
-        <p>Prior to commencing work, nannies must ensure that the employer has a verified payment method on the platform for the contract job. This helps to establish the employer's credibility and guarantees payment for services rendered.</p>
-        
-        <h6><strong>5. Reporting Payment Issues</strong></h6>
-        <p>If the contract period ends and the employer has not fulfilled their payment obligations, nannies must report the issue to the platform within 15 days of contract completion. This enables appropriate actions to be taken to resolve payment disputes.</p>
-        
-        <h6><strong>6. Conflict Resolution</strong></h6>
-        <p>In the event of any disagreements or conflicts with the employer during the contract period, nannies are required to report the matter to the nearest police authority and notify the platform. This ensures personal safety and helps address any legal or contractual violations.</p>
-        
-        <!-- Add additional terms and conditions here using the same structure -->
-        
-      </div>
-    </div>
-  </div>
-</div>
-
+        <!-- Modal for Terms and Conditions -->
+        <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+          <!-- Modal content -->
+        </div>
 
         <div class="card-body form-container">
           <form method="post" id="acceptForm" class="text-center">
@@ -113,10 +81,9 @@ p {
             <!-- Add a hidden input field to store the signature data -->
             <input type="hidden" id="signatureData" name="signature_data">
             <button type="button" class="btn btn-primary" id="clearButton">
-  <i class="fas fa-paint-brush"></i> 
-</button>
+              <i class="fas fa-paint-brush"></i> Clear Signature
+            </button>
             <div class="btn-group" role="group">
-              
               <button type="submit" name="accept" class="btn btn-success mr-2">Accept</button>
               <button type="submit" name="reject" class="btn btn-danger ml-auto">Reject</button>
             </div>
@@ -139,13 +106,23 @@ p {
     });
 
     // Submit the signature data when the form is submitted
-    document.getElementById('acceptForm').addEventListener('submit', function() {
+    document.getElementById('acceptForm').addEventListener('submit', function(event) {
       // Get the signature data as an image URL
       var signatureData = signaturePad.toDataURL();
 
       // Set the value of the hidden input field to the signature data
       document.getElementById('signatureData').value = signatureData;
+
+      // Check if the signature data is blank before submitting the form
+      if (isSignatureBlank(signatureData)) {
+        // Signature is blank, prevent form submission
+        event.preventDefault();
+        alert('Please provide a signature before accepting the contract.s');
+      }
     });
+
+    
   });
 </script>
+
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
-
+from .language import LANGUAGE_CHOICES
 AVAILABILITY_CHOICES = (
     ('yes', 'Yes'),
     ('no', 'No'),
@@ -21,13 +21,6 @@ AGE_GROUP_CHOICES = (
     ('N/A', 'N/A'),
 )
 
-LANGUAGE_CHOICES = (
-    ('Kamba', 'Kamba'),
-    ('Kikuyu', 'Kikuyu'),
-    ('Luhya', 'Luhya'),
-    ('Kiswahili', 'Kiswahili'),
-    ('English', 'English')
-)
 NATIONALITY_CHOICES = [
     ('kenyan', 'Kenyan'),
     ('nigerian', 'Nigerian'),
@@ -60,7 +53,7 @@ class NannyDetails(models.Model):
     nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
     availability = models.CharField(
         max_length=100, choices=AVAILABILITY_CHOICES)
-    language = models.CharField(max_length=200)
+    language = models.CharField(max_length=200, choices=LANGUAGE_CHOICES)
     date_joined = models.DateTimeField(auto_now_add=True)
     years_of_experience = models.IntegerField(default=0)
     age_bracket = models.CharField(
