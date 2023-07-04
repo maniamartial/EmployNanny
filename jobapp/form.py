@@ -8,29 +8,6 @@ from django import forms
 from .models import jobModel, ContractModel
 
 
-'''class jobPostingForm(forms.ModelForm):
-    start_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}))
-
-    def clean(self):
-        cleaned_data = super().clean()
-        salary = cleaned_data.get('salary')
-
-        if salary and int(salary) < 15120:
-            raise ValidationError("Salary cannot be less than Ksh. 15,120.")
-
-        return cleaned_data
-
-    class Meta:
-        model = jobModel
-        fields = '__all__'
-
-        exclude = ('employer', 'date_posted')
-        widgets = {
-            'job_description': forms.Textarea(attrs={'placeholder': 'Include all the tasks, number of children (if available), etc.'})
-        }'''
-
-
 class jobPostingForm(forms.ModelForm):
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))

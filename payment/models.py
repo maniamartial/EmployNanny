@@ -80,4 +80,4 @@ class AdvancePayment(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return f"{self.user}'s Advance Payment of {self.amount}"
+        return f"{self.nanny}'s Advance Payment of {self.amount}"

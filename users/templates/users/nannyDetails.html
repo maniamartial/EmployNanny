@@ -74,12 +74,7 @@
           </div>
           <div class="form-group">
   <label for="{{ form.language.id_for_label }}">Language:</label>
-<input type="text" id="language-input" name="language" list="language-options">
-<datalist id="language-options">
-  {% for choice in form.language.field.choices %}
-    <option value="{{ choice.0 }}"></option>
-  {% endfor %}
-</datalist>
+  {{ form.language}}
 
 </div>
 

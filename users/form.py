@@ -52,17 +52,13 @@ class nannyDetailsForm(forms.ModelForm):
 
     nationality = forms.ChoiceField(choices=NATIONALITY_CHOICES)
 
-    language = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'language-input'}))
+    # language = forms.CharField(widget=forms.TextInput(
+    #     attrs={'class': 'language-input'}))
 
     class Meta:
         model = NannyDetails
         fields = "__all__"
         exclude = ('user', 'date_joined')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['language'].widget.attrs['list'] = 'language-options'
 
     class Media:
         js = ['nanny_details_form.js']

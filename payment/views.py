@@ -129,8 +129,6 @@ def payment_complete(request):
 def paypal_payment(request):
     return render(request, "payments/paypal_payments.html")
 
-# mpesa
-
 
 # Pay nanny after 30 days
 def initiate_b2c_transaction(request, contract_id):
@@ -482,16 +480,19 @@ def generate_nanny_transaction(request):
 
 @login_required
 def advance_payment(request, contract_id):
+
     try:
         contract = ContractModel.objects.get(id=contract_id)
         employer = contract.employer
         nanny = contract.nanny
+        salary = contract.amount
         direct_contract = None
     except ContractModel.DoesNotExist:
         try:
             direct_contract = DirectContract.objects.get(id=contract_id)
             employer = direct_contract.employer
             nanny = direct_contract.nanny
+            salary = direct_contract.amount_to_receive
             contract = None
         except DirectContract.DoesNotExist:
             raise Http404("Contract does not exist.")
@@ -513,10 +514,16 @@ def advance_payment(request, contract_id):
 
             # Check if 15 days have passed since the last salary payment
             last_salary_payment = SalaryPayment.objects.filter(
-                employer=employer).order_by('-payment_date').first()
+                employer=employer, nanny=nanny).order_by('-payment_date').first()
             if last_salary_payment and (date.today() - last_salary_payment.payment_date) < timedelta(days=15):
                 messages.error(
                     request, "You must wait at least 15 days after the last salary payment to make an advance payment.")
+                return redirect('advance_payment', contract_id=contract_id)
+
+            # check if amount is more than the salary/Should be less than
+            if salary <= amount:
+                messages.error(
+                    request, "Advance amount must be less than the salary.")
                 return redirect('advance_payment', contract_id=contract_id)
 
             # Subtract the amount from the employer's balance
