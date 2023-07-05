@@ -62,12 +62,14 @@
                </li>
             </ul>
             {% if status == "Active" %}
+            {% if request.user|has_group:'employer'%}
             <div class="text-center">
                <!-- Button to open the payment modal -->
                <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#paymentModal">
                Release Payment
                </button>
             </div>
+            {% endif %}
             <div class="text-center mb-2">
                <form method="POST" action="{% url 'end_contract' contract.id %}">
                   {% csrf_token %}
