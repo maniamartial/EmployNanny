@@ -373,7 +373,7 @@ def generate_employer_transaction(request):
 
     # Add the Employer Transaction Details table
     employer_transaction_data = [
-        ["Total Deposited", "Total Withdrawn", "Balance"],
+        ["Total Deposited", "Total Salary Paid", "Balance"],
         [employer_transactions.total_deposited,
             employer_transactions.total_withdrawn, employer_transactions.balance]
     ]
@@ -470,7 +470,7 @@ def generate_nanny_transaction(request):
 
     # Add the Total Amount Paid
     elements.append(
-        Paragraph(f"Total Amount Paid: {total_amount_paid}", heading_style))
+        Paragraph(f"Total Amount Received: {total_amount_paid}", heading_style))
 
     # Build the PDF document
     doc.build(elements)

@@ -49,7 +49,7 @@ urlpatterns = [
     path('accept-contract/<int:contract_id>/',
          views.accept_contract, name='accept_contract'),
 
-    # viewing coontract
+    # viewing contract
     path('contracts/<int:contract_id>/',
          views.view_contract, name='view_contract'),
 

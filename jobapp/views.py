@@ -232,7 +232,7 @@ def apply_for_job(request, job_id):
     except NannyDetails.DoesNotExist:
         # Redirect to the nannyDetails page
         return redirect('nannyDetails')
-
+    print("Name is ", nanny_details.first_name)
     # Check if the nanny has already applied for the job
     if JobApplication.objects.filter(job=job, nanny=nanny_details).exists():
         messages.warning(request, 'You have already applied for this job.')
@@ -383,6 +383,7 @@ def create_contract_and_start_duration(request, application_id):
     }
 
     return render(request, 'jobapp/create_contract.html', context)
+
 
 @login_required
 def accept_contract(request, contract_id):
