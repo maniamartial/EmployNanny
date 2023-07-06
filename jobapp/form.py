@@ -8,15 +8,36 @@ from django import forms
 from .models import jobModel, ContractModel
 
 
+from django import forms
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+
 class jobPostingForm(forms.ModelForm):
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
+    hours_per_day = forms.IntegerField()
 
     def __init__(self, *args, **kwargs):
-        # Remove 'user' from kwargs and assign it to the 'user' variable
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.user = user
+
+    def clean_hours_per_day(self):
+        hours_per_day = self.cleaned_data.get('hours_per_day')
+
+        if hours_per_day and hours_per_day > 24:
+            raise forms.ValidationError("Hours per day cannot exceed 24.")
+
+        return hours_per_day
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data.get('start_date')
+
+        if start_date and start_date < timezone.now().date():
+            raise forms.ValidationError("Start date cannot be in the past.")
+
+        return start_date
 
     def clean(self):
         cleaned_data = super().clean()
@@ -42,6 +63,7 @@ class jobPostingForm(forms.ModelForm):
         if commit:
             job_posting.save()
         return job_posting
+
 
 
 class JobForm(jobPostingForm):
