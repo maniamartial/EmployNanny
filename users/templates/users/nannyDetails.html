@@ -13,7 +13,22 @@
   <h2 class="nanny_details_h2" style="text-align: center">
     Nanny Details Form
   </h2>
+  
   <div class="container my-4 nanny_details">
+          {% if form.errors %}
+    <div class="alert alert-danger">
+      <strong>Error:</strong>
+      {% for field in form %}
+        {% if field.errors %}
+          <ul>
+            {% for error in field.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="row">
