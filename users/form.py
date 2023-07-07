@@ -52,9 +52,38 @@ class nannyDetailsForm(forms.ModelForm):
 
     nationality = forms.ChoiceField(choices=NATIONALITY_CHOICES)
 
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+
+        if phone is not None:
+            phone_str = str(phone)
+
+            if phone_str.startswith('07') and len(phone_str) != 10:
+                raise forms.ValidationError(
+                    "Phone number starting with '07' should have exactly 10 digits.")
+            elif phone_str.startswith('254') and len(phone_str) != 12:
+                raise forms.ValidationError(
+                    "Phone number starting with '254' should have exactly 12 digits.")
+            elif len(phone_str) < 9:
+                raise forms.ValidationError(
+                    "Phone number should have at least 9 digits.")
+
+        return phone
+
+    def clean_id_number(self):
+        id_number = self.cleaned_data.get('id_number')
+
+        if id_number is not None:
+            id_number_str = str(id_number)
+
+            if len(id_number_str) < 7 or len(id_number_str) > 8:
+                raise forms.ValidationError(
+                    "ID number should have 7 or 8 digits.")
+
+        return id_number
+
     # language = forms.CharField(widget=forms.TextInput(
     #     attrs={'class': 'language-input'}))
-
     class Meta:
         model = NannyDetails
         fields = "__all__"
@@ -68,6 +97,36 @@ class EmployerProfileForm(forms.ModelForm):
     phone = forms.IntegerField(required=True)
     id_number = forms.IntegerField(required=True)
     image = forms.ImageField(required=False, label='Upload a profile picture')
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+
+        if phone is not None:
+            phone_str = str(phone)
+
+            if phone_str.startswith('07') and len(phone_str) != 10:
+                raise forms.ValidationError(
+                    "Phone number starting with '07' should have exactly 10 digits.")
+            elif phone_str.startswith('254') and len(phone_str) != 12:
+                raise forms.ValidationError(
+                    "Phone number starting with '254' should have exactly 12 digits.")
+            elif len(phone_str) < 9:
+                raise forms.ValidationError(
+                    "Phone number should have at least 9 digits.")
+
+        return phone
+
+    def clean_id_number(self):
+        id_number = self.cleaned_data.get('id_number')
+
+        if id_number is not None:
+            id_number_str = str(id_number)
+
+            if len(id_number_str) < 7 or len(id_number_str) > 8:
+                raise forms.ValidationError(
+                    "ID number should have 7 or 8 digits.")
+
+        return id_number
 
     class Meta:
         model = EmployerProfile
