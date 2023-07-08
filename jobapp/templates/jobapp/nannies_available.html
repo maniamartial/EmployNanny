@@ -49,7 +49,7 @@
               <li class="list-group-item">Language: {{ nanny.language }}</li>
             </ul>
             <div class="card-body d-flex justify-content-between align-items-end">
-              <a href="#" class="card-link float-left">Contact</a>
+              <a href="{% url 'direct_contract_index' nanny_id=nanny.id%}" class="card-link float-left">Message</a>
               <a href="{% url 'direct_contract' nanny.id %}" class="card-link ml-auto">Hire</a>
             </div>
           </div>
@@ -81,7 +81,5 @@
     </span>
   </div>
 {% endif %}
-
-
 
 {% endblock %}

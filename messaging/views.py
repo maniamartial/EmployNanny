@@ -1,18 +1,4 @@
-'''from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import get_user
-
-
-def index(request):
-    return render(request, "chat/index.html")
-
-
-@login_required
-def room(request, room_name):
-    receiver = get_user(request)  # Get the receiver, who is the logged-in user
-    return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver})
-'''
 from django.db.models import Max
 import uuid  # Import the uuid module
 from django.shortcuts import get_object_or_404
@@ -21,20 +7,16 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from jobapp.models import JobApplication
-
-'''
-def index(request):
-    users = User.objects.all()  # Get all registered users
-    return render(request, "chat/index.html", {"users": users})
-'''
+from users.models import NannyDetails
 
 
-'''def index(request, job_application_id):
-    job_application = get_object_or_404(JobApplication, id=job_application_id)
-    # Assuming the nanny is stored as a foreign key in the JobApplication model
-    receiver = job_application.nanny
-    # Get all registered users except the current user
-    return render(request, "chat/index.html", {"receiver": receiver})'''
+# Direct client
+def direct_contract_index(request, nanny_id):
+
+    job_application = get_object_or_404(NannyDetails, id=nanny_id)
+    receiver = job_application
+    room_name = str(uuid.uuid4())  # Generate a unique group name using uuid
+    return render(request, "chat/index.html", {"receiver": receiver, "room_name": room_name})
 
 
 def index(request, job_application_id):
