@@ -51,6 +51,7 @@ class nannyDetailsForm(forms.ModelForm):
         required=False, label='Upload Recommendation Letter')
 
     nationality = forms.ChoiceField(choices=NATIONALITY_CHOICES)
+ # Validate the phone
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
@@ -69,6 +70,7 @@ class nannyDetailsForm(forms.ModelForm):
                     "Phone number should have at least 9 digits.")
 
         return phone
+# validate the ID
 
     def clean_id_number(self):
         id_number = self.cleaned_data.get('id_number')
@@ -97,6 +99,7 @@ class EmployerProfileForm(forms.ModelForm):
     phone = forms.IntegerField(required=True)
     id_number = forms.IntegerField(required=True)
     image = forms.ImageField(required=False, label='Upload a profile picture')
+# Phone number validation
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
@@ -115,6 +118,7 @@ class EmployerProfileForm(forms.ModelForm):
                     "Phone number should have at least 9 digits.")
 
         return phone
+# Id validation
 
     def clean_id_number(self):
         id_number = self.cleaned_data.get('id_number')
