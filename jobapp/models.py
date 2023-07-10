@@ -1,3 +1,4 @@
+from .location import LOCATION_NAMES
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
@@ -68,7 +69,7 @@ VACATION_CHOICES = (
 class jobModel(models.Model):
     employer = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=100, choices=CATEGORIES)
-    city = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, choices=LOCATION_NAMES)
     addresss = models.CharField(max_length=100)
     salary = models.IntegerField()
     language = models.CharField(max_length=100)
@@ -163,13 +164,15 @@ class DirectContract(models.Model):
     employer = models.ForeignKey(User, on_delete=models.CASCADE)
     job_category = models.CharField(
         max_length=100, choices=CATEGORIES, default="Full-time Nanny")
-    city = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, choices=LOCATION_NAMES)
     salary = models.IntegerField()
     start_date = models.DateField()
     end_date = models.DateField()
     job_description = models.TextField(blank=True)
     status = models.CharField(
         max_length=100, choices=CONTRACT_STATUS, default="pending")
+    nanny_signature_image = models.ImageField(
+        upload_to='nanny_signatures/', null=True, blank=True)
     amount_to_receive = models.IntegerField()
     company_commission = models.IntegerField()
 

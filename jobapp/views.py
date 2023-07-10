@@ -650,6 +650,20 @@ def accept_direct_contract(request, contract_id):
 
     if request.method == 'POST':
         if 'accept' in request.POST:
+
+            # Get the signature image data from the hidden input field
+            signature_data = request.POST.get('signature_data', None)
+
+            # Check if a signature has been drawn
+            if signature_data and signature_data.startswith('data:image/png;base64,iVBORw0KGgoAAA'):
+                # Save the signature image as a file
+                format, imgstr = signature_data.split(';base64,')
+                ext = format.split('/')[-1]
+                signature_image = ContentFile(base64.b64decode(
+                    imgstr), name=f'nanny_signature.{ext}')
+
+                # Save the signature image to the contract object
+                direct_contract.nanny_signature_image = signature_image
             # Handle contract acceptance
             direct_contract.status = 'accepted'
             direct_contract.save()

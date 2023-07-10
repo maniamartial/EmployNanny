@@ -2,6 +2,14 @@
 
 {% block content %}
 <div class="container mt-3">
+     {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+              {{ error }}
+            {% endfor %}
+          </div>
+        {% endif %}
+         
   <form method="POST">
     {% csrf_token %}
     <div class="row">
@@ -10,9 +18,8 @@
           <label for="{{ form.job_category.id_for_label }}">Job Category</label>
 {{ form.job_category }}        </div>
         <div class="form-group">
-          <label for="city">City</label>
-          <input type="text" class="form-control" id="city" name="city" required>
-        </div>
+          <label for="city">Location</label>
+{{ form.city }}        </div>
         <div class="form-group">
           <label for="salary">Salary</label>
           <input type="number" class="form-control" id="salary" name="salary" required>

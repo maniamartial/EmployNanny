@@ -65,7 +65,6 @@ class jobPostingForm(forms.ModelForm):
         return job_posting
 
 
-
 class JobForm(jobPostingForm):
     def __init__(self, *args, **kwargs):
         # Retrieve the user attribute from kwargs
@@ -111,6 +110,25 @@ class JobSearchForm(forms.Form):
 
 
 class DirectContractForm(forms.ModelForm):
+
+    def clean(self):
+        cleaned_data = super().clean()
+        salary = cleaned_data.get('salary')
+
+        if salary and int(salary) < 15120:
+            raise forms.ValidationError(
+                "Salary cannot be less than Ksh. 15,120.")
+
+        return cleaned_data
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data.get('start_date')
+
+        if start_date and start_date < timezone.now().date():
+            raise forms.ValidationError("Start date cannot be in the past.")
+
+        return start_date
+
     class Meta:
         model = DirectContract
         fields = ['job_category', 'city', 'salary', 'start_date',
