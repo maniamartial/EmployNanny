@@ -50,6 +50,10 @@
                   <p class="card-title">Duration:</p>
                   <p class="card-text">{{ contract.job.duration }}</p>
                </li>
+                <li class="list-group-item">
+                  <p class="card-title">Salary:</p>
+                  <p class="card-text">Ksh. {{ contract.amount }}</p>
+               </li>
                <li class="list-group-item">
                   <p class="card-title">Status:</p>
                   {% if status == "Terminated" %}

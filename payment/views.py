@@ -514,7 +514,7 @@ def advance_payment(request, contract_id):
 
             # Check if 15 days have passed since the last salary payment
             last_salary_payment = SalaryPayment.objects.filter(
-                employer=employer, nanny=nanny).order_by('-payment_date').first()
+                employer=request.user, nanny=nanny).order_by('-payment_date').first()
             if last_salary_payment and (date.today() - last_salary_payment.payment_date) < timedelta(days=15):
                 messages.error(
                     request, "You must wait at least 15 days after the last salary payment to make an advance payment.")
