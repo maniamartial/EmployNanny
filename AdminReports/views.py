@@ -83,6 +83,10 @@ def generate_transaction_pdf(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="transaction_report.pdf"'
 
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    heading_style = styles['Heading2']
+    normal_style = styles['Normal']
     # Create the PDF document
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
@@ -94,6 +98,7 @@ def generate_transaction_pdf(request):
     title = "All Transactions within the Platform"
     title_style = getSampleStyleSheet()['Title']
     elements.append(Paragraph(title, title_style))
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Create the table data
     data = [['Employer Name', 'Amount', 'Company Commission', 'Salary']]
@@ -138,6 +143,7 @@ def generate_transaction_pdf(request):
 
     # Add the table to the document
     elements.append(table)
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Add the logo image
 

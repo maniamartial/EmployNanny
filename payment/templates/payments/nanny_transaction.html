@@ -4,6 +4,7 @@
 <div class="container">
 
     <h2 class="mt-4">Transaction Details</h2>
+    <h3 class="mt-4">Salary Payments</h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -24,13 +25,38 @@
                     <td>{{ transaction.contract.status }}</td>
                 </tr>
             {% endfor %}
+            
+        </tbody>
+    </table>
+
+    {% if advance_payments %}
+    <h3 class="mt-4">Advance Payments</h3>
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td colspan="5" style="text-align: center; font-weight: bold;">Total Amount Received: {{ total_amount_paid }}</td>
+                <th>Employer</th>
+                <th>Amount</th>
+                <th>Date of Payment</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for advance_payment in advance_payments %}
+                <tr>
+                    <td>{{ advance_payment.employer }}</td>
+                    <td>{{ advance_payment.amount }}</td>
+                    <td>{{ advance_payment.timestamp }}</td>
+                    <td>{{ advance_payment.description }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: center;">Total Amount Received: <span style="font-weight: bold;">{{ total_amount_paid }}</span></td>
             </tr>
         </tbody>
     </table>
-<a href="{% url 'generate_nanny_transaction' %}" class="btn btn-primary" target="_blank" download>Download Report</a>
+    {% endif %}
+
+    <a href="{% url 'generate_nanny_transaction' %}" class="btn btn-primary" target="_blank" download>Download Report</a>
 
 </div>
 {% endblock content %}
-
