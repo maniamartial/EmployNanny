@@ -315,8 +315,9 @@ def generate_employer_transaction(request):
 
     elements.append(image_logo())
     # Add the title
-    title = "Employer Transaction Report"
+    title = f"{request.user} Transaction Report"
     elements.append(Paragraph(title, title_style))
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Add the Payment Details table
     payment_data = [
@@ -343,6 +344,7 @@ def generate_employer_transaction(request):
     ]))
     elements.append(Paragraph("Payment Details", heading_style))
     elements.append(payment_table)
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Add the Salary Payment Details table
     salary_payment_data = [
@@ -370,6 +372,7 @@ def generate_employer_transaction(request):
     ]))
     elements.append(Paragraph("Salary Payment Details", heading_style))
     elements.append(salary_payment_table)
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Add the Employer Transaction Details table
     employer_transaction_data = [
@@ -399,26 +402,37 @@ def generate_employer_transaction(request):
     return response
 
 
+@login_required
 def nanny_transaction_report(request):
     nanny = NannyDetails.objects.get(user=request.user)
     nanny_transactions = SalaryPayment.objects.filter(nanny=nanny)
-    total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
-        'total']
+    salary_total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
+        'total'] or 0
+    advance_payments = AdvancePayment.objects.filter(nanny=nanny)
+    total_advance = advance_payments.aggregate(
+        total=Sum('amount'))['total'] or 0
+    total_amount_paid = total_advance+salary_total_amount_paid
 
     context = {
         "nanny_transaction": nanny_transactions,
+        "advance_payments": advance_payments,
+
         "total_amount_paid": total_amount_paid,
     }
     return render(request, "payments/nanny_transaction.html", context)
 
 
-# generate pdf nanny
+@login_required
 def generate_nanny_transaction(request):
     # Retrieve the necessary data for the report
     nanny = NannyDetails.objects.get(user=request.user)
     nanny_transactions = SalaryPayment.objects.filter(nanny=nanny)
-    total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
-        'total']
+    salary_total_amount_paid = nanny_transactions.aggregate(total=Sum('amount'))[
+        'total'] or 0
+    advance_payments = AdvancePayment.objects.filter(nanny=nanny)
+    total_advance = advance_payments.aggregate(
+        total=Sum('amount'))['total'] or 0
+    total_amount_paid = total_advance+salary_total_amount_paid
 
     # Create the PDF file
     response = HttpResponse(content_type='application/pdf')
@@ -438,6 +452,7 @@ def generate_nanny_transaction(request):
     # Add the title
     title = "Nanny Transaction Report"
     elements.append(Paragraph(title, title_style))
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
     # Add the Transaction Details table
     transaction_data = [
@@ -467,6 +482,34 @@ def generate_nanny_transaction(request):
     ]))
     elements.append(Paragraph("Transaction Details", heading_style))
     elements.append(transaction_table)
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
+
+    # Add the Advance Payments table if there are any
+    if advance_payments:
+        advance_data = [
+            ["Employer", "Amount", "Date of Payment", "Description"]
+        ]
+        for advance_payment in advance_payments:
+            advance_data.append([
+                f"{advance_payment.employer}",
+                str(advance_payment.amount),
+                advance_payment.timestamp.strftime("%Y-%m-%d"),
+                advance_payment.description
+            ])
+
+        advance_table = Table(advance_data, colWidths=[120, 80, 100, 200])
+        advance_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+        elements.append(Paragraph("Advance Payments", heading_style))
+        elements.append(advance_table)
 
     # Add the Total Amount Paid
     elements.append(
