@@ -130,6 +130,8 @@ def generate_transaction_pdf(request):
         # Add striped row backgrounds
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),  # Add table border
+        ('TOPPADDING', (0, 0), (-1, -1), 8),  # Add top padding
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),  # Add bottom padding
     ])
 
     # Create the table object
@@ -200,14 +202,6 @@ def employers_list(request):
 
     context = {'employers': employer_info}
     return render(request, 'admin/employers_list.html', context)
-
-
-# will revisit
-'''def delete_employer(request, id):
-    user = User.objects.get(id=id)
-    user.delete()
-    return redirect('employer_list')
-'''
 
 
 def delete_employer(request, employer_id):
