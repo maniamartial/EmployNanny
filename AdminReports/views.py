@@ -356,8 +356,9 @@ def generate_nanny_report(request):
     p.save()
     return response
 
-
 # delete nanny
+
+
 def delete_nanny(request, id):
     nanny = get_object_or_404(NannyDetails, id=id)
     nanny.delete()
