@@ -55,7 +55,7 @@ class NannyDetails(models.Model):
     nationality = models.CharField(max_length=100, choices=NATIONALITY_CHOICES)
     availability = models.CharField(
         max_length=100, choices=AVAILABILITY_CHOICES)
-    language = models.CharField(max_length=200, choices=LANGUAGE_CHOICES)
+    language = models.CharField(max_length=200)
     date_joined = models.DateTimeField(auto_now_add=True)
     years_of_experience = models.IntegerField(default=0)
     age_bracket = models.CharField(
