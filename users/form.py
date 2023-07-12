@@ -84,8 +84,6 @@ class nannyDetailsForm(forms.ModelForm):
 
         return id_number
 
-    # language = forms.CharField(widget=forms.TextInput(
-    #     attrs={'class': 'language-input'}))
     class Meta:
         model = NannyDetails
         fields = "__all__"
