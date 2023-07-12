@@ -17,11 +17,25 @@ class jobPostingForm(forms.ModelForm):
     start_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date'}))
     hours_per_day = forms.IntegerField()
+    language = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'data-role': 'tagsinput'}),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        self.fields['language'].widget.attrs.update({'class': 'form-control'})
+
         self.user = user
+
+    def clean_language(self):
+        language = self.cleaned_data.get('language')
+        language_list = [lang.strip()
+                         for lang in language.split(',') if lang.strip()]
+        return language_list
 
     def clean_hours_per_day(self):
         hours_per_day = self.cleaned_data.get('hours_per_day')
