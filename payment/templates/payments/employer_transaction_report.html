@@ -12,7 +12,7 @@
                 <th>Amount</th>
                 <th>Status</th>
                 <th>Description</th>
-                <th>Timestamp</th>
+                <th>Payment Date</th>
             </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                 <td>{{ payment.amount }}</td>
                 <td>{{ payment.status }}</td>
                 <td>{{ payment.description }}</td>
-                <td>{{ payment.timestamp }}</td>
+                <td>{{ payment.timestamp |date:"d/m/y" }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -48,12 +48,36 @@
   <td>{{ salary_payment.direct_contract.job_category }}</td>
 {% endif %}
                 <td>{{ salary_payment.amount }}</td>
-                <td>{{ salary_payment.payment_date }}</td>
+                <td>{{ salary_payment.payment_date |date:"d/m/y" }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
+    <!--advance salary-->
+    <h2>Advance Salary Details</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                 <th>Nanny</th>
+                <th>Contract</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for advance in advance_salary %}
+            <tr>
+           <td>{{ advance.nanny }}</td>
+           <td>{{ advance.contract.status }}</td>
+           <td>{{ advance.amount }}</td>
+           <td>{{ advance.timestamp |date:"d/m/y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!--end of advance salary-->
     <h2>Employer Transaction Details</h2>
     <table class="table table-striped">
         <thead>

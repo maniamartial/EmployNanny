@@ -271,11 +271,15 @@ def employer_report(request):
         # Retrieve salary payments made by the employer
         salary_payments = SalaryPayment.objects.filter(employer=employer)
 
+        # Advance salary
+        advance_salary = AdvancePayment.objects.filter(employer=employer)
+
         context = {
             'employer': employer,
             'employer_transactions': employer_transactions,
             'payments': payments,
             'salary_payments': salary_payments,
+            'advance_salary': advance_salary
         }
         return render(request, 'payments/employer_transaction_report.html', context)
     else:
@@ -541,7 +545,7 @@ def advance_payment(request, contract_id):
             raise Http404("Contract does not exist.")
 
     employer_transactions, _ = EmployerTransactions.objects.get_or_create(
-        employer=employer)
+        employer=request.user)
 
     if request.method == 'POST':
         form = AdvancePaymentForm(request.POST)
@@ -551,8 +555,10 @@ def advance_payment(request, contract_id):
 
             # Check if the requested amount is greater than the employer's balance
             if amount > employer_transactions.balance:
+
                 messages.error(
                     request, "You have insufficient balance to complete the payment.")
+
                 return redirect('advance_payment', contract_id=contract_id)
 
             # Check if 15 days have passed since the last salary payment
@@ -578,13 +584,13 @@ def advance_payment(request, contract_id):
             # Save the advance payment
             if contract:
                 advance_payment = AdvancePayment(
-                    employer=employer, nanny=nanny, contract=contract, amount=amount, description=description)
+                    employer=request.user, nanny=nanny, contract=contract, amount=amount, description=description)
             else:
                 advance_payment = AdvancePayment(
-                    employer=employer, nanny=nanny, direct_contract=direct_contract, amount=amount, description=description)
+                    employer=request.user, nanny=nanny, direct_contract=direct_contract, amount=amount, description=description)
             advance_payment.save()
 
-            return redirect('view_contract', contract_id=contract_id)
+            return redirect('employer_transaction_report')
     else:
         form = AdvancePaymentForm()
 

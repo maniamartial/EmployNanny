@@ -613,7 +613,7 @@ def hire_nanny_direct(request, nanny_id):
             contract = form.save(commit=False)
             contract.nanny = nanny
             contract.employer = request.user
-            contract.status = 'active'
+            contract.status = 'pending'
             contract.save()
 
             # Send a notification to the nanny
@@ -665,7 +665,7 @@ def accept_direct_contract(request, contract_id):
                 # Save the signature image to the contract object
                 direct_contract.nanny_signature_image = signature_image
             # Handle contract acceptance
-            direct_contract.status = 'accepted'
+            direct_contract.status = 'active'
             direct_contract.save()
             # Notify the employer of the nanny's acceptance
             subject = 'Direct Contract Accepted'
@@ -722,7 +722,7 @@ def end_direct_contract(request, contract_id):
     nanny_user = nanny_details.user
 
     # Update the status of the direct contract to terminated
-    direct_contract.status = "terminated"
+    direct_contract.status = "Terminated"
     direct_contract.save()
 
     messages.success(
