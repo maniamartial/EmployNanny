@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from PIL import Image, ImageFilter
 import numpy as np
 from io import BytesIO
@@ -645,6 +646,7 @@ def hire_nanny_direct(request, nanny_id):
 @login_required
 def accept_direct_contract(request, contract_id):
     direct_contract = get_object_or_404(DirectContract, id=contract_id)
+
     employer = direct_contract.employer
     employer_user = employer
 
@@ -665,7 +667,7 @@ def accept_direct_contract(request, contract_id):
                 # Save the signature image to the contract object
                 direct_contract.nanny_signature_image = signature_image
             # Handle contract acceptance
-            direct_contract.status = 'active'
+            direct_contract.status = 'accepted'
             direct_contract.save()
             # Notify the employer of the nanny's acceptance
             subject = 'Direct Contract Accepted'
