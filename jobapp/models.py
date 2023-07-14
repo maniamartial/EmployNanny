@@ -96,6 +96,7 @@ CONTRACT_STATUS = (
     ('active', 'Active'),
     ('completed', 'Completed'),
     ('terminated', 'Terminated'),
+    ('accepted', 'Accepted'),
 )
 
 JOB_STATUS = (

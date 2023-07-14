@@ -152,23 +152,26 @@ def initiate_b2c_transaction(request, contract_id):
         except InvalidOperation:
             extra_amount = Decimal('0')
         # Update job salary if the employer wants to increase it
+        # Update job salary if the employer wants to increase it
         if increase_salary:
             if contract:
                 job = contract.job
-                salary = int(contract.amount)
+                salary = int(job.salary)  # Use the job's original salary
                 salary += math.ceil(extra_amount)
+                print(salary)
                 contract.amount = salary
                 job.salary = salary
+                print(job.salary)
+                print("Employer is", employer)
                 job.save()
                 contract.save()
             elif direct_contract:
-
+                # Use the direct contract's original salary
                 salary = int(direct_contract.salary)
                 salary += math.ceil(extra_amount)
                 direct_contract.salary = int(salary)
                 print(salary)
                 print(direct_contract.salary)
-
                 direct_contract.save()
                 print(direct_contract.amount_to_receive)
 
@@ -302,6 +305,7 @@ def generate_employer_transaction(request):
     salary_payments = SalaryPayment.objects.filter(employer=request.user)
     employer_transactions = EmployerTransactions.objects.get(
         employer=request.user)
+    advance_payments = AdvancePayment.objects.filter(employer=request.user)
 
     # Create the PDF file
     response = HttpResponse(content_type='application/pdf')
@@ -332,7 +336,7 @@ def generate_employer_transaction(request):
             payment.phone_number,
             str(payment.amount),
             payment.status,
-            payment.timestamp.date().strftime("%Y-%m-%d")
+            payment.timestamp.date().strftime("%d/%m/%y")
         ])
 
     payment_table = Table(payment_data, colWidths=[100, 100, 100, 100])
@@ -355,11 +359,17 @@ def generate_employer_transaction(request):
         ["Nanny", "Contract", "Amount", "Payment Date"]
     ]
     for salary_payment in salary_payments:
+        if salary_payment.contract:
+            contract_category = salary_payment.contract.job.category
+        elif salary_payment.direct_contract:
+            contract_category = salary_payment.direct_contract.job_category
+        else:
+            contract_category = ""
         salary_payment_data.append([
             salary_payment.nanny.first_name,
-            salary_payment.contract.job.category,
+            contract_category,
             str(salary_payment.amount),
-            salary_payment.payment_date.strftime("%Y-%m-%d")
+            salary_payment.payment_date.strftime("%d/%m/%y")
         ])
 
     salary_payment_table = Table(
@@ -378,11 +388,45 @@ def generate_employer_transaction(request):
     elements.append(salary_payment_table)
     elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
 
+    # Add the Advance Payment Details table
+    advance_payment_data = [
+        ["Nanny", "Contract", "Amount", "Date"]
+    ]
+    for advance_payment in advance_payments:
+        if advance_payment.contract:
+            contract_category = advance_payment.contract.job.category
+        elif advance_payment.direct_contract:
+            contract_category = advance_payment.direct_contract.job_category
+        else:
+            contract_category = ""
+        advance_payment_data.append([
+            advance_payment.nanny.first_name,
+            contract_category,
+            str(advance_payment.amount),
+            advance_payment.timestamp.date().strftime("%d/%m/%y")
+        ])
+
+    advance_payment_table = Table(
+        advance_payment_data, colWidths=[100, 100, 100, 100])
+    advance_payment_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(Paragraph("Advance Payment Details", heading_style))
+    elements.append(advance_payment_table)
+    elements.append(Paragraph("<br/><br/>", normal_style))  # Add spacing
+
     # Add the Employer Transaction Details table
     employer_transaction_data = [
         ["Total Deposited", "Total Salary Paid", "Balance"],
         [employer_transactions.total_deposited,
-            employer_transactions.total_withdrawn, employer_transactions.balance]
+         employer_transactions.total_withdrawn, employer_transactions.balance]
     ]
 
     employer_transaction_table = Table(

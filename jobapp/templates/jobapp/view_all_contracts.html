@@ -1,6 +1,8 @@
 {% extends 'jobapp/base.html' %}
 
 {% block content %}
+{%load jobapp_tags%}
+
 <div class="container status-height">
   <div class="row justify-content-center">
     <div class="col-md-10">
@@ -65,10 +67,14 @@
             </td>
             <td>
       {% if contract.status == 'pending' %}
+      {% if request.user|has_group:'nanny' %}
         <a href="{% url 'accept_direct_contract' contract.id %}" class="btn btn-success">Accept Contract</a>
+        {% else %}
+                <a href="#" class="btn btn-success">...</a>
+{% endif %}
       {% elif contract.status == 'terminated' %}
         <a href="#" class="btn btn-danger">Delete Contract</a>
-      {% elif contract.status == 'active' %}
+      {% elif contract.status == 'accepted' %}
         <a href="{% url 'view_contract' contract_id=contract.id %}" class="btn btn-primary">View Contract</a>
       {% endif %}
             </td>

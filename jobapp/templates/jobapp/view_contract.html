@@ -8,6 +8,15 @@
    .card-title {
    font-weight: bold;
    }
+   .form-check-label {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input {
+  margin-right: 5px;
+}
+
 </style>
 <div class="container status-height">
    <div class="row justify-content-center">
@@ -51,8 +60,9 @@
                   <p class="card-text">{{ contract.job.duration }}</p>
                </li>
                 <li class="list-group-item">
-                  <p class="card-title">Salary:</p>
-                  <p class="card-text">Ksh. {{ contract.amount }}</p>
+                  <p class="card-title">Salary: Ksh</p>
+                  <p class="card-text"> {{ contract.amount }}</p>
+                  <p class="card-text"> {{ direct_contract.amount_to_receive }}</p>
                </li>
                <li class="list-group-item">
                   <p class="card-title">Status:</p>
@@ -117,13 +127,16 @@
   {% if direct_contract %}
     <input type="text" class="form-control" id="paymentAmount" value="{{ direct_contract.amount_to_receive }}" readonly>
   {% else %}
-    <input type="text" class="form-control" id="paymentAmount" value="{{ contract.job.salary }}" readonly>
+    <input type="text" class="form-control" id="paymentAmount" value="{{ contract.amount }}" readonly>
   {% endif %}
 </div>
                         <div class="form-group">
-                           <label for="increaseSalary">Increase Salary:</label>
-                           <input type="checkbox" class="form-control" id="increaseSalary" name="increase_salary">
-                        </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="increaseSalary" name="increase_salary">
+    <label class="form-check-label" for="increaseSalary">Increase Salary</label>
+  </div>
+</div>
+
                         <div class="form-group">
                            <label for="extraAmount">Extra Amount:</label>
                            <input type="number" class="form-control" id="extraAmount" name="extra_amount">
