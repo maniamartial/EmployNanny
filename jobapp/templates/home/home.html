@@ -1,16 +1,20 @@
-{% extends 'jobapp/base.html' %} {% block content %} {%load static%}
-{%load jobapp_tags%}
+{% extends 'jobapp/base.html' %} {%load static%} 
+{%load jobapp_tags%} 
+{% block content %}
 <style>
-  .carousel-height{
-    max-height:600px;
-    
+  .carousel-height {
+    max-height: 600px;
   }
-  p{
-    color:black;
+  p {
+    color: black;
   }
-
 </style>
-<div id="slider-home" class="carousel slide carousel-height" data-ride="carousel" data-interval="false">
+<div
+  id="slider-home"
+  class="carousel slide carousel-height"
+  data-ride="carousel"
+  data-interval="false"
+>
   <ul class="carousel-indicators">
     <li data-target="#slider-home" data-slide-to="0" class="active"></li>
     <li data-target="#slider-home" data-slide-to="1"></li>
@@ -19,99 +23,130 @@
   </ul>
   <div class="carousel-inner">
     <div class="carousel-item active video-player">
-      <video autoplay muted loop onended="nextSlide()">
-        <source src="{% static 'videos/video1.mp4' %}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <img
+        src="{% static 'images/baby5.jpg' %}"
+        onended="nextSlide()"
+        alt="Your browser does not support the video tag."
+      />
+
       <!--<img src="https://i.ibb.co/JRrHmhv/shanghai.jpg" alt="Chicago" />-->
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
-     <p class="text-center">Transform your look today with our special offers!</p>
-{% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <p class="text-center">
+          Transform your look today with our special offers!
+        </p>
+        {% if request.user|has_group:"employer" %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
         <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
-{% elif request.user|has_group:"nanny" %}
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
-{% else %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-{% endif %}
+        {% elif request.user|has_group:"nanny" %}
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        <a class="btn btn-secondary" href="{% url 'job_application_status' %}"
+          >My Applications</a
+        >
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        {% endif %}
       </div>
     </div>
 
     <div class="carousel-item video-player">
-      <video autoplay muted loop onended="nextSlide()">
-        <source src="{% static 'videos/video3.mp4' %}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <img
+        src="{% static 'images/baby2.jpg' %}"
+        onended="nextSlide()"
+        alt="Your browser does not support the video tag."
+      />
       <div class="carousel-caption">
         <h3>discover a new you!</h3>
-     <p class="text-center">Transform your look today with our special offers!</p>
-    {% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <p class="text-center">
+          Transform your look today with our special offers!
+        </p>
+        {% if request.user|has_group:"employer" %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
         <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
-{% elif request.user|has_group:"nanny" %}
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
-{% else %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-{% endif %}
+        {% elif request.user|has_group:"nanny" %}
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        <a class="btn btn-secondary" href="{% url 'job_application_status' %}"
+          >My Applications</a
+        >
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        {% endif %}
       </div>
     </div>
-    
-
-
 
     <div class="carousel-item video-player">
-      <video autoplay muted loop onended="nextSlide()">
-        <source src="{% static 'videos/video2.mp4' %}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-       <div class="carousel-caption">
+      <img
+        src="{% static 'images/baby3.jpg' %}"
+        onended="nextSlide()"
+        alt="Your browser does not support the video tag."
+      />
+      <div class="carousel-caption">
         <h3>discover a new you!</h3>
-     <p class="text-center">Transform your look today with our special offers!</p>
-      {% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <p class="text-center">
+          Transform your look today with our special offers!
+        </p>
+        {% if request.user|has_group:"employer" %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
         <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
-{% elif request.user|has_group:"nanny" %}
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
-{% else %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-{% endif %}
+        {% elif request.user|has_group:"nanny" %}
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        <a class="btn btn-secondary" href="{% url 'job_application_status' %}"
+          >My Applications</a
+        >
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        {% endif %}
       </div>
     </div>
-
 
     <div class="carousel-item">
-      <video autoplay muted loop onended="nextSlide()">
-        <source src="{% static 'videos/video4.mp4' %}" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-       <div class="carousel-caption">
+      <img
+        src="{% static 'images/baby4.jpg' %}"
+        onended="nextSlide()"
+        alt="Your browser does not support the video tag."
+      />
+      <div class="carousel-caption">
         <h3>discover a new you!</h3>
-     <p class="text-center">Transform your look today with our special offers!</p>
-{% if request.user|has_group:"employer" %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <p class="text-center">
+          Transform your look today with our special offers!
+        </p>
+        {% if request.user|has_group:"employer" %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
         <a class="btn btn-primary" href="{% url 'jobPosting' %}">Post Job</a>
 
-{% elif request.user|has_group:"nanny" %}
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-<a class="btn btn-secondary" href="{% url 'job_application_status' %}">My Applications</a>
-{% else %}
-    <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
-<a class="btn btn-secondary" href="{% url 'job_listing' %}">Jobs Available</a>
-{% endif %}
+        {% elif request.user|has_group:"nanny" %}
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        <a class="btn btn-secondary" href="{% url 'job_application_status' %}"
+          >My Applications</a
+        >
+        {% else %}
+        <a class="btn btn-primary" href="{% url 'nannies' %}">View Nannies</a>
+        <a class="btn btn-secondary" href="{% url 'job_listing' %}"
+          >Jobs Available</a
+        >
+        {% endif %}
       </div>
     </div>
-
-
   </div>
   <a class="carousel-control-prev" href="#slider-home" data-slide="prev">
     <span class="carousel-control-prev-icon"></span>
@@ -123,15 +158,13 @@
 
 <script>
   function nextSlide() {
-    $('#slider-home').carousel('next'); // move to next slide
-}
+    $("#slider-home").carousel("next"); // move to next slide
+  }
 </script>
 
-
-{% include 'home/recent_posted_jobs.html' %}
+{% include 'home/recent_posted_jobs.html' %} 
 {% include 'home/nanny_how_it_works.html'%}
-{% include 'home/featured_nannies.html' %}
-{% include 'home/employer_how_it_works.html' %}
-{% include 'home/about_us.html'%}
+ {% include 'home/featured_nannies.html' %} 
+ {% include 'home/employer_how_it_works.html' %}
+  {% include 'home/about_us.html'%}
 {% endblock %}
-

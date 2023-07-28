@@ -22,6 +22,7 @@ body {
 }
 header {
   background: rgb(128, 167, 128);
+  height: 125px;
 }
     .head_container {
       width: 90%;
@@ -160,12 +161,7 @@ nav#cssmenu ul {
   text-decoration: none;
   color: #efefef;
 }
-/*
-#cssmenu > ul > li:hover > a,
-#cssmenu ul li.active a {
-  color: #fff;
-}
-*/
+
 
 #cssmenu > ul > li:hover,
 #cssmenu ul li.active:hover,
@@ -216,18 +212,7 @@ background-color: #0275d8;
   left: -9999px;
   margin-top: 0;
 }
-/*
-#cssmenu ul ul li {
-  height: 0;
-  -webkit-transition: all 0.25s ease;
-  -ms-transition: all 0.25s ease;
-  background: #333;
-  transition: all 0.25s ease;
-}
-*/
-/* #cssmenu ul ul li:hover {
-    background-color: rgb(128, 167, 128);
-} */
+
 
 #cssmenu li:hover > ul {
   left: auto;
@@ -267,35 +252,12 @@ background-color: #0275d8;
   background: #ddd;
   content: "";
 }
-/* #cssmenu ul ul li.has-sub > a:before {
-  position: absolute;
-  top: 13px;
-  right: 14px;
-  display: block;
-  width: 2px;
-  height: 8px;
-  background: #ddd;
-  content: "";
-  -webkit-transition: all 0.25s ease;
-  -ms-transition: all 0.25s ease;
-  transition: all 0.25s ease;
-} */
+
 #cssmenu ul ul > li.has-sub:hover > a:before {
   top: 17px;
   height: 0;
 }
-/* }
-#cssmenu ul ul li.has-sub:hover,
-#cssmenu ul li.has-sub ul li.has-sub ul li:hover {
-  background: #363636;
-}
-#cssmenu ul ul ul li.active a {
-  border-left: 1px solid #333;
-}
-#cssmenu > ul > li.has-sub > ul > li.active > a,
-#cssmenu > ul ul > li.has-sub > ul > li.active > a {
-  border-top: 1px solid #333;
-} */
+
 
 @media screen and (max-width: 991px) {
   .logo {
