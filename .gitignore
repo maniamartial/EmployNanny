@@ -1,0 +1,9 @@
+venv/
+.prettierignore/
+Employnannys/__pycache__/
+jobapp/__pycache__/
+jobapp/__pycache__/
+messaging/__pycache__/
+payment/__pycache__/
+users/__pycache__/
+
