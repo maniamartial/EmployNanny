@@ -5,7 +5,6 @@ from datetime import datetime
 
 import base64
 
-
 # This class stores the Mpesa credentials required for generating an access token.
 class MpesaC2bCredential:
     # The Consumer Key for the Mpesa API.
@@ -15,20 +14,7 @@ class MpesaC2bCredential:
     # The URL for generating the access token.
     api_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
 
-
-# This class generates the Mpesa access token using the credentials stored in MpesaC2bCredential.
-'''class MpesaAccessToken:
-    r = requests.get(MpesaC2bCredential.api_URL,  # Sends a GET request to the Mpesa API URL to generate the token.
-                     auth=HTTPBasicAuth(MpesaC2bCredential.consumer_key, MpesaC2bCredential.consumer_secret))  # Authenticates the request with the consumer key and consumer secret.
-    # Converts the response from JSON format to a Python dictionary.
-    print(r.text)
-    mpesa_access_token = json.loads(r.text)
-    # Stores the generated access token.
-    validated_mpesa_access_token = mpesa_access_token['access_token']'''
-
 # This class generates the online password required for processing an Mpesa transaction.
-
-
 class LipanaMpesaPpassword:
     # Generates the current time in the specified format.
     lipa_time = datetime.now().strftime('%Y%m%d%H%M%S')

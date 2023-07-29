@@ -40,3 +40,4 @@ urlpatterns = [
     path('handler404', views.handler404, name="handler404")
 
 ]
+

@@ -43,7 +43,6 @@ def home(request):
 
     return render(request, "home/home.html", context)
 
-
 def jobPosting(request):
     # Create a new job posting form instance
     form = jobPostingForm()
