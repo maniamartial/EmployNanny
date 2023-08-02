@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -80,6 +79,7 @@ TEMPLATES = [
     },
 ]
 
+#messaging application
 WSGI_APPLICATION = 'Employnannys.wsgi.application'
 ASGI_APPLICATION = 'Employnannys.asgi.application'
 
@@ -107,6 +107,14 @@ DATABASES = {
 #         'PORT': '5432',
 #     }
 # }
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": "127.0.0.1:11211",
+    }
+}
 
 
 CHANNEL_LAYERS = {
