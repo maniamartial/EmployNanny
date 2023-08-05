@@ -5,8 +5,8 @@ Supervisor:    Madam Winnie S W Wachira<br>
 Academic year: 2022-2023**<br>
 
 # EmployNanny
-A web-application that allows nanny to find job and employers can find good talent for their housework
-This is a job portal platform for connecting nannies with respective employers
+A web Application that allows nannies to find jobs and employers can find good talent for their housework.
+This is a job portal platform for connecting nannies with their respective employers.
 
 # Installation<br>
 Clone the EmployNanny repository from GitHub:<br>
@@ -41,7 +41,7 @@ The project relies on some environment variables for configuration. Create a .en
 `SECRET_KEY=your_secret_key_here
 DEBUG=True`
 <br>
-Replace your_secret_key_here with a random string that Django will use as the project's secret key. Remember to keep your actual secret key private and never share it publicly.
+Replace your_secret_key_here with a random string Django will use as the project's secret key. Remember to keep your actual secret key private and never share it publicly.
 
 **Database Setup**<br>
 EmployNanny uses Django's default database SQLite for simplicity. <br>
