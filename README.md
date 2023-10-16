@@ -2,7 +2,7 @@
 Name:          Joseph Mania<br>
 Reg.:          J17/0835/2019<br>
 Supervisor:    Madam Winnie S W Wachira<br>
-Academic year: 2022-2023<br>
+Academic year: 2022-2023, 2nd Sem<br>
 
 # EmployNanny
 A web Application that allows nannies to find jobs and employers can find good talent for their housework.
