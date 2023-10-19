@@ -3,11 +3,12 @@ from django.db.models import Max
 import uuid  # Import the uuid module
 from django.shortcuts import get_object_or_404
 from .models import Message
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from jobapp.models import JobApplication
 from users.models import NannyDetails
+
 
 
 # Direct client
@@ -35,6 +36,7 @@ def room(request, room_name, receiver_id):
     # Retrieve previous chat messages between sender and receiver
     messages = Message.objects.filter(sender=sender, receiver=receiver).order_by('timestamp') | Message.objects.filter(
         sender=receiver, receiver=sender).order_by('timestamp')
+   
 
     # Mark unread messages as seen for the receiver
     unread_messages = messages.filter(receiver=receiver, is_seen=False)
@@ -43,6 +45,30 @@ def room(request, room_name, receiver_id):
         unread_messages.update(is_seen=True)
 
     return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver, "messages": messages})
+
+@login_required
+def ChatMessages(request, room_name, receiver_id):
+
+    sender = request.user
+    receiver = User.objects.get(id=receiver_id)
+
+    if request.method == 'POST':
+        text = request.POST.get('chat')
+        message = Message.objects.create(sender=sender, receiver=receiver, text=text)
+        return redirect ('room', room_name=room_name, receiver_id=receiver_id )
+
+    # Retrieve previous chat messages between sender and receiver
+    messages = Message.objects.filter(sender=sender, receiver=receiver).order_by('timestamp') | Message.objects.filter(
+        sender=receiver, receiver=sender).order_by('timestamp')
+    
+    # Mark unread messages as seen for the receiver
+    unread_messages = messages.filter(receiver=receiver, is_seen=False)
+    print(unread_messages)
+    if unread_messages.exists() and request.user == receiver:
+        unread_messages.update(is_seen=True)
+
+    return render(request, "chat/room.html", {"room_name": room_name, "receiver": receiver, "messages": messages})
+
 
 
 def chat_list(request):
@@ -55,5 +81,6 @@ def chat_list(request):
     # Fetch the complete message objects based on the latest messages
     chats = Message.objects.filter(receiver=user, sender__in=latest_messages.values(
         'sender'), timestamp__in=latest_messages.values('max_timestamp'))
+  
 
     return render(request, 'chat/chat_list.html', {'chats': chats})

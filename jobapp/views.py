@@ -7,7 +7,7 @@ import base64
 from django.core.files.base import ContentFile
 import math
 from .form import ReviewForm
-from .models import Rating
+from .models import Rating, SavedJobModel
 from django.shortcuts import render, redirect, get_object_or_404
 from Notifications.models import Notification
 from django.template.loader import render_to_string
@@ -36,10 +36,12 @@ from django.urls import reverse
 
 
 def home(request):
+    job_count = jobModel.objects.all().count
     recent_jobs = jobModel.objects.order_by('-date_posted')[:3]
     featured_nannies = NannyDetails.objects.order_by('-date_joined')[:3]
     context = {'recent_jobs': recent_jobs,
-               'featured_nannies': featured_nannies}
+               'featured_nannies': featured_nannies,
+               'job_count': job_count}
 
     return render(request, "home/home.html", context)
 
@@ -159,6 +161,37 @@ def show_all_nannies(request):
 
     # render the template with the context
     return render(request, "jobapp/nannies_available.html", context)
+
+def save_job(request, job_id):
+    user = request.user
+    saved = SavedJobModel.objects.filter(user=user)
+    previous_page = request.META.get('HTTP_REFERER', None)
+    job = jobModel.objects.get(id=job_id)
+    save, created = SavedJobModel.objects.get_or_create(user=user, job=job)
+    return redirect(previous_page)
+   
+
+def show_saved_jobs(request):
+
+    user = request.user
+    saved_jobs = SavedJobModel.objects.filter(user=user)
+    
+    category_query = request.GET.get('category')
+    salary_min = request.GET.get('salary_min')
+
+    if category_query:
+        saved_jobs = saved_jobs.filter(job__category__iexact=category_query)
+    if salary_min:
+        saved_jobs = saved_jobs.filter(job__salary__gte=Decimal(salary_min))
+    
+    context = {'saved_jobs': saved_jobs, 'categories': CATEGORIES, 'salary_min': salary_min}
+    return render(request, 'jobapp/saved_jobs.html', context)
+
+def delete_saved_job(request, job_id):
+    job = SavedJobModel.objects.get(job__id=job_id)
+    job.delete()
+    messages.success(request, 'Job deleted succesfully')
+    return redirect('saved_jobs')
 
 
 # view function for displaying single job details
