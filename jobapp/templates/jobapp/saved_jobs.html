@@ -9,7 +9,7 @@
   p{
     color:black;
   }
-  i:hover{
+  .save_job:hover{
     color: black;
     cursor: pointer;
   }
@@ -57,8 +57,12 @@
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">{{ job.job.category }} <span><a href="{% url 'delete_saved_job' job.job.id %}"> <i class="bi bi-x-circle-fill px-5"></i></a></span></h5>
-          
+          <span class="d-flex justify-content-between align-items-center">
+            <h3 >{{ job.job.category }}</h3>
+            {% if user.is_authenticated %}
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.job.id %}"> <i id="save_job" class="bi bi-bookmark-fill"></i></a>
+            {% endif %}
+          </span>
           <h6 class="card-subtitle mb-2 text-muted">
             Posted by <span class="employer">{{ job.job.employer.username }}</span>
           </h6>
