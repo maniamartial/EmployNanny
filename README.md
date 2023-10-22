@@ -91,3 +91,5 @@ python manage.py runserver
 Open your web browser and go to http://127.0.0.1:8000/admin/.<br>
 
 Log in using the superuser account credentials you created earlier.
+
+*Feel free to use the code at any place, but kindly don't forget to give recognitions*
