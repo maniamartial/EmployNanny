@@ -47,6 +47,7 @@ env\Scripts\activate
 ```
 
 ## Install the required Python packages
+You can delete the requirements.txt and install afresh depending on your os.
 ```
 pip install -r requirements.txt
 ```
