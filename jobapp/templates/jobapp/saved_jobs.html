@@ -9,13 +9,13 @@
   p{
     color:black;
   }
-  i:hover{
+  .save_job:hover{
     color: black;
     cursor: pointer;
   }
  
 </style>
-<h2 class="text-center">All Job Available</h2>
+<h2 class="text-center">Saved Jobs</h2>
 {% if messages %}
 <div class="alert alert-success">
   {% for message in messages %} {{ message }} {% endfor %}
@@ -53,77 +53,66 @@
 
 
   <div class="row justify-content-center mb-4 px-6">
-    {% for job in page_obj %}
+    {% for job in saved_jobs %}
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
           <span class="d-flex justify-content-between align-items-center">
-            <h3 >{{ job.category }}</h3>
-            {% if  user.is_authenticated %}
-            {% if job.id in saved_job_ids %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.id %}"> <i class="bi bi-bookmark-fill"></i></a>
-            {% else %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i class="bi bi-bookmark"></i></a>
-            {% endif %}
+            <h3 >{{ job.job.category }}</h3>
+            {% if user.is_authenticated %}
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.job.id %}"> <i id="save_job" class="bi bi-bookmark-fill"></i></a>
             {% endif %}
           </span>
           <h6 class="card-subtitle mb-2 text-muted">
-            Posted by <span class="employer">{{ job.employer.username }}</span>
+            Posted by <span class="employer">{{ job.job.employer.username }}</span>
           </h6>
-          {% if job.payment_status == 'verified' %}
-          <div class="payment-verified" style="color: #0275d8">
-            Payment verified
-          </div>
-          {% else %}
-          <div class="payment-unverified">Payment unverified</div>
-          {% endif %}
-          <p class="card-text">{{ job.job_description|truncatechars:200 }}</p>
+          <p class="card-text">{{ job.job.job_description|truncatechars:200 }}</p>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">City: {{ job.city }}</li>
-            <li class="list-group-item">Address: {{ job.addresss }}</li>
-            <li class="list-group-item">Salary: {{ job.salary }}</li>
-            <li class="list-group-item">Duration: {{ job.duration }}</li>
-            <li class="list-group-item">Start Date: {{ job.start_date }}</li>
+            <li class="list-group-item">City: {{ job.job.city }}</li>
+            <li class="list-group-item">Address: {{ job.job.addresss }}</li>
+            <li class="list-group-item">Salary: {{ job.job.salary }}</li>
+            <li class="list-group-item">Duration: {{ job.job.duration }}</li>
+            <li class="list-group-item">Start Date: {{ job.job.start_date }}</li>
           </ul>
           <div class="card-body d-flex justify-content-between align-items-end">
 
             {% if request.user|has_group:'employer'%}
               <a
-              href="{% url 'job_detail' job_id=job.pk %}"
+              href="{% url 'job_detail' job_id=job.job.pk %}"
               class="card-link float-left"
               >Public View  >></a
             >
 
             {% else %}
             <a
-              href="{% url 'job_detail' job_id=job.pk %}"
+              href="{% url 'job_detail' job_id=job.job.pk %}"
               class="card-link float-left "
               >View >></a
             >
             <a
-              href="{% url 'apply_for_job' job_id=job.pk %}"
+              href="{% url 'apply_for_job' job_id=job.job.pk %}"
               class="card-link ml-auto"
               >Apply</a
             >
             {% endif %}
           </div>
-          {% if request.user == job.employer %}
+          {% if request.user == job.job.employer %}
           <div
             class="card-body d-flex justify-content-between align-items-start"
           >
             <a
-              href="{% url 'edit_job' job_id=job.pk %}"
+              href="{% url 'edit_job' job_id=job.job.pk %}"
               class="btn btn-info btn-sm mr-2"
               >Edit</a
             >
             <a
-              href="{% url 'job_applications' job.id %}"
+              href="{% url 'job_applications' job.job.id %}"
               class="btn btn-info btn-sm mr-2"
               >View Applications</a
             >
           </div>
           <form
-            action="{% url 'delete_job' pk=job.pk %}"
+            action="{% url 'delete_job' pk=job.job.pk %}"
             method="POST"
             class="card-body mt-2"
           >
