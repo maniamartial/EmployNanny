@@ -2,9 +2,10 @@
 <div class="recent-jobs">
   <h2 class="recent-jobs-heading">Recently Posted Jobs:</h2>
   <div class="jobs-container">
+    <p style="text-align: end;">{{ job_count }} jobs</p>
     {% for job in recent_jobs %}
     <div class="job-card">
-      <h3>{{ job.category }}</h3>
+      <h3>{{ job.category }}<span><a style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i class="bi bi-bookmark-fill px-5"></i></a></span></h3>
       <p>{{ job.city }}</p>
       <p>{{ job.employer }}</p>
       <p>{{ job.start_date }}</p>

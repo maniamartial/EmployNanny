@@ -110,6 +110,13 @@ JOB_STATUS = (
     ('expired', 'Expired')
 )
 
+class SavedJobModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(jobModel, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['user', 'job']
+
 
 class ContractModel(models.Model):
     job = models.ForeignKey(jobModel, on_delete=models.CASCADE, default=1)

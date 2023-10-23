@@ -9,6 +9,11 @@
   p{
     color:black;
   }
+  i:hover{
+    color: black;
+    cursor: pointer;
+  }
+ 
 </style>
 <h2 class="text-center">All Job Available</h2>
 {% if messages %}
@@ -52,7 +57,8 @@
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
-          <h5 class="card-title">{{ job.category }}</h5>
+          <h5 class="card-title d-inline">{{ job.category }}</h5>
+          <a href="{% url 'save_job' job.id %}"><i class="bi bi-bookmark-fill px-5"></i></a>
           <h6 class="card-subtitle mb-2 text-muted">
             Posted by <span class="employer">{{ job.employer.username }}</span>
           </h6>

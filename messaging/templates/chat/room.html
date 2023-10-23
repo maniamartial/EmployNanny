@@ -28,8 +28,14 @@
           </div>
         </div>
         <div class="input-group fixed">
-          <input id="chat-message-input" type="text" class="form-control" placeholder="Type your message...">
-          <button id="chat-message-submit" class="btn btn-primary">Send</button>
+            <form action="" method="POST">
+              {% csrf_token %}
+              <input id="chat-message-input" type="text" class="form-control" name="chat" placeholder="Type your message...">
+              <button id="chat-message-submit" class="btn btn-primary" >Send</button>
+            
+            </form>
+           
+          
         </div>
       </div>
     </div>
@@ -90,7 +96,7 @@
     chatSocket.send(JSON.stringify({
       'message': message
     }));
-    messageInput.value = '';
+    
   });
 
   window.addEventListener('load', function() {
