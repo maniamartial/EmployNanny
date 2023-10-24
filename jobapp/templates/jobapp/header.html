@@ -65,8 +65,11 @@
 {% elif  request.user|has_group:'nanny'%}
   <li style="background-color: #0275d8">
       <a href="{% url 'job_listing' %}">Jobs Available</a></li>
+      <li style="background-color: #0275d8">
+        <a href="{% url 'saved_jobs' %}">Saved Jobs</a></li>
       <li><a href="{% url 'view_all_contracts_nanny' %}" style="background-color: #0275d8">Contracts</a></li>
-      <li><a href="{% url 'nanny_transaction_report' %}">Payments</a>
+
+      <li><a href="{% url 'nanny_transaction_report' %}" style="background-color: #0275d8">Payments</a>
     {% else %}
     <li style="background-color: #0275d8">
       <a href="{% url 'job_listing' %}">Jobs Available</a></li>
