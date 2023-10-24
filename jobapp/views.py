@@ -181,6 +181,7 @@ def show_all_nannies(request):
 
     # render the template with the context
     return render(request, "jobapp/nannies_available.html", context)
+
 @login_required
 def save_job(request, job_id):
     user = request.user
