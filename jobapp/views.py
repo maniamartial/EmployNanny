@@ -36,12 +36,20 @@ from django.urls import reverse
 
 
 def home(request):
-    job_count = jobModel.objects.all().count
+    user = request.user
+    jobs = jobModel.objects.all()
+    job_ids = [job.id for job in jobs]
+    try:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids, user=user)
+    except:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids)       
+    saved_job_ids = [saved_job.job.id for saved_job in saved_jobs]
     recent_jobs = jobModel.objects.order_by('-date_posted')[:3]
     featured_nannies = NannyDetails.objects.order_by('-date_joined')[:3]
     context = {'recent_jobs': recent_jobs,
                'featured_nannies': featured_nannies,
-               'job_count': job_count}
+               'saved_job_ids': saved_job_ids,
+               'user': user}
 
     return render(request, "home/home.html", context)
 
@@ -105,6 +113,16 @@ def job_listings(request):
     if salary_min:
         jobs = jobs.filter(salary__gte=Decimal(salary_min))
 
+    # Check if job is saved
+    user = request.user
+    jobs = jobModel.objects.all()
+    job_ids = [job.id for job in jobs]
+    try:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids, user=user)
+    except:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids) 
+    saved_job_ids = [saved_job.job.id for saved_job in saved_jobs]
+
     # Paginate the job list
     paginator = Paginator(jobs, 9)
     page_number = request.GET.get('page')
@@ -115,7 +133,9 @@ def job_listings(request):
         'page_obj': page_obj,
         'category_query': category_query,
         'salary_min': salary_min,
-        'categories': CATEGORIES
+        'categories': CATEGORIES,
+        'saved_job_ids': saved_job_ids,
+        'user': user
     }
 
     # Render the job listings template with the context dictionary
@@ -161,7 +181,7 @@ def show_all_nannies(request):
 
     # render the template with the context
     return render(request, "jobapp/nannies_available.html", context)
-
+@login_required
 def save_job(request, job_id):
     user = request.user
     saved = SavedJobModel.objects.filter(user=user)
@@ -170,11 +190,20 @@ def save_job(request, job_id):
     save, created = SavedJobModel.objects.get_or_create(user=user, job=job)
     return redirect(previous_page)
    
-
+@login_required
 def show_saved_jobs(request):
 
     user = request.user
     saved_jobs = SavedJobModel.objects.filter(user=user)
+
+    user = request.user
+    jobs = jobModel.objects.all()
+    job_ids = [job.id for job in jobs]
+    try:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids, user=user)
+    except:
+        saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids) 
+    saved_job_ids = [saved_job.job.id for saved_job in saved_jobs]
     
     category_query = request.GET.get('category')
     salary_min = request.GET.get('salary_min')
@@ -184,14 +213,16 @@ def show_saved_jobs(request):
     if salary_min:
         saved_jobs = saved_jobs.filter(job__salary__gte=Decimal(salary_min))
     
-    context = {'saved_jobs': saved_jobs, 'categories': CATEGORIES, 'salary_min': salary_min}
+    context = {'saved_jobs': saved_jobs, 'categories': CATEGORIES, 'salary_min': salary_min, 'user': user, 'saved_job_ids': saved_job_ids}
     return render(request, 'jobapp/saved_jobs.html', context)
-
+@login_required
 def delete_saved_job(request, job_id):
-    job = SavedJobModel.objects.get(job__id=job_id)
+    user = request.user
+    recent_page = request.META.get('HTTP_REFERER', None)
+    job = SavedJobModel.objects.get(job__id=job_id, user=user)
     job.delete()
-    messages.success(request, 'Job deleted succesfully')
-    return redirect('saved_jobs')
+    messages.success(request, 'Job removed')
+    return redirect(recent_page)
 
 
 # view function for displaying single job details
