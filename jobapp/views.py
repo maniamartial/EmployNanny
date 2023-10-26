@@ -186,6 +186,7 @@ def show_all_nannies(request):
 def save_job(request, job_id):
     user = request.user
     saved = SavedJobModel.objects.filter(user=user)
+    #redirect to previous page
     previous_page = request.META.get('HTTP_REFERER', None)
     job = jobModel.objects.get(id=job_id)
     save, created = SavedJobModel.objects.get_or_create(user=user, job=job)
