@@ -1,0 +1,109 @@
+{% extends 'jobapp/base.html' %}
+
+
+{% block content %}
+<style>
+    
+    
+    #blogs h3{
+        font-weight: bold;
+    }
+    #post_by{
+        color:gray
+    }
+    #blog_search{
+        border: none;
+        border-radius: 10px;
+        height: 35px;
+       
+    }
+    </style>
+<div class="d-sm-flex text-dark"  id="blogs">
+    <section id="blog_sec" class="m-3">
+    <div class="card p-2 mb-2" style="width: 60%;">
+    <h5 class="card-title text-dark" style="font-weight: 900;">{{ blog_post.title }}</h5>
+    <P id="post_by" class="card-text m-0" style="color: rgb(160, 160, 160);">By <a href="{%url 'show_authors_blogpost' blog_post.author.id %}">{{ blog_post.author }}</a> {{blog_post.date_published| date}}</P>
+    {% if blog_post.image %}
+    <img src="{{ blog_post.image.url }}" class="card-img-top p-2">
+    {% endif %}
+    <div class="card-body">
+      <p class="card-text text-lead">{{ blog_post.content}}</p>
+      
+    </div>
+  </div>
+ 
+  <div  id="comment_sec">
+    {% if comments.count == 1 %}
+    <h3>{{comments.count }} Comment</h3>
+    {% elif not comments.count %}
+    <h3></h3>
+    {% else %}
+    <h3>{{comments.count }} Comments</h3>
+    {% endif %}
+    {% for comment in comments %}
+  
+    <div class="p-3" style="background-color: white;">
+        <h4>@{{ comment.author }}</h4>
+        <p style="color: rgb(160, 160, 160);">{{ comment.date_published| timesince }} ago.</p>
+        <p>{{comment.text }}</p>
+        <button class="btn btn-small btn-outline-secondary" id="mybtn3" onclick="formToggle({{ forloop.counter }})" style="display: block;">reply</button>
+        <hr>
+        {% if request.user.is_authenticated %}
+        <div id="form{{forloop.counter}}" class="commentreplyform" style="display: none;">
+            <form action="{% url 'save_formreply' comment.id %}" method="POST" style="padding-top: 0;">
+            <button class="btn btn-small btn-secondary-outline" id="mybtn4" onclick="formToggle({{ forloop.counter }})" style="display: block;">x</button>
+                {% csrf_token %}
+                <p>Reply to {{ comment.author }}</p>
+                <span class="d-none"> {{ commentreplyForm.author }}</span>
+                {{ commentreplyForm.text.label }}
+                {{ commentreplyForm.text }}
+                <button class="btn btn-outline-primary">Post comment</button>
+            </form>
+        </div>
+        {% endif %}
+       <div>
+        {% for reply in comment.blogcommentreply_set.all %}
+        <p style="color: rgb(160, 160, 160);"> By {{ reply.author }} <span>{{ reply.date_published| timesince }} ago</span></p>
+        <p>{{ reply.text}}</p>
+        {% endfor %}
+       </div>
+    </div>
+    {% endfor %}
+
+    {% if request.user.is_authenticated %}
+     <form action="{% url 'save_comment' %}" method="POST" class="mt-0">
+        <h4>Leave a comment</h4>
+        {% csrf_token %}
+        <span class="d-none">{{ commentsForm.blog }}</span>
+        {{ commentsForm.text }}
+        <span class="d-none">{{ commentsForm.author }}</span>
+        <button class="btn btn-outline-primary">Post comment</button>
+     </form>
+    {% endif %}
+  </div>
+  </section>
+
+  {% include 'blog/blog_aside.html'%}
+  </div>
+  <script>
+      function formToggle(id){
+        const form = document.querySelector('#form' + id);
+        const button = document.querySelector('#mybtn3');
+        
+
+
+        if(form.style.display === 'none'){
+            form.style.display = 'block'
+            button.style.display = 'none'
+            
+        }
+        else{
+            form.style.display = 'none'
+            button.style.display = 'block'
+           
+        }
+
+    }
+  </script>
+ 
+{% endblock content %}
