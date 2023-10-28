@@ -12,6 +12,7 @@ urlpatterns = [
     path('chat/', include('messaging.urls')),
     path('payment/', include('payment.urls')),
     path('notifications/', include('Notifications.urls')),
+    path('blog/', include('blog.urls')),
 
     # authentication
     # Password reset form view.

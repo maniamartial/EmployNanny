@@ -9,7 +9,11 @@
   p{
     color:black;
   }
+<<<<<<< HEAD
   .bookmark-style:hover{
+=======
+  .save_job:hover{
+>>>>>>> savejobpost
     color: black;
     cursor: pointer;
     background-color: #0275d8;
@@ -64,9 +68,9 @@
             <h3 >{{ job.category }}</h3>
             {% if  user.is_authenticated %}
             {% if job.id in saved_job_ids %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.id %}"> <i class="bi bi-bookmark-fill"></i></a>
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.id %}"> <i id="save_job" class="bi bi-bookmark-fill"></i></a>
             {% else %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i class="bi bi-bookmark"></i></a>
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i id="save_job" class="bi bi-bookmark"></i></a>
             {% endif %}
             {% endif %}
           </span>

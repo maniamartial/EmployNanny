@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users',
     'messaging',
     'AdminReports',
+    'blog',
     'django.contrib.humanize',
 
 

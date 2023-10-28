@@ -1,0 +1,71 @@
+{% extends 'jobapp/base.html' %}
+
+
+
+
+{% block content %}
+
+
+<style>
+    
+    
+#blogs h3{
+    font-weight: bold;
+}
+#post_by{
+    color:gray
+}
+#blog_search{
+    border: none;
+    border-radius: 10px;
+    height: 35px;
+   
+}
+
+</style>
+<div class="d-sm-flex text-dark"  id="blogs">
+    <section id="blog_sec" class="m-3">
+        {% for blog in blogs %}
+        <div class="card p-2 mb-2" style="width: 80%;">
+            <h5 class="card-title text-dark" style="font-weight: 900;">{{ blog.title }}</h5>
+            <P id="post_by" class="card-text m-0" style="color: rgb(160, 160, 160);">By <a href="{% url 'show_authors_blogpost' blog.author.id %}">{{ blog.author }} </a>{{blog.date_published| date}}</P>
+            {% if blog.image %}
+            <img src="{{ blog.image.url }}" class="card-img-top p-2">
+            {% endif %}
+            <div class="card-body">
+              <p class="card-text text-lead">{{ blog.content|slice:":200" }}...</p>
+              <a href="{% url 'show_blogpost' blog.id %}" class="">Read more &raquo;</a>
+            </div>
+          </div>
+          {% endfor %}
+
+          <ul class="pagination">
+            {% if blogs.has_previous %}
+                {% if blogs.number == 1%}
+                    <li class="page-item active"><a class="page-link" href="?page=1">1</a></li>
+                {% elif blogs.number != 1%}
+                    <li class="page-item"><a class="page-link" href="?page={{blogs.previous_page_number}}">&laquo</a></li>
+                {% endif %}
+                <li class="page-item"><a class="page-link" href="?page={{blogs.previous_page_number}}">{{blogs.previous_page_number}}</a></li>
+            {% endif %}
+  
+            {% if blogs.has_next %}
+
+                <li class="page-item active"><a class="page-link" href="?page={{blogs.number}}">{{ blogs.number }}</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{blogs.next_page_number}}">{{ blogs.next_page_number }}</a></li> 
+                
+
+                {% endif %}
+                {% if blogs.number == blogs.paginator.num_pages %}
+                <li class="page-item active"><a class="page-link" href="?page={{ blogs.paginator.num_pages }}">{{ blogs.number }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{blogs.next_page_number}}">&raquo</a></li>
+                {% endif %}
+          </ul>
+         
+
+        
+    </section>
+ {% include 'blog/blog_aside.html'%}
+</div>
+{% endblock content %}
