@@ -9,7 +9,11 @@
   p{
     color:black;
   }
+<<<<<<< HEAD
   .bookmark-style:hover{
+=======
+  .save_job:hover{
+>>>>>>> savejobpost
     color: black;
     cursor: pointer;
     background-color: #0275d8;
@@ -59,6 +63,22 @@
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <div class="card-body">
+<<<<<<< HEAD
+<<<<<<< HEAD
+          <span class="d-flex justify-content-between align-items-center">
+            <h3 >{{ job.category }}</h3>
+            {% if  user.is_authenticated %}
+            {% if job.id in saved_job_ids %}
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.id %}"> <i id="save_job" class="bi bi-bookmark-fill"></i></a>
+            {% else %}
+            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i id="save_job" class="bi bi-bookmark"></i></a>
+            {% endif %}
+            {% endif %}
+          </span>
+          <h6 class="card-subtitle mb-2 text-muted">
+=======
+=======
+>>>>>>> de07bf4e504f963170990e277e3e0b62f827e749
           <h5 class="card-title d-inline">{{ job.category }}</h5>
           <a href="{% url 'save_job' job.id %}" style="position: absolute; top: 10px; right: 10px;">
             <i class="bi bi-bookmark bookmark-style"></i>
