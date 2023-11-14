@@ -1,7 +1,7 @@
 {% load static %}
 
 <link rel="stylesheet" href="{% static 'css/transitions.scss' %}">
-<aside class="p-3" id="blog-nav" style="background-color: rgb(230, 223, 223); width: 400px;">
+<aside class="p-3" id="blog-nav" style="background-color: rgb(182,203,182); min-width:600px" >
     <form action="{% url 'blogpost_home' %}" method="GET">
     <div class="d-xl-flex">
         <input id="blog_search" type="search" placeholder="Search by Topic, Username" name="q" class="form-control mb-2 me-2">
