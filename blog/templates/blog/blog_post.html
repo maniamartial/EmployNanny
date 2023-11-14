@@ -2,25 +2,10 @@
 
 
 {% block content %}
-<style>
-    
-    
-    #blogs h3{
-        font-weight: bold;
-    }
-    #post_by{
-        color:gray
-    }
-    #blog_search{
-        border: none;
-        border-radius: 10px;
-        height: 35px;
-       
-    }
-    </style>
+
 <div class="d-sm-flex text-dark"  id="blogs">
     <section id="blog_sec" class="m-3">
-    <div class="card p-2 mb-2" style="width: 60%;">
+    <div class="card p-2 mb-2" style="margin: auto; width: 90%;">
     <h5 class="card-title text-dark" style="font-weight: 900;">{{ blog_post.title }}</h5>
     <P id="post_by" class="card-text m-0" style="color: rgb(160, 160, 160);">By <a href="{%url 'show_authors_blogpost' blog_post.author.id %}">{{ blog_post.author }}</a> {{blog_post.date_published| date}}</P>
     {% if blog_post.image %}

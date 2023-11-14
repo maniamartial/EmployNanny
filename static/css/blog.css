@@ -1,0 +1,23 @@
+#blogs h3{
+    font-weight: bold;
+}
+#post_by{
+    color:gray
+}
+#blog_search{
+    border: none;
+    border-radius: 10px;
+    height: 35px;
+   
+}
+#blog_search{
+    border: gray 1px solid;
+}
+#blog-nav{
+    background-color: white;
+}
+#recents{
+    color: rgb(163, 205, 242);
+}
+
+

@@ -4,29 +4,32 @@
 
 
 {% block content %}
-
-
 <style>
-    
-    
-#blogs h3{
-    font-weight: bold;
+    #blogSearchForm, #blogForm{
+    padding-top: 0 !important; 
 }
-#post_by{
-    color:gray
+    #blog_showcase{
+    margin: auto;
 }
-#blog_search{
-    border: none;
-    border-radius: 10px;
-    height: 35px;
-   
-}
+#blog_nav h3{
+        width: 240ox;
+    }
 
+@media (min-width: 1200px){
+    #blog_showcase{
+        margin-left: 0px;
+    }
+    #blog_nav h3{
+        width: 300px;
+    }
+}
 </style>
+
+<!-- show all blogs -->
 <div class="d-sm-flex text-dark"  id="blogs">
     <section id="blog_sec" class="m-3">
         {% for blog in blogs %}
-        <div class="card p-2 mb-2" style="width: 80%;">
+        <div class="card p-2 mb-2 " id="blog_showcase" style="width: 90%;">
             <h5 class="card-title text-dark" style="font-weight: 900;">{{ blog.title }}</h5>
             <P id="post_by" class="card-text m-0" style="color: rgb(160, 160, 160);">By <a href="{% url 'show_authors_blogpost' blog.author.id %}">{{ blog.author }} </a>{{blog.date_published| date}}</P>
             {% if blog.image %}
@@ -38,7 +41,7 @@
             </div>
           </div>
           {% endfor %}
-
+<!-- pagination -->
           <ul class="pagination">
             {% if blogs.has_previous %}
                 {% if blogs.number == 1%}

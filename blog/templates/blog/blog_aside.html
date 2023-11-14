@@ -1,26 +1,26 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/transitions.scss' %}">
-<aside class="p-3" id="blog-nav" style="background-color: rgb(230, 223, 223); width: 400px;">
-    <form action="{% url 'blogpost_home' %}" method="GET">
+
+<aside class="p-3" id="blog-nav">
+    <form id="blogSearchForm" action="{% url 'blogpost_home' %}" method="GET">
     <div class="d-xl-flex">
         <input id="blog_search" type="search" placeholder="Search by Topic, Username" name="q" class="form-control mb-2 me-2">
         <button class="btn btn-sm btn-outline-primary mb-2 ">Search</button>    
     </div>
     </form> 
    
-    <h3 class="text-dark" style="font-weight: bolder;">Recent posts</h3>
+    <h3 class="text-dark" style="font-weight: bolder;width: 240px">Recent posts</h3>
     {% for post in recent_blogs %}
-    <p><a href="{% url 'show_blogpost' post.id%}">{{ post.title }}</a></p>
+    <p id="recents"><a href="{% url 'show_blogpost' post.id%}">{{ post.title }}</a></p>
     {% endfor %}
     
     {% if request.user.is_authenticated %}
-    <button id="mybtn" onclick="formToggle()" type="button" class="btn btn-outline-primary px-5" style="display: block;">New post</button>
+    <button id="mybtn" onclick="formToggler()" type="button" class="btn btn-outline-primary px-5" style="display: block;">New post</button>
    
 
    <div class="collapse" id="blogpost_form" style="display: none;">
-    <form  action="{% url 'create_blogpost' %}" method="POST" style=" margin-top: 0;" enctype="multipart/form-data">
-        <button id="mybtn2" onclick="formToggle()" type="button" class="btn btn-outline-primary px-2" style="display: none;">x</button>
+    <form  id="blogForm" action="{% url 'create_blogpost' %}" method="POST" style=" margin-top: 0;" enctype="multipart/form-data">
+        <button id="mybtn2" onclick="formToggler()" type="button" class="btn btn-outline-primary px-2" style="display: none;">x</button>
         {% csrf_token %}
         <span class="d-none">{{form.author}}</span>
         {{form.title.label}}
@@ -35,7 +35,7 @@
    </div>
   </aside>
  <script>
-    function formToggle(){
+    function formToggler(){
         const form = document.querySelector('#blogpost_form');
         const button = document.querySelector('#mybtn');
         const button2 = document.querySelector('#mybtn2');
