@@ -122,6 +122,7 @@ def job_listings(request):
     except:
         saved_jobs = SavedJobModel.objects.filter(job__id__in=job_ids) 
     saved_job_ids = [saved_job.job.id for saved_job in saved_jobs]
+    print('prrrrriinnnt \n \n', saved_job_ids)
 
     # Paginate the job list
     paginator = Paginator(jobs, 9)
