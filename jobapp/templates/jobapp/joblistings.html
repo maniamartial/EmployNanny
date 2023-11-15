@@ -6,18 +6,7 @@
     font-family: Arial, sans-serif;
     text-transform: capitalize;
   }
-  p{
-    color:black;
-  }
-<<<<<<< HEAD
-  .bookmark-style:hover{
-=======
-  .save_job:hover{
->>>>>>> savejobpost
-    color: black;
-    cursor: pointer;
-    background-color: #0275d8;
-  }
+
   
  
 </style>
@@ -64,20 +53,22 @@
       <div class="card h-100">
         <div class="card-body">
           <span class="d-flex justify-content-between align-items-center">
-            <h3 >{{ job.category }} {{job.id}}</h3>
+            <h3 >{{ job.category }}</h3>
             {% if user.is_authenticated %}
             {% if job.id in saved_job_ids %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'delete_saved_job' job.id %}"> <i class="bi bi-bookmark-fill"></i></a>
-            {% else %}
-            <a class="mb-3" style="color: rgb(9, 115, 229);" href="{% url 'save_job' job.id %}"> <i class="bi bi-bookmark"></i></a>
-            {% endif %}
+            <a href="{% url 'save_job' job.id %}" style="position: absolute; top: 20px; right: 10px;">
+              <i class="bi bi-bookmark-fill bookmark-style"></i>
+            </a>  
+             {% else %}
+            <a href="{% url 'save_job' job.id %}" style="position: absolute; top: 20px; right: 10px;">
+              <i class="bi bi-bookmark bookmark-style"></i>
+            </a> 
+             {% endif %}
             {% endif %}
           </span>
           <h6 class="card-subtitle mb-2 text-muted">
           <h5 class="card-title d-inline">{{ job.category }}</h5>
-          <a href="{% url 'save_job' job.id %}" style="position: absolute; top: 10px; right: 10px;">
-            <i class="bi bi-bookmark bookmark-style"></i>
-          </a>          <h6 class="card-subtitle mb-2 text-muted">
+                 <h6 class="card-subtitle mb-2 text-muted">
             Posted by <span class="employer">{{ job.employer.username }}</span>
           </h6>
           {% if job.payment_status == 'verified' %}
