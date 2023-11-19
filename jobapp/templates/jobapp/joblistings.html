@@ -56,7 +56,7 @@
             <h3 >{{ job.category }}</h3>
             {% if user.is_authenticated %}
             {% if job.id in saved_job_ids %}
-            <a href="{% url 'save_job' job.id %}" style="position: absolute; top: 20px; right: 10px;">
+            <a href="{% url 'delete_saved_job' job.id %}" style="position: absolute; top: 20px; right: 10px;">
               <i class="bi bi-bookmark-fill bookmark-style"></i>
             </a>  
              {% else %}
