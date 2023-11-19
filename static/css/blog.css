@@ -19,5 +19,18 @@
 #recents{
     color: rgb(163, 205, 242);
 }
+#commentreplies{
+    margin-left: 20px;
+    
+}
+#mybtn3{
+    display: block; 
+    border: none; 
+    color: rgb(0, 225, 255); 
+    background-color: white; 
+    text-transform: uppercase; 
+    font-size: 0.6em; 
+    font-weight: 800;
+}
 
 
