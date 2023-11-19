@@ -32,9 +32,9 @@
       
         <h4 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>{{ comment.author }}</h4>
       
-        <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160);"><small>{{ comment.date_published| timesince }} ago.</small></p>
+        <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160);width: 70%;"><small>{{ comment.date_published| timesince }} ago.</small></p>
      
-        <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right " >{{comment.text }}</p>
+        <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right " style="width: 70%;" >{{comment.text }}</p>
         <button class="ms-4" id="mybtn3" onclick="formToggle({{ forloop.counter }})">reply</button>
       
         <hr>
@@ -56,9 +56,9 @@
         {% for reply in comment.blogcommentreply_set.all %}
         <h6 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>{{ reply.author }}</h6>
       
-        <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160);"><small>{{ reply.date_published| timesince }} ago.</small></p>
-        <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right">{{ reply.text}}</p>
-        <hr>
+        <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160); width: 50%; "><small>{{ reply.date_published| timesince }} ago.</small></p>
+        <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right" style="width: 50%;">{{ reply.text}}</p>
+        <hr style="color: rgb(215, 216, 217);">
         {% endfor %}
        </div>
        {% endfor %}

@@ -51,8 +51,8 @@ function formToggle(id){
         comments.forEach((comment, index) => {
           comSecInnerHTML += `
           <h4 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>${ comment.author }</h4>
-          <p class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0"  style="color: rgb(160, 160, 160);"><small>${ comment.date_published } ago.</small></p>
-          <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right">${comment.text}</p>
+          <p class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0"  style="color: rgb(160, 160, 160); width: 70%;"><small>${ comment.date_published } ago.</small></p>
+          <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right" style="width: 70%;>${comment.text}</p>
           <button type="button" class="ms-4 btn btn-small btn-outline-secondary" id="mybtn3" onclick="formToggle(${index + 1})" style="display: block;">reply</button>
           <hr>
           <div id="form${index + 1}" class="commentreplyform" style="display: none;">
@@ -74,9 +74,9 @@ function formToggle(id){
                 repSecInnerHTML += `
               
                 <h6 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>${ comment.author}</h6>    
-                <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160);"><small>${comment.publishedDate} ago</small></p>
-               <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right">${ comment.text}</p>
-               <hr>
+                <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160); width: 70%;"><small>${comment.publishedDate} ago</small></p>
+               <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right" style="width: 70%;>${ comment.text}</p>
+               <hr style="color: rgb(215, 216, 217);">
 
               `
              
@@ -137,9 +137,9 @@ success: (res) => {
   for (let reply of replies){
     innerHTML += `
   <h6 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>${ reply.author}</h6>    
-  <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160);"><small>${reply.date_published}ago.</small></p>
-  <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right">${ reply.text}</p>
-  <hr>
+  <p  class="ms-4 mt-0 mb-0 rounded border-top border-left border-right p-3 pb-0" style="color: rgb(160, 160, 160); width: 70%;"><small>${reply.date_published}ago.</small></p>
+  <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right" style="width: 70%;>${ reply.text}</p>
+  <hr style="color: rgb(215, 216, 217);">
   `
   }
   commentReplies.innerHTML = innerHTML
@@ -204,10 +204,10 @@ success: (res) => {
   for (let reply of replies){
     innerHTML += `
     
-    <h6 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2"></i>${reply.author}</h6>    
-    <p  class="ms-4 mt-0" style="color: rgb(160, 160, 160);"><small>${reply.date_published} ago.</small></p>
-    <p>${reply.text}</p>
-    <hr>
+    <h6 class="mb-0"><i class="bi bi-person-circle text-secondary mb-0 me-2" ></i>${reply.author}</h6>    
+    <p  class="ms-4 mt-0" style="color: rgb(160, 160, 160); style="width: 70%;"><small>${reply.date_published} ago.</small></p>
+    <p class="ms-4 p-3 pt-0 mt-0 rounded border-bottom border-left border-right" style="width: 70%;>${reply.text}</p>
+    <hr style="color: rgb(215, 216, 217);">
     
   `
   }
