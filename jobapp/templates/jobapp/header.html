@@ -117,7 +117,7 @@
                 <!-- show login and register links here -->
                 <li>
                   <a href="#" style="background-color:#0275d8">Register</a>
-<ul>
+<ul {% if recent_jobs %} style="margin-left: 83%;" {% endif %}>
  <li>
                   <a href="{% url 'nannyRegister' %}" style="background-color: #0275d8">nanny</a>
                 </li>

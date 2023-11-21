@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Blog, Blogcomment, BlogCommentReply
 from .forms import create_blogpost_form, comment_form, commentreply_form
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import get_token
+from django.template.defaultfilters import timesince_filter
 
 # Create your views here.
 
@@ -110,30 +112,88 @@ def create_blogpost(request):
         
 @login_required(login_url='/auth/login/')
 def save_comment(request):
-    prev_page = request.META.get('HTTP_REFERER', None)
-    # check if form is subbmited via POST method
-    if request.method == 'POST':
-         #bind data to the new comment form
-        form = comment_form(request.POST)
-        #check if form contains valid data
-        if form.is_valid():
-            # save comment to the database
-            form.save()
-            #redirect user to previous page
-            return redirect(prev_page)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        author = request.POST.get('author')
+        text = request.POST.get('text')
+        blog = request.POST.get('blog')
+        csrf = request.POST.get('csrfmiddlewaretoken')
+        user = request.user.username
+        userId = request.user.id
+
+        
+        if request.method == 'POST':
+            form = comment_form(request.POST)
+            comment = form.save()
+            commentId = {'id': comment.id}
+            comments = Blogcomment.objects.filter(blog__id=blog)
+            fcomments = [{'text': fcomment.text, 'author': fcomment.author.username,
+                           'date_published': timesince_filter(fcomment.date_published), 
+                           'token': get_token(request), 
+                           'commentReplies': [{'text': commentReply.text, 'author': commentReply.author.username, 'publishedDate': timesince_filter(commentReply.date_published)} for commentReply in fcomment.blogcommentreply_set.all()], 'id': fcomment.id} for fcomment in comments]
+            data = {'text': text,
+                    'author': author, 
+                    'blog': blog, 
+                    'csrf': csrf, 
+                    'commentId': commentId,
+                    'user': user,
+                    'userId': userId,
+                    'fcomments': fcomments
+                    }
+            return JsonResponse(data)
+    else:
+        return JsonResponse({'err': 'seerver error'})
+        
+
+
+    # prev_page = request.META.get('HTTP_REFERER', None)
+    # # check if form is subbmited via POST method
+    # if request.method == 'POST':
+    #      #bind data to the new comment form
+    #     form = comment_form(request.POST)
+    #     #check if form contains valid data
+    #     if form.is_valid():
+    #         # save comment to the database
+    #         form.save()
+    #         #redirect user to previous page
+    #         return redirect(prev_page)
         
 @login_required(login_url='/auth/login/')       
 def save_commentreply(request, comment_pk):
-    prev_page = request.META.get('HTTP_REFERER', None)
-    comment = Blogcomment.objects.get(id=comment_pk)
-    if request.method == 'POST':
-        form = commentreply_form(request.POST)
-        if form.is_valid():
-            text = form.cleaned_data['text']
-            author = form.cleaned_data['author']
-            newReply = BlogCommentReply(text=text, author=author, blogcomment=comment)
-            newReply.save()
-            return redirect(prev_page)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        comment = Blogcomment.objects.get(id=comment_pk)
+        commentReply = BlogCommentReply.objects.filter(blogcomment__id=comment_pk)
+       
+        if request.method == 'POST':
+            text = request.POST.get('text')
+            author = request.POST.get('author')
+            form = commentreply_form(data={ 'blogcomment': comment, 'text': text, 'author': author})
+
+            if form.is_valid():
+                savedForm = form.save()
+                fcommentReplies = [{'text': commentreply.text, 'author': commentreply.author.username, 'date_published': timesince_filter(commentreply.date_published)} for commentreply in commentReply]
+                repDetails = {'author': request.user.username, 'text': savedForm.text, 'commentReplies': fcommentReplies}
+                return JsonResponse({'data': repDetails})
+            
+        else:
+            return JsonResponse({'error': 'errroorr'})
+
+
+
+  
+  
+  
+  
+    # prev_page = request.META.get('HTTP_REFERER', None)
+    # comment = Blogcomment.objects.get(id=comment_pk)
+    # if request.method == 'POST':
+    #     form = commentreply_form(request.POST)
+    #     if form.is_valid():
+    #         text = form.cleaned_data['text']
+    #         author = form.cleaned_data['author']
+    #         newReply = BlogCommentReply(text=text, author=author, blogcomment=comment)
+    #         newReply.save()
+    #         return redirect(prev_page)
             
 
 
