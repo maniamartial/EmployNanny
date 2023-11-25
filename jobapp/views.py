@@ -33,8 +33,6 @@ from payment.models import Payment
 from django.urls import reverse
 
 # Define a view function that renders the home page template
-
-
 def home(request):
     user = request.user
     jobs = jobModel.objects.all()
@@ -62,23 +60,17 @@ def jobPosting(request):
         # Bind form data to a new job posting form instance
         form = jobPostingForm(request.POST)
 
-        # If the form data is valid
         if form.is_valid():
-            # Save the job posting to the database
             job = form.save(commit=False)
             job.employer = request.user
             job.save()
 
-            # Redirect to the job listing page
             return redirect('job_listing')
         else:
             # Print any form validation errors to the console
             print(form.errors)
 
-    # Create a context dictionary with the form instance
     context = {'form': form}
-
-    # Render the job posting form template with the context data
     return render(request, 'jobapp/jobPostingTemplate.html', context)
 
 
@@ -100,7 +92,6 @@ def job_listings(request):
         # If the total payments made by the employer are greater than or equal to the job's salary, mark job as verified
         if total_payments >= int(job.salary):
             job.payment_status = 'verified'
-        # Otherwise, mark job as unverified
         else:
             job.payment_status = 'unverified'
 
@@ -151,11 +142,9 @@ def show_all_nannies(request):
     if city_query and age_query:
         nannies = NannyDetails.objects.filter(
             city__icontains=city_query, age_bracket=age_query).order_by("-date_joined")
-    # if only city query is present
     elif city_query:
         nannies = NannyDetails.objects.filter(
             city__icontains=city_query).order_by("-date_joined")
-    # if only age query is present
     elif age_query:
         nannies = NannyDetails.objects.filter(
             age_bracket=age_query).order_by("-date_joined")
@@ -232,12 +221,10 @@ def job_detail(request, job_id):
     # retrieve the job object with the given id or raise a 404 error if it doesn't exist
     job = get_object_or_404(jobModel, pk=job_id)
     context = {'job': job}
-    # render the job detail template with the job object passed as context
     return render(request, 'jobapp/job_detail.html',  context)
 
 
 # employer to update the job
-# employer who created the job can also delete the job
 @login_required
 def edit_job(request, job_id):
     # Retrieve the job with the given id, if it's not available then raise a 404 error
@@ -246,7 +233,6 @@ def edit_job(request, job_id):
     if request.method == 'POST':
         form = JobForm(request.POST, instance=job, user=request.user)
 
-        # If the form is valid, save the modified data to the database
         if form.is_valid():
             form.save()
             if request.user.is_superuser:
@@ -396,8 +382,6 @@ def help(request):
 def create_contract_and_start_duration(request, application_id):
     # Get the job application object
     application = JobApplication.objects.get(id=application_id)
-
-    # Get the nanny and employer objects from the application object
     nanny = application.nanny
     employer = application.job.employer
     # Check if the contract has already been created
@@ -416,8 +400,6 @@ def create_contract_and_start_duration(request, application_id):
 
         # Set the timer to end the contract
         duration = application.job.duration
-        # end_date = contract.start_date + timedelta(days=duration)
-        # timer_id = start_contract_duration_timer(contract.id, end_date)
         end_date = timezone.now()
         contract.timer_id = end_date
         contract.save()
@@ -432,7 +414,6 @@ def create_contract_and_start_duration(request, application_id):
     contract_id = contract.id
     message = f'Hello {nanny.first_name}, \n\n {employer_name} has created a new contract for you. \n\nPlease click on the following link to accept the contract: \n\n<a href="http://127.0.0.1:8000/accept-contract/{contract_id}/">Accept contract</a>'
 
-    #message = f' Hello {nanny.first_name}, \n {employer_name} has created a new contract for you. Please log in to your account to accept the contract.'
     email = EmailMessage(subject, message, 'from@example.com', [nanny_email])
     email.send()
 
@@ -576,12 +557,9 @@ def view_contract(request, contract_id):
 # employer to view all the contracts that exists
 @login_required
 def employer_view_all_contracts(request):
-    # Get all contracts related to logged-in employer
     contracts = ContractModel.objects.filter(employer=request.user)
-    # Get all direct-contracts related to logged-in employer
     direct_contracts = DirectContract.objects.filter(employer=request.user)
     context = {"contracts": contracts, "direct_contracts": direct_contracts}
-    # Render the template with the contract list
     return render(request, "jobapp/view_all_contracts.html", context)
 
 
@@ -589,12 +567,9 @@ def employer_view_all_contracts(request):
 def nanny_view_all_contracts(request):
     # Get the NannyDetails instance for the logged-in user
     nanny_details = NannyDetails.objects.get(user=request.user)
-
-    # Get all contracts for the nanny
     contracts = ContractModel.objects.filter(nanny=nanny_details)
     direct_contracts = DirectContract.objects.filter(nanny=nanny_details)
     context = {"contracts": contracts, "direct_contracts": direct_contracts}
-    # Render the template with the contract list
     return render(request, "jobapp/view_all_contracts.html", context)
 
 
@@ -885,8 +860,6 @@ def post_review_nanny(request, contract_id):
     return render(request, 'jobapp/post_review.html', context)
 
 
-# display ratings and feedback
-
 
 @login_required(login_url='login')
 def display_reviews(request):
@@ -903,6 +876,3 @@ def display_reviews(request):
     return render(request, 'jobapp/reviews.html', context)
 
 
-# help page
-def help(request):
-    return render(request, "jobapp/help.html")
