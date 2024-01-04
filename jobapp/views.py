@@ -631,9 +631,7 @@ def end_contract(request, contract_id):
         fail_silently=False,
     )
 
-    # Save a notification for the nanny
-
-    notification = Notification(
+       notification = Notification(
         user=contract.nanny.user, title=subject, message=message)
     notification.save()
 
@@ -709,7 +707,6 @@ def accept_direct_contract(request, contract_id):
             # Handle contract acceptance
             direct_contract.status = 'accepted'
             direct_contract.save()
-            # Notify the employer of the nanny's acceptance
             subject = 'Direct Contract Accepted'
             message = f'Hello {employer.username},\n\nYour direct contract with {direct_contract.nanny.first_name} has been accepted. Please contact the nanny to finalize the details of the contract and to discuss start dates and times.\n\nYou can view all your contracts on your dashboard at: <a href="http://127.0.0.1:8000/contracts/all/">View Contracts</a>\n\nBest regards,\nEmployNanny'
 
